@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8520016966282423664}
   - component: {fileID: 886680389649785234}
   - component: {fileID: 2813146062979012321}
+  - component: {fileID: 2949861038724758254}
   m_Layer: 5
   m_Name: OptionsUI
   m_TagString: Untagged
@@ -91,6 +92,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OptionsState
   backButton: {fileID: 3096235407337455463}
+--- !u!225 &2949861038724758254
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1572557967486661896}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2724498648105450863
 GameObject:
   m_ObjectHideFlags: 0

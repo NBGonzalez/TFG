@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 4866342582387562816}
   - component: {fileID: 7113421194459716722}
   - component: {fileID: 62752301025900810}
+  - component: {fileID: 2546107574835583400}
   m_Layer: 5
   m_Name: MainUI
   m_TagString: Untagged
@@ -352,6 +353,18 @@ MonoBehaviour:
   profileButton: {fileID: 2512325611850123841}
   friendsButton: {fileID: 3340865456271139700}
   optionsButton: {fileID: 4493149835169083964}
+--- !u!225 &2546107574835583400
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2782494050793019899}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &3341363644809012564
 GameObject:
   m_ObjectHideFlags: 0

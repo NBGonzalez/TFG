@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 9116092790744530803}
   - component: {fileID: 7659944579602909659}
   - component: {fileID: 2533618703150897715}
+  - component: {fileID: 2409635888446059608}
   m_Layer: 5
   m_Name: FriendsUI
   m_TagString: Untagged
@@ -91,6 +92,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FriendsState
   backButton: {fileID: 3051162942735659321}
+--- !u!225 &2409635888446059608
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2139083440197933801}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2196998945739186008
 GameObject:
   m_ObjectHideFlags: 0
