@@ -1,0 +1,8 @@
+{
+  "language": "Python",
+  "levels": [
+    { "id": "py-1", "title": "Introducción a Python", "description": "Sintaxis básica.", "requiredLevel": "" },
+    { "id": "py-2", "title": "Listas y Diccionarios", "description": "Colecciones en Python.", "requiredLevel": "py-1" },
+    { "id": "py-3", "title": "Funciones", "description": "Cómo crear funciones reutilizables.", "requiredLevel": "py-2" }
+  ]
+}

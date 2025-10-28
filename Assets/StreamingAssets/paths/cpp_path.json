@@ -1,0 +1,10 @@
+{
+  "language": "C++",
+  "levels": [
+    { "id": "cpp-1", "title": "Hola Mundo", "description": "Tu primer programa en C++.", "requiredLevel": "" },
+    { "id": "cpp-2", "title": "Variables y Tipos", "description": "Declara y usa variables.", "requiredLevel": "cpp-1" },
+    { "id": "cpp-3", "title": "Estructuras de control", "description": "if, while, for.", "requiredLevel": "cpp-2" },
+    { "id": "cpp-4", "title": "Funciones", "description": "Organiza tu código.", "requiredLevel": "cpp-3" },
+    { "id": "cpp-5", "title": "Clases y Objetos", "description": "Aprende Programación Orientada a Objetos.", "requiredLevel": "cpp-4" }
+  ]
+}

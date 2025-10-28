@@ -1,0 +1,9 @@
+{
+  "language": "SQL",
+  "levels": [
+    { "id": "sql-1", "title": "Cláusula SELECT", "description": "Aprende a seleccionar datos.", "requiredLevel": "" },
+    { "id": "sql-2", "title": "Cláusula WHERE", "description": "Filtra resultados según condiciones.", "requiredLevel": "sql-1" },
+    { "id": "sql-3", "title": "ORDER BY y LIMIT", "description": "Ordena y limita resultados.", "requiredLevel": "sql-2" },
+    { "id": "sql-4", "title": "JOINs básicos", "description": "Combina tablas con INNER JOIN.", "requiredLevel": "sql-3" }
+  ]
+}
