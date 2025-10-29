@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using TMPro;
+using System.Collections;
+using UnityEngine.Networking;
 
 public class UI_MainScreen : MonoBehaviour
 {
@@ -32,6 +34,11 @@ public class UI_MainScreen : MonoBehaviour
 
     private void LoadLanguage(string language)
     {
+        StartCoroutine(LoadLanguageAsync(language));
+    }
+
+    private IEnumerator LoadLanguageAsync(string language)
+    {
         string fileName = "";
         switch (language)
         {
@@ -41,13 +48,38 @@ public class UI_MainScreen : MonoBehaviour
         }
 
         string path = Path.Combine(Application.streamingAssetsPath, "paths", fileName);
-        if (!File.Exists(path))
+
+        string json = "";
+
+        // Si estás en Android o WebGL, hay que usar UnityWebRequest
+        if (path.Contains("://") || path.Contains(":///"))
         {
-            Debug.LogError($"No se encontró el archivo {path}");
-            return;
+            using (UnityWebRequest www = UnityWebRequest.Get(path))
+            {
+                yield return www.SendWebRequest();
+
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError($"Error al cargar {fileName}: {www.error}");
+                    yield break;
+                }
+                else
+                {
+                    json = www.downloadHandler.text;
+                }
+            }
+        }
+        else
+        {
+            // En el editor o PC
+            if (!File.Exists(path))
+            {
+                Debug.LogError($"No se encontró el archivo {path}");
+                yield break;
+            }
+            json = File.ReadAllText(path);
         }
 
-        string json = File.ReadAllText(path);
         currentPath = JsonUtility.FromJson<PathModel>(json);
 
         PopulateLevels(language);
@@ -68,6 +100,9 @@ public class UI_MainScreen : MonoBehaviour
             var button = btnGO.GetComponent<LevelButton>();
             button.Setup(lvl.id, lvl.title, lvl.description, unlocked, () => OnLevelClicked(language, lvl.id, unlocked));
         }
+        Canvas.ForceUpdateCanvases();
+        UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot);
+        UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot.parent as RectTransform);
     }
 
     private void OnLevelClicked(string language, string levelId, bool unlocked)
