@@ -5,7 +5,7 @@ using TMPro;
 using System.Collections;
 using UnityEngine.Networking;
 
-public class UI_MainScreen : MonoBehaviour
+public class UI_PlayScreen : MonoBehaviour
 {
     [Header("UI References")]
     public TMP_Dropdown languageDropdown;
