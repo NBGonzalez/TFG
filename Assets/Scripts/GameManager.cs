@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    public static GameManager Instance { get; private set; }
 
-    public string currentLanguage;
-    public string currentLevelId;
+    public string currentLanguage { get; private set; }
+    public string currentLevelId { get; private set; }
 
     void Awake()
     {

@@ -4,6 +4,7 @@ using System.IO;
 using TMPro;
 using System.Collections;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class UI_PlayScreen : MonoBehaviour
 {
@@ -119,7 +120,7 @@ public class UI_PlayScreen : MonoBehaviour
         GameManager.Instance.SetCurrentLevel(language, levelId);
 
         // Cargar escena de minijuegos
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MiniGamesScene");
+        SceneManager.LoadScene("GameScene");
     }
 }
 

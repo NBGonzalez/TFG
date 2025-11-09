@@ -1,0 +1,36 @@
+{
+  "language": "SQL",
+  "levelId": "SQL_1",
+  "levelTitle": "Introducción a SQL",
+  "minigames": [
+    {
+      "type": "Explain",
+      "title": "¿Qué es SQL?",
+      "content": "SQL (Structured Query Language) es un lenguaje utilizado para gestionar y consultar bases de datos relacionales. Aprenderás a usar comandos como SELECT, INSERT, UPDATE y DELETE."
+    },
+    {
+      "type": "Quizz",
+      "title": "Primera consulta",
+      "question": "¿Qué comando se usa para obtener datos de una tabla?",
+      "options": ["GET", "SELECT", "SHOW", "FETCH"],
+      "correctAnswer": "SELECT"
+    },
+    {
+      "type": "Arrows",
+      "title": "Relaciona los conceptos",
+      "instruction": "Une cada comando con su descripción.",
+      "pairs": [
+        { "left": "SELECT", "right": "Extraer datos" },
+        { "left": "INSERT", "right": "Añadir registros" },
+        { "left": "DELETE", "right": "Eliminar datos" }
+      ]
+    },
+    {
+      "type": "FillBlanks",
+      "title": "Completa la sentencia",
+      "question": "____ * FROM empleados;",
+      "options": ["SELECT", "DELETE", "INSERT", "CREATE"],
+      "correctAnswer": "SELECT"
+    }
+  ]
+}
