@@ -1,6 +1,8 @@
 using System.IO;
 using UnityEngine;
 using Newtonsoft.Json;
+using System.Collections;
+using UnityEngine.Networking;
 
 
 public class GameSceneManager : MonoBehaviour
@@ -17,37 +19,66 @@ public class GameSceneManager : MonoBehaviour
 
     private void Start()
     {
-        LoadLevel();
+        StartCoroutine(LoadLevelAsync());
+
         if (currentLevelData != null)
             ShowMiniGame(currentMiniGameIndex);
         else
             Debug.LogError("No se pudo cargar el nivel antes de mostrar el minijuego.");
     }
 
-    private void LoadLevel()
+    private IEnumerator LoadLevelAsync()
     {
-        // Obtener los datos guardados del GameManager
         string language = GameManager.Instance.currentLanguage;
         string levelId = GameManager.Instance.currentLevelId;
 
-        string path = Path.Combine(Application.streamingAssetsPath, "levels", $"{language.ToLower()}_{levelId.ToLower()}.json");
+        string fileName = $"{language.ToLower()}_{levelId.ToLower()}.json";
+        string path = Path.Combine(Application.streamingAssetsPath, "levels", fileName);
 
-        if (!File.Exists(path))
+        string json = "";
+
+        // Igual que en UI_PlayScreen
+        if (path.Contains("://") || path.Contains(":///"))
         {
-            Debug.LogError($"No se encontró el archivo del nivel: {path}");
-            return;
+            using (UnityWebRequest www = UnityWebRequest.Get(path))
+            {
+                yield return www.SendWebRequest();
+
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError($"Error al cargar {fileName}: {www.error}");
+                    yield break;
+                }
+                else
+                {
+                    json = www.downloadHandler.text;
+                }
+            }
+        }
+        else
+        {
+            if (!File.Exists(path))
+            {
+                Debug.LogError($"No se encontró el archivo del nivel: {path}");
+                yield break;
+            }
+            json = File.ReadAllText(path);
         }
 
-        string json = File.ReadAllText(path);
         currentLevelData = JsonConvert.DeserializeObject<LevelData>(json);
+
         if (currentLevelData == null)
         {
             Debug.LogError("Error al deserializar el JSON del nivel");
-            return;
+            yield break;
         }
 
         Debug.Log($"Nivel cargado: {currentLevelData.levelTitle} con {currentLevelData.minigames.Count} minijuegos.");
+
+        // Ahora que está cargado, mostramos el primer minijuego
+        ShowMiniGame(currentMiniGameIndex);
     }
+
 
     private void ShowMiniGame(int index)
     {
@@ -91,8 +122,30 @@ public class GameSceneManager : MonoBehaviour
 
         // Instanciar el prefab
         GameObject miniGameGO = Instantiate(prefabToLoad, miniGameContainer);
-        var explain = miniGameGO.GetComponent<MiniGameExplain>();
-        explain.Show(data, this);
+
+        switch (data.type)
+        {
+            case "Explain":
+                miniGameGO.GetComponent<MiniGameExplain>().Show(data, this);
+                break;
+
+            case "Quizz":
+                miniGameGO.GetComponent<MiniGameQuizz>().Show(data, this);
+                break;
+
+            case "Arrows":
+                miniGameGO.GetComponent<MiniGameArrows>().Show(data, this);
+                break;
+
+            case "FillBlanks":
+                //miniGameGO.GetComponent<MiniGameFillBlanks>().Show(data, this);
+                break;
+
+            default:
+                Debug.LogError($"NO hay lógica para mostrar el minijuego: {data.type}");
+                break;
+        }
+
     }
 
 

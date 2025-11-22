@@ -61,27 +61,41 @@ public class MiniGameQuizz : MonoBehaviour
 
     private void OnOptionSelected(Button clickedButton, string selected)
     {
-        if (answered) return; // evita clicks dobles
-        answered = true;
+        if (answered) return;
 
         bool correct = selected == currentData.correctAnswer;
+
         var colors = clickedButton.colors;
 
         if (correct)
         {
-            colors.normalColor = correctColor;
-            clickedButton.colors = colors;
-
-            // Esperar un poco y pasar al siguiente
-            StartCoroutine(NextAfterDelay(1f));
+            SetButtonColor(clickedButton, correctColor);
+            answered = true;
+            StartCoroutine(NextAfterDelay(0.6f));
         }
         else
         {
-            colors.normalColor = wrongColor;
-            clickedButton.colors = colors;
-            answered = false; // permitir volver a intentar
+            answered = false;
+
+            StartCoroutine(FlashWrong(clickedButton));
         }
     }
+    private void SetButtonColor(Button btn, Color c)
+    {
+        var colors = btn.colors;
+        colors.normalColor = c;
+        colors.highlightedColor = c;
+        colors.pressedColor = c;
+        colors.selectedColor = c;
+        btn.colors = colors;
+    }
+    private System.Collections.IEnumerator FlashWrong(Button btn)
+    {
+        SetButtonColor(btn, wrongColor);
+        yield return new WaitForSeconds(0.25f);
+        SetButtonColor(btn, normalColor);
+    }
+
 
     private System.Collections.IEnumerator NextAfterDelay(float delay)
     {
