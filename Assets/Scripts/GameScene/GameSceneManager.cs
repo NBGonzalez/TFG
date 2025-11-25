@@ -138,7 +138,7 @@ public class GameSceneManager : MonoBehaviour
                 break;
 
             case "FillBlanks":
-                //miniGameGO.GetComponent<MiniGameFillBlanks>().Show(data, this);
+                miniGameGO.GetComponent<MiniGameFillBlanks>().Show(data, this);
                 break;
 
             default:

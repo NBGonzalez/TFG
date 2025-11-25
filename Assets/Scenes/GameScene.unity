@@ -267,7 +267,7 @@ MonoBehaviour:
   explainPrefab: {fileID: 5558047242291467533, guid: 8002d56cfe3b9d04db19aaa7f769acae, type: 3}
   quizzPrefab: {fileID: 6300028576399220498, guid: aad14b83a8852204a8fe91a70bd62d01, type: 3}
   arrowsPrefab: {fileID: 3800538467527491509, guid: 0875b4e5cb5fad94789ebbcfaa9c840f, type: 3}
-  fillBlanksPrefab: {fileID: 0}
+  fillBlanksPrefab: {fileID: 3213760579575141660, guid: 79906c7756980c34b828aefec05ec5a9, type: 3}
 --- !u!4 &1070547783
 Transform:
   m_ObjectHideFlags: 0

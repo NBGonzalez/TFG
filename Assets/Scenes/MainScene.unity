@@ -474,8 +474,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34f3e4f40eb618a498f96ad1f3a604ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  currentLanguage: 
-  currentLevelId: 
 --- !u!1 &464794719
 GameObject:
   m_ObjectHideFlags: 0

@@ -31,7 +31,7 @@ public class MiniGameArrows : MonoBehaviour
         this.manager = mgr;
 
         if (titleText != null) titleText.text = data.title;
-        if (instructionText != null) instructionText.text = data.content;
+        if (instructionText != null) instructionText.text = data.instruction;
 
 
         ClearColumns();

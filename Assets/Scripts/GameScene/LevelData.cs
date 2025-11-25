@@ -17,6 +17,7 @@ public class MiniGameData
     public string title;
     public string content;
     public string question;
+    public string instruction;
     public List<string> options;
     public string correctAnswer;
     public List<PairData> pairs;
