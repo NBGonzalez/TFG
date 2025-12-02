@@ -8,20 +8,24 @@ public class UIStateManager : MonoBehaviour
     [SerializeField] private float slideDistance = 200f;
 
     private UIStateBase currentState;
+    private bool isTransitioning = false;
 
     private void Start()
     {
+        if (isTransitioning) return;
         ChangeState("Main");
     }
 
     public void ChangeState(string stateName)
     {
+        
         StartCoroutine(ChangeStateRoutine(stateName));
+        
     }
 
     private IEnumerator ChangeStateRoutine(string stateName)
     {
-
+        isTransitioning = true;
         // Cargar el nuevo prefab
         GameObject prefab = Resources.Load<GameObject>($"UI/{stateName}UI");
 
@@ -85,5 +89,6 @@ public class UIStateManager : MonoBehaviour
 
         currentState = nextState;
         nextState.OnEnter();
+        isTransitioning = false;
     }
 }

@@ -14,14 +14,28 @@ public class LevelData
 public class MiniGameData
 {
     public string type; // "Explain", "Quizz", "Arrows", "FillBlanks"
+
     public string title;
     public string content;
     public string question;
     public string instruction;
-    public List<string> options;
-    public string correctAnswer;
-    public List<PairData> pairs;
+
+    public List<string> options;       // Para Quizz y FillBlanks
+    public string correctAnswer;       // Para Quizz (FillBlanks ya no usa esto)
+
+    public List<PairData> pairs;       // Para Arrows
+
+    
+    public List<FillBlankEntry> blanks;// Para FillBlanks
 }
+
+[System.Serializable]
+public class FillBlankEntry
+{
+    public int id;          // número del hueco (1,2,3...)
+    public string correct;  // texto correcto
+}
+
 
 [System.Serializable]
 public class PairData

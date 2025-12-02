@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class PlayerProgressManager : MonoBehaviour
 {
-    public static PlayerProgressManager Instance;
+    public static PlayerProgressManager Instance { get; private set; }
 
-    // Diccionario por lenguaje: qué niveles ha completado
-    private Dictionary<string, HashSet<string>> completedLevels = new();
+    private PlayerProgress progress;
 
-    private const string SAVE_KEY = "player_progress_v2";
+    private string SavePath =>
+        Path.Combine(Application.persistentDataPath, "player_progress.json");
 
-    void Awake()
+    private void Awake()
     {
         if (Instance == null)
         {
@@ -24,68 +25,65 @@ public class PlayerProgressManager : MonoBehaviour
         }
     }
 
+    // =============================
+    //  PUBLIC API
+    // =============================
+
     public bool IsLevelCompleted(string language, string levelId)
     {
-        return completedLevels.ContainsKey(language) && completedLevels[language].Contains(levelId);
+        if (progress.completedLevels.ContainsKey(language))
+        {
+            return progress.completedLevels[language].Contains(levelId);
+        }
+        return false;
     }
 
-    public void MarkLevelComplete(string language, string levelId)
+    public void CompleteLevel(string language, string levelId)
     {
-        if (!completedLevels.ContainsKey(language))
-            completedLevels[language] = new HashSet<string>();
+        if (!progress.completedLevels.ContainsKey(language))
+            progress.completedLevels[language] = new List<string>();
 
-        completedLevels[language].Add(levelId);
-        Save();
+        if (!progress.completedLevels[language].Contains(levelId))
+        {
+            progress.completedLevels[language].Add(levelId);
+            Save();
+        }
     }
 
-    public void ResetProgress()
+    public List<string> GetCompletedLevels(string language)
     {
-        completedLevels.Clear();
-        PlayerPrefs.DeleteKey(SAVE_KEY);
+        if (!progress.completedLevels.ContainsKey(language))
+            return new List<string>();
+
+        return new List<string>(progress.completedLevels[language]);
     }
+
+    // =============================
+    // SAVE / LOAD
+    // =============================
 
     private void Save()
     {
-        string json = JsonUtility.ToJson(new ProgressWrapper(completedLevels));
-        PlayerPrefs.SetString(SAVE_KEY, json);
-        PlayerPrefs.Save();
+        string json = JsonUtility.ToJson(progress, true);
+        File.WriteAllText(SavePath, json);
+        Debug.Log($"[Progress] Guardado en: {SavePath}");
     }
 
     private void Load()
     {
-        if (PlayerPrefs.HasKey(SAVE_KEY))
+        if (!File.Exists(SavePath))
         {
-            string json = PlayerPrefs.GetString(SAVE_KEY);
-            var wrapper = JsonUtility.FromJson<ProgressWrapper>(json);
-            completedLevels = wrapper.ToDictionary();
-        }
-    }
-
-    [System.Serializable]
-    private class ProgressWrapper
-    {
-        public List<string> languages;
-        public List<string[]> completedIds;
-
-        public ProgressWrapper(Dictionary<string, HashSet<string>> data)
-        {
-            languages = new List<string>();
-            completedIds = new List<string[]>();
-
-            foreach (var kvp in data)
-            {
-                languages.Add(kvp.Key);
-                completedIds.Add(new List<string>(kvp.Value).ToArray());
-            }
+            progress = new PlayerProgress();
+            Save(); // crea archivo inicial
+            return;
         }
 
-        public Dictionary<string, HashSet<string>> ToDictionary()
-        {
-            var dict = new Dictionary<string, HashSet<string>>();
-            for (int i = 0; i < languages.Count; i++)
-                dict[languages[i]] = new HashSet<string>(completedIds[i]);
-            return dict;
-        }
+        string json = File.ReadAllText(SavePath);
+        progress = JsonUtility.FromJson<PlayerProgress>(json);
+
+        if (progress.completedLevels == null)
+            progress.completedLevels = new Dictionary<string, List<string>>();
+
+        Debug.Log("[Progress] Progreso cargado.");
     }
 }
-

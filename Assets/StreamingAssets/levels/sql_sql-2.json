@@ -1,0 +1,45 @@
+{
+    "language": "SQL",
+    "levelId": "sql-2",
+    "levelTitle": "Cláusula FROM",
+    "minigames": [
+        {
+            "type": "Explain",
+            "title": "¿Qué es la cláusula FROM?",
+            "content": "La cláusula FROM indica de qué tabla (o tablas) se obtienen los datos en una consulta SQL. Siempre acompaña a SELECT y define la fuente principal de información. Por ejemplo: SELECT nombre FROM usuarios;"
+        },
+        {
+            "type": "Quizz",
+            "question": "¿Qué función cumple la cláusula FROM?",
+            "options": [
+                "Define la tabla desde la cual se obtienen los datos.",
+                "Ordena los resultados por una columna.",
+                "Filtra los datos según una condición.",
+                "Renombra columnas en la consulta."
+            ],
+            "correctAnswer": "Define la tabla desde la cual se obtienen los datos."
+        },
+        {
+            "type": "FillBlanks",
+            "text": "SELECT nombre, edad ___ usuarios;",
+            "missingWord": "FROM"
+        },
+        {
+            "type": "Arrows",
+            "pairs": [
+                {
+                    "left": "SELECT nombre FROM productos",
+                    "right": "Consulta datos de la tabla productos"
+                },
+                {
+                    "left": "SELECT * FROM empleados",
+                    "right": "Obtiene todas las columnas de la tabla empleados"
+                },
+                {
+                    "left": "FROM clientes",
+                    "right": "Indica la tabla de origen de los datos"
+                }
+            ]
+        }
+    ]
+}

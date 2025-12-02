@@ -11,26 +11,55 @@
     {
       "type": "Quizz",
       "title": "Primera consulta",
-      "question": "¿Qué comando se usa para obtener datos de una tabla?",
-      "options": ["GET", "SELECT", "SHOW", "FETCH"],
+      "content": "¿Qué comando se usa para obtener datos de una tabla?",
+      "options": [
+        "GET",
+        "SELECT",
+        "SHOW",
+        "FETCH"
+      ],
       "correctAnswer": "SELECT"
     },
     {
       "type": "Arrows",
       "title": "Relaciona los conceptos",
-      "instruction": "Une cada comando con su descripción.",
+      "content": "Une cada comando con su descripción.",
       "pairs": [
-        { "left": "SELECT", "right": "Extraer datos" },
-        { "left": "INSERT", "right": "Añadir registros" },
-        { "left": "DELETE", "right": "Eliminar datos" }
+        {
+          "left": "SELECT",
+          "right": "Extraer datos"
+        },
+        {
+          "left": "INSERT",
+          "right": "Añadir registros"
+        },
+        {
+          "left": "DELETE",
+          "right": "Eliminar datos"
+        }
       ]
     },
     {
       "type": "FillBlanks",
       "title": "Completa la sentencia",
-      "question": "____ * FROM empleados;",
-      "options": ["SELECT", "DELETE", "INSERT", "CREATE"],
-      "correctAnswer": "SELECT"
+      "content": "____1 * FROM ____2;",
+      "blanks": [
+        {
+          "id": 1,
+          "correct": "SELECT"
+        },
+        {
+          "id": 2,
+          "correct": "empleados"
+        }
+      ],
+      "options": [
+        "SELECT",
+        "DELETE",
+        "INSERT",
+        "CREATE",
+        "empleados"
+      ]
     }
   ]
 }

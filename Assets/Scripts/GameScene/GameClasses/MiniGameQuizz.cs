@@ -1,106 +1,97 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
+using System.Collections.Generic;
 
-public class MiniGameQuizz : MonoBehaviour
+public class MiniGameQuizz : MonoBehaviour, IMiniGame
 {
-    public static MiniGameQuizz Instance;
+    [Header("UI")]
+    [SerializeField] private List<Button> optionButtons; // botones presentes en prefab (puede ser variable)
 
-    [Header("UI References")]
-    [SerializeField] private TextMeshProUGUI titleText;
-    [SerializeField] private TextMeshProUGUI questionText;
-    [SerializeField] private List<Button> optionButtons; // asigna los 4 botones
-    [SerializeField] private Color correctColor = Color.green;
-    [SerializeField] private Color wrongColor = Color.red;
-    [SerializeField] private Color normalColor = Color.white;
-
-    private GameSceneManager manager;
-    private MiniGameData currentData;
+    private MiniGameData data;
+    private MiniGameBaseClass baseUI;
     private bool answered = false;
 
-    private void Awake() => Instance = this;
-
-    public void Show(MiniGameData data, GameSceneManager mgr)
+    public void Initialize(MiniGameData data, MiniGameBaseClass baseUI)
     {
-        gameObject.SetActive(true);
-        manager = mgr;
-        currentData = data;
+        this.data = data;
+        this.baseUI = baseUI;
         answered = false;
 
-        // Configurar textos
-        titleText.text = data.title;
-        questionText.text = data.question;
+        // El texto principal (la pregunta) ya lo pone Base UI en data.content.
+        // Configurar botones con opciones aleatorias
+        SetupOptionsRandomized();
+    }
 
-        // Configurar opciones
+    private void SetupOptionsRandomized()
+    {
+        // Copia segura de las opciones (evita modificar el original)
+        var options = new List<string>(data.options ?? new List<string>());
+
+        // Fisher-Yates shuffle
+        for (int i = options.Count - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            var tmp = options[i];
+            options[i] = options[j];
+            options[j] = tmp;
+        }
+
+        // Asignar a botones (si hay más botones que opciones, ocultamos extras)
         for (int i = 0; i < optionButtons.Count; i++)
         {
-            if (i < data.options.Count)
+            var btn = optionButtons[i];
+            btn.onClick.RemoveAllListeners();
+
+            if (i < options.Count)
             {
-                var btn = optionButtons[i];
+                string opt = options[i];
                 btn.gameObject.SetActive(true);
 
-                var text = btn.GetComponentInChildren<TextMeshProUGUI>();
-                text.text = data.options[i];
+                var txt = btn.GetComponentInChildren<TextMeshProUGUI>();
+                if (txt != null) txt.text = opt;
 
-                // Resetear color
-                var colors = btn.colors;
-                colors.normalColor = normalColor;
-                btn.colors = colors;
-
-                btn.onClick.RemoveAllListeners();
-                string optionText = data.options[i];
-                btn.onClick.AddListener(() => OnOptionSelected(btn, optionText));
+                baseUI.SetButtonColor(btn, Color.white);
+                btn.onClick.AddListener(() => OnOptionSelected(btn, opt));
             }
             else
             {
-                optionButtons[i].gameObject.SetActive(false);
+                btn.gameObject.SetActive(false);
             }
+        }
+
+        // Forzar recalculo de layout para evitar problemas en móvil
+        Canvas.ForceUpdateCanvases();
+        if (optionButtons.Count > 0 && optionButtons[0] != null)
+        {
+            var parent = optionButtons[0].transform.parent as RectTransform;
+            if (parent != null)
+                UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(parent);
         }
     }
 
-    private void OnOptionSelected(Button clickedButton, string selected)
+    private void OnOptionSelected(Button btn, string selected)
     {
         if (answered) return;
 
-        bool correct = selected == currentData.correctAnswer;
-
-        var colors = clickedButton.colors;
-
-        if (correct)
+        if (selected == data.correctAnswer)
         {
-            SetButtonColor(clickedButton, correctColor);
             answered = true;
-            StartCoroutine(NextAfterDelay(0.6f));
+            baseUI.SetButtonColor(btn, Color.green);
+            StartCoroutine(baseUI.NextMiniGameDelayed(0.5f));
         }
         else
         {
-            answered = false;
-
-            StartCoroutine(FlashWrong(clickedButton));
+            baseUI.ShowError("Respuesta incorrecta");
+            StartCoroutine(baseUI.FlashButtonColor(btn, Color.red));
         }
     }
-    private void SetButtonColor(Button btn, Color c)
-    {
-        var colors = btn.colors;
-        colors.normalColor = c;
-        colors.highlightedColor = c;
-        colors.pressedColor = c;
-        colors.selectedColor = c;
-        btn.colors = colors;
-    }
-    private System.Collections.IEnumerator FlashWrong(Button btn)
-    {
-        SetButtonColor(btn, wrongColor);
-        yield return new WaitForSeconds(0.25f);
-        SetButtonColor(btn, normalColor);
-    }
 
-
-    private System.Collections.IEnumerator NextAfterDelay(float delay)
+    public void TearDown()
     {
-        yield return new WaitForSeconds(delay);
-        gameObject.SetActive(false);
-        manager.NextMiniGame();
+        foreach (var b in optionButtons)
+            if (b != null) b.onClick.RemoveAllListeners();
     }
 }
+

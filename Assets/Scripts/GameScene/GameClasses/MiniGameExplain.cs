@@ -1,29 +1,35 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
-public class MiniGameExplain : MonoBehaviour
+public class MiniGameExplain : MonoBehaviour, IMiniGame
 {
-    public static MiniGameExplain Instance;
-    [SerializeField] private TextMeshProUGUI titleText;
-    [SerializeField] private TextMeshProUGUI contentText;
 
-    private GameSceneManager manager;
+    [SerializeField] private Button continueButton; // opcional en el prefab
 
-    private void Awake() => Instance = this;
+    private MiniGameData data;
+    private MiniGameBaseClass baseUI;
 
-    public void Show(MiniGameData data, GameSceneManager mgr)
+    public void Initialize(MiniGameData data, MiniGameBaseClass baseUI)
     {
-        gameObject.SetActive(true);
-        manager = mgr;
+        this.data = data;
+        this.baseUI = baseUI;
 
-        titleText.text = data.title;
-        contentText.text = data.content;
+
+        if (continueButton != null)
+        {
+            continueButton.onClick.RemoveAllListeners();
+            continueButton.onClick.AddListener(() =>
+            {
+                // usar coroutine del propio MonoBehaviour para respetar el delay de la base
+                StartCoroutine(baseUI.NextMiniGameDelayed(0.15f));
+            });
+        }
     }
 
-    public void OnContinueButton()
+    public void TearDown()
     {
-        gameObject.SetActive(false);
-        manager.NextMiniGame();
+        if (continueButton != null)
+            continueButton.onClick.RemoveAllListeners();
     }
 }
-

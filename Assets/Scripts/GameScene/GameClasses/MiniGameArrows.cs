@@ -3,19 +3,17 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
-public class MiniGameArrows : MonoBehaviour
+public class MiniGameArrows : MonoBehaviour, IMiniGame
 {
-    [SerializeField] private TextMeshProUGUI titleText;
-    [SerializeField] private TextMeshProUGUI instructionText;
-
     [Header("UI")]
-    public Transform leftColumn;
-    public Transform rightColumn;
-    public GameObject buttonPrefab; // ArrowButton
+    [SerializeField] private Transform leftColumn;   // container (VerticalLayoutGroup)
+    [SerializeField] private Transform rightColumn;  // container (VerticalLayoutGroup)
+    [SerializeField] private GameObject buttonPrefab; // prefab botón (con TMP hijo)
 
-    private GameSceneManager manager;
     private MiniGameData data;
+    private MiniGameBaseClass baseUI;
 
     private Button selectedLeft = null;
     private Button selectedRight = null;
@@ -23,139 +21,177 @@ public class MiniGameArrows : MonoBehaviour
     private Dictionary<Button, string> leftMap = new();
     private Dictionary<Button, string> rightMap = new();
 
+    private List<Button> generatedButtons = new(); // para TearDown
     private int correctPairs = 0;
 
-    public void Show(MiniGameData data, GameSceneManager mgr)
+    public void Initialize(MiniGameData data, MiniGameBaseClass baseUI)
     {
         this.data = data;
-        this.manager = mgr;
-
-        if (titleText != null) titleText.text = data.title;
-        if (instructionText != null) instructionText.text = data.instruction;
-
+        this.baseUI = baseUI;
+        correctPairs = 0;
 
         ClearColumns();
         GenerateButtons();
+        // El texto principal ya lo pone baseUI (data.content).
+    }
+
+    public void TearDown()
+    {
+        // Limpiar listeners y destruir botones
+        foreach (var btn in generatedButtons)
+        {
+            if (btn != null)
+            {
+                btn.onClick.RemoveAllListeners();
+                Destroy(btn.gameObject);
+            }
+        }
+        generatedButtons.Clear();
+        leftMap.Clear();
+        rightMap.Clear();
+        selectedLeft = null;
+        selectedRight = null;
     }
 
     private void ClearColumns()
     {
-        foreach (Transform child in leftColumn) Destroy(child.gameObject);
-        foreach (Transform child in rightColumn) Destroy(child.gameObject);
+        if (leftColumn != null)
+        {
+            foreach (Transform t in leftColumn) Destroy(t.gameObject);
+        }
+        if (rightColumn != null)
+        {
+            foreach (Transform t in rightColumn) Destroy(t.gameObject);
+        }
+
+        leftMap.Clear();
+        rightMap.Clear();
+        generatedButtons.Clear();
     }
 
     private void GenerateButtons()
     {
-        List<PairData> pairs = data.pairs;
+        if (data?.pairs == null || data.pairs.Count == 0) return;
 
-        // Clonar lista para desordenarla para la derecha
-        List<PairData> shuffled = new List<PairData>(pairs);
-        shuffled.Sort((a, b) => Random.Range(-1, 2));
+        // Orden original para la izquierda y desordenado para la derecha
+        List<PairData> leftList = data.pairs;
+        List<PairData> rightList = new List<PairData>(data.pairs);
+        rightList = rightList.OrderBy(x => Random.value).ToList();
 
-        correctPairs = 0;
-
-        // Crear botones LEFT
-        foreach (var p in pairs)
+        // LEFT
+        foreach (var p in leftList)
         {
             GameObject go = Instantiate(buttonPrefab, leftColumn);
-            var btn = go.GetComponent<Button>();
-            go.GetComponentInChildren<TextMeshProUGUI>().text = p.left;
+            Button btn = go.GetComponent<Button>();
+            var txt = go.GetComponentInChildren<TextMeshProUGUI>();
+            if (txt != null) txt.text = p.left;
 
             leftMap[btn] = p.right;
+            generatedButtons.Add(btn);
 
-            btn.onClick.AddListener(() => OnLeftSelected(btn));
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() => OnLeftClicked(btn));
+            baseUI.SetButtonColor(btn, Color.white);
         }
 
-        // Crear botones RIGHT
-        foreach (var p in shuffled)
+        // RIGHT
+        foreach (var p in rightList)
         {
             GameObject go = Instantiate(buttonPrefab, rightColumn);
-            var btn = go.GetComponent<Button>();
-            go.GetComponentInChildren<TextMeshProUGUI>().text = p.right;
+            Button btn = go.GetComponent<Button>();
+            var txt = go.GetComponentInChildren<TextMeshProUGUI>();
+            if (txt != null) txt.text = p.right;
 
             rightMap[btn] = p.right;
+            generatedButtons.Add(btn);
 
-            btn.onClick.AddListener(() => OnRightSelected(btn));
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() => OnRightClicked(btn));
+            baseUI.SetButtonColor(btn, Color.white);
         }
     }
 
-    // Cuando clicas botón LEFT
-    private void OnLeftSelected(Button btn)
+    private void OnLeftClicked(Button btn)
     {
-        selectedLeft = btn;
-        Highlight(btn, Color.yellow);
+        if (!btn.interactable) return;
+
+        if (selectedLeft == btn)
+        {
+            baseUI.SetButtonColor(btn, Color.white);
+            selectedLeft = null;
+        }
+        else
+        {
+            if (selectedLeft != null) baseUI.SetButtonColor(selectedLeft, Color.white);
+            selectedLeft = btn;
+            baseUI.SetButtonColor(btn, Color.yellow);
+        }
+
         TryCheckPair();
     }
 
-
-    // Cuando clicas botón RIGHT
-    private void OnRightSelected(Button btn)
+    private void OnRightClicked(Button btn)
     {
-        selectedRight = btn;
-        Highlight(btn, Color.yellow);
+        if (!btn.interactable) return;
+
+        if (selectedRight == btn)
+        {
+            baseUI.SetButtonColor(btn, Color.white);
+            selectedRight = null;
+        }
+        else
+        {
+            if (selectedRight != null) baseUI.SetButtonColor(selectedRight, Color.white);
+            selectedRight = btn;
+            baseUI.SetButtonColor(btn, Color.yellow);
+        }
+
         TryCheckPair();
     }
+
     private void TryCheckPair()
     {
         if (selectedLeft == null || selectedRight == null) return;
 
-        string expected = leftMap[selectedLeft];
-        string selected = rightMap[selectedRight];
+        string expected = leftMap.ContainsKey(selectedLeft) ? leftMap[selectedLeft] : null;
+        string chosen = rightMap.ContainsKey(selectedRight) ? rightMap[selectedRight] : null;
 
-        if (expected == selected)
+        bool ok = expected != null && chosen != null && expected == chosen;
+
+        if (ok)
         {
-            // Correct match
-            Highlight(selectedLeft, Color.green);
-            Highlight(selectedRight, Color.green);
+            baseUI.SetButtonColor(selectedLeft, Color.green);
+            baseUI.SetButtonColor(selectedRight, Color.green);
 
             selectedLeft.interactable = false;
             selectedRight.interactable = false;
 
             correctPairs++;
-
             selectedLeft = null;
             selectedRight = null;
 
             if (correctPairs >= data.pairs.Count)
-                StartCoroutine(NextMiniGame());
+            {
+                StartCoroutine(baseUI.NextMiniGameDelayed(0.7f));
+            }
         }
         else
         {
-            StartCoroutine(WrongPair(selectedLeft, selectedRight));
+            StartCoroutine(HandleWrongPair(selectedLeft, selectedRight));
         }
     }
 
-
-    private IEnumerator WrongPair(Button a, Button b)
+    private IEnumerator HandleWrongPair(Button a, Button b)
     {
-        Highlight(a, Color.red);
-        Highlight(b, Color.red);
+        if (a != null) baseUI.SetButtonColor(a, Color.red);
+        if (b != null) baseUI.SetButtonColor(b, Color.red);
 
         yield return new WaitForSeconds(0.4f);
 
-        Highlight(a, Color.white);
-        Highlight(b, Color.white);
+        if (a != null) baseUI.SetButtonColor(a, Color.white);
+        if (b != null) baseUI.SetButtonColor(b, Color.white);
 
         selectedLeft = null;
         selectedRight = null;
     }
-
-
-    private void Highlight(Button btn, Color c)
-    {
-        var colors = btn.colors;
-        colors.normalColor = c;
-        colors.highlightedColor = c;
-        colors.pressedColor = c;
-        colors.selectedColor = c;
-        btn.colors = colors;
-    }
-
-
-    private IEnumerator NextMiniGame()
-    {
-        yield return new WaitForSeconds(0.8f);
-        manager.NextMiniGame();
-    }
 }
-
