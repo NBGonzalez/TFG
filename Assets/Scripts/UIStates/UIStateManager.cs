@@ -13,7 +13,7 @@ public class UIStateManager : MonoBehaviour
     private void Start()
     {
         if (isTransitioning) return;
-        ChangeState("Main");
+        ChangeState("LoginManager");
     }
 
     public void ChangeState(string stateName)
