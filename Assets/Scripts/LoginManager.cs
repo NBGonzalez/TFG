@@ -1,22 +1,34 @@
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
+using System;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using UnityEngine;
 
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
-
-public class LoginManager : UIStateBase
+public class LoginManager : MonoBehaviour
 {
+    public static LoginManager Instance { get; private set; }
+
     private string m_GooglePlayGamesTokem;
+
+    
 
     private async void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else Destroy(gameObject);
+
         PlayGamesPlatform.DebugLogEnabled = true;
         PlayGamesPlatform.Activate();
-        LoginGooglePlayGames();
+        //LoginGooglePlayGames();
 
-       if(UnityServices.State == ServicesInitializationState.Uninitialized)
+        
+        if (UnityServices.State == ServicesInitializationState.Uninitialized)
         {
             Debug.Log("Services Initializing");
             await UnityServices.InitializeAsync();
@@ -27,13 +39,19 @@ public class LoginManager : UIStateBase
     {
         
     }
+
+    // ============================
+    // GooglePlayGames login flow
+    // ============================
     public void LoginGooglePlayGames()
     {
-        PlayGamesPlatform.Instance.Authenticate((success) =>
+        PlayGamesPlatform.Instance.Authenticate(async (success) =>
         {
             if (success == SignInStatus.Success)
             {
                 Debug.Log("Login with Google Play games successful.");
+                Debug.Log("Bienvenido -----------------> " + PlayGamesPlatform.Instance.GetUserDisplayName());
+                
 
                 PlayGamesPlatform.Instance.RequestServerSideAccess(true, code =>
                 {
@@ -41,7 +59,7 @@ public class LoginManager : UIStateBase
                     m_GooglePlayGamesTokem = code;
                     // This token serves as an example to be used for SignInWithGooglePlayGames
                 });
-                stateManager.ChangeState("Main");
+                //stateManager.ChangeState("Main");
             }
             else
             {
@@ -140,7 +158,7 @@ public class LoginManager : UIStateBase
 
             // Shows how to get the playerID
             Debug.Log($"PlayerID: {AuthenticationService.Instance.PlayerId}");
-            stateManager.ChangeState("Main");
+            //stateManager.ChangeState("Main");
 
         }
         catch (AuthenticationException ex)

@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using Newtonsoft.Json;
 
 public class PlayerProgressManager : MonoBehaviour
 {
     public static PlayerProgressManager Instance { get; private set; }
 
-    private PlayerProgress progress;
+    private PlayerProgress progress; // Básicamente esto es un diccionario.
 
     private string SavePath =>
         Path.Combine(Application.persistentDataPath, "player_progress.json");
@@ -64,9 +65,9 @@ public class PlayerProgressManager : MonoBehaviour
 
     private void Save()
     {
-        string json = JsonUtility.ToJson(progress, true);
+        string json = JsonConvert.SerializeObject(progress, Formatting.Indented);
         File.WriteAllText(SavePath, json);
-        Debug.Log($"[Progress] Guardado en: {SavePath}");
+        Debug.Log($"[Progress] Guardado en: {SavePath}\n{json}");
     }
 
     private void Load()
@@ -74,12 +75,13 @@ public class PlayerProgressManager : MonoBehaviour
         if (!File.Exists(SavePath))
         {
             progress = new PlayerProgress();
-            Save(); // crea archivo inicial
+            Save();
             return;
         }
 
         string json = File.ReadAllText(SavePath);
-        progress = JsonUtility.FromJson<PlayerProgress>(json);
+
+        progress = JsonConvert.DeserializeObject<PlayerProgress>(json) ?? new PlayerProgress();
 
         if (progress.completedLevels == null)
             progress.completedLevels = new Dictionary<string, List<string>>();

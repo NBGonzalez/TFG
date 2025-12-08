@@ -1,6 +1,13 @@
 using System.Collections;
 using UnityEngine;
 
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
+using System;
+using System.Threading.Tasks;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+
 public class UIStateManager : MonoBehaviour
 {
     [SerializeField] private Transform uiRoot;
@@ -13,7 +20,9 @@ public class UIStateManager : MonoBehaviour
     private void Start()
     {
         if (isTransitioning) return;
-        ChangeState("LoginManager");
+
+        if (AuthenticationService.Instance.IsSignedIn) { ChangeState("Play"); }
+        else {ChangeState("Login"); }
     }
 
     public void ChangeState(string stateName)

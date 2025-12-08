@@ -103,11 +103,20 @@ public class GameSceneManager : MonoBehaviour
 
     private void ShowMiniGame(int index)
     {
-        if (currentLevelData == null || index >= currentLevelData.minigames.Count)
+        if (index >= currentLevelData.minigames.Count)
         {
             Debug.Log("Nivel completado");
+
+            //Guardar partida.
+            PlayerProgressManager.Instance.CompleteLevel(currentLevelData.language, currentLevelData.levelId);
+
             UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
             return;
+        }
+
+        if (currentLevelData == null)
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
         }
 
         var data = currentLevelData.minigames[index];
