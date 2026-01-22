@@ -10,22 +10,37 @@
         },
         {
             "type": "Quizz",
-            "question": "¿Qué función cumple la cláusula FROM?",
+            "title": "¿Qué función cumple la cláusula FROM?",
             "options": [
-                "Define la tabla desde la cual se obtienen los datos.",
-                "Ordena los resultados por una columna.",
-                "Filtra los datos según una condición.",
-                "Renombra columnas en la consulta."
+                "Define una tabla.",
+                "Ordena los resultados.",
+                "Filtra los datos.",
+                "Renombra columnas."
             ],
             "correctAnswer": "Define la tabla desde la cual se obtienen los datos."
         },
         {
             "type": "FillBlanks",
-            "text": "SELECT nombre, edad ___ usuarios;",
-            "missingWord": "FROM"
+            "title": "Completa la sentencia",
+            "content": "SELECT nombre, edad ___ usuarios;",
+            "blanks": [
+                {
+                    "id": 1,
+                    "correct": "FROM"
+                }
+            ],
+            "options": [
+                "SELECT",
+                "FROM",
+                "INSERT",
+                "CREATE",
+                "empleados"
+            ]
         },
         {
             "type": "Arrows",
+            "title": "Relaciona los conceptos",
+            "content": "Une cada comando con su descripción.",
             "pairs": [
                 {
                     "left": "SELECT nombre FROM productos",
