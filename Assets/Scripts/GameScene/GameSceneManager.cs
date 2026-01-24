@@ -30,6 +30,13 @@ public class GameSceneManager : MonoBehaviour
     private GameObject currentMiniGameGO;
     private IMiniGame currentIMiniGame;
 
+    [Header("End Game UI")]
+    public LevelCompletedUI levelCompletedInstance;
+
+    [Header("Game Stats")]
+    private int totalSuccess = 0;
+    private int totalFailure = 0;
+
     private void Start()
     {
         StartCoroutine(LoadLevelAsync());
@@ -37,6 +44,10 @@ public class GameSceneManager : MonoBehaviour
 
     private IEnumerator LoadLevelAsync()
     {
+        // Resetear estadísticas
+        totalSuccess = 0;
+        totalFailure = 0;
+
         // Leer selección guardada en GameManager
         string language = GameManager.Instance.currentLanguage;
         string levelId = GameManager.Instance.currentLevelId;
@@ -106,6 +117,13 @@ public class GameSceneManager : MonoBehaviour
         if (index >= currentLevelData.minigames.Count)
         {
             Debug.Log("Nivel completado");
+            // Mostrar UI de nivel completado
+            // CAMBIO AQUÍ: Condición de victoria
+            if (index >= currentLevelData.minigames.Count)
+            {
+                FinishLevel();
+                return;
+            }
 
             //Guardar partida.
             PlayerProgressManager.Instance.CompleteLevel(currentLevelData.language, currentLevelData.levelId);
@@ -219,6 +237,44 @@ public class GameSceneManager : MonoBehaviour
         {
             Destroy(currentMiniGameGO);
             currentMiniGameGO = null;
+        }
+    }
+
+    public void RecordResult(bool esAcierto)
+    {
+        if (esAcierto) totalSuccess++;
+        else totalFailure++;
+
+        Debug.Log($"Score: Aciertos {totalSuccess} - Fallos {totalFailure}");
+    }
+
+
+    private void FinishLevel()
+    {
+        Debug.Log("Nivel completado. Guardando y mostrando victoria.");
+
+        // 1. Guardar partida (Esto ya lo tenías)
+        PlayerProgressManager.Instance.CompleteLevel(currentLevelData.language, currentLevelData.levelId);
+
+        // 2. Limpiar el último minijuego activo
+        ClearCurrentMiniGame();
+
+        // 3. Ocultar la UI Base del juego (El marco, título, botón atrás...)
+        if (miniGameBaseClass != null)
+        {
+            miniGameBaseClass.gameObject.SetActive(false);
+        }
+
+        // 4. Mostrar pantalla de victoria en lugar de cambiar de escena
+        if (levelCompletedInstance != null)
+        {
+            levelCompletedInstance.Setup(currentLevelData.levelTitle, totalSuccess, totalFailure);
+        }
+        else
+        {
+            // Fallback por si se te olvidó poner la UI, para que no se quede pillado
+            Debug.LogWarning("No has asignado LevelCompletedUI. Volviendo al menú directamente.");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
         }
     }
 

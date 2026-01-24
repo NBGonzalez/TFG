@@ -79,10 +79,14 @@ public class MiniGameQuizz : MonoBehaviour, IMiniGame
         {
             answered = true;
             baseUI.SetButtonColor(btn, Color.green);
+            // Reporta a la clase base un acierto, y esta a su vez al manager
+            baseUI.ReportSuccess();
             StartCoroutine(baseUI.NextMiniGameDelayed(0.5f));
         }
         else
         {
+            // Reporta a la clase base un fallo, y esta a su vez al manager
+            baseUI.ReportFailure();
             baseUI.ShowError("Respuesta incorrecta");
             StartCoroutine(baseUI.FlashButtonColor(btn, Color.red));
         }

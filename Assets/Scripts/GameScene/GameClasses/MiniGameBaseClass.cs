@@ -78,6 +78,16 @@ public class MiniGameBaseClass : MonoBehaviour
         btn.colors = colors;
     }
 
+    public void ReportSuccess()
+    {
+        if (manager != null) manager.RecordResult(true);
+    }
+
+    public void ReportFailure()
+    {
+        if (manager != null) manager.RecordResult(false);
+    }
+
     public IEnumerator FlashButtonColor(Button btn, Color c, float time = 0.35f)
     {
         if (btn == null) yield break;

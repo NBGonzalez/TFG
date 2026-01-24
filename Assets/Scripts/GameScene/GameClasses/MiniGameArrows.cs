@@ -160,6 +160,9 @@ public class MiniGameArrows : MonoBehaviour, IMiniGame
 
         if (ok)
         {
+            // Reporta a la clase base un acierto, y esta a su vez al manager
+            baseUI.ReportSuccess();
+
             baseUI.SetButtonColor(selectedLeft, Color.green);
             baseUI.SetButtonColor(selectedRight, Color.green);
 
@@ -177,6 +180,9 @@ public class MiniGameArrows : MonoBehaviour, IMiniGame
         }
         else
         {
+            // Reporta a la clase base un fallo, y esta a su vez al manager
+            baseUI.ReportFailure();
+
             StartCoroutine(HandleWrongPair(selectedLeft, selectedRight));
         }
     }

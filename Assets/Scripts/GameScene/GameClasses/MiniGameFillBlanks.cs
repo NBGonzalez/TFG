@@ -139,6 +139,7 @@ public class MiniGameFillBlanks : MonoBehaviour, IMiniGame
         {
             if (AllCorrect())
             {
+                baseUI.ReportSuccess();
                 // éxito: marcar botón pulsado en verde (feedback breve) y avanzar
                 baseUI?.SetButtonColor(btn, Color.green);
                 // usar coroutine del baseUI para respetar delays
@@ -146,6 +147,7 @@ public class MiniGameFillBlanks : MonoBehaviour, IMiniGame
             }
             else
             {
+                baseUI.ReportFailure();
                 // error: parpadeo en rojo en el botón que se ha pulsado
                 if (baseUI != null)
                     baseUI.StartCoroutine(baseUI.FlashButtonColor(btn, Color.red));
