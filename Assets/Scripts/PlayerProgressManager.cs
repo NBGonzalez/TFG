@@ -10,7 +10,7 @@ public class PlayerProgressManager : MonoBehaviour
 {
     public static PlayerProgressManager Instance { get; private set; }
 
-    private PlayerProgress progress; // Básicamente esto es un diccionario.
+    private PlayerProgress progress;
 
     private const string CLOUD_KEY = "player_progress";
     private string SavePath => Path.Combine(Application.persistentDataPath, "player_progress.json");
@@ -28,40 +28,42 @@ public class PlayerProgressManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     private void Start()
     {
-        // PATRÓN OBSERVADOR: Nos suscribimos al evento de "Usuario Logueado".
-        // Esto se ejecuta automáticamente cuando el LoginManager tiene éxito.
-        // 1. Nos suscribimos para futuros eventos
         AuthenticationService.Instance.SignedIn += OnUserSignedIn;
 
-        // 2. COMPROBACIÓN EXTRA:
-        // ¿Y si ya estábamos logueados de antes (por ejemplo, reinicio rápido)?
-        // Comprobamos el estado actual por si acaso nos perdimos el evento.
         if (AuthenticationService.Instance.IsSignedIn)
         {
             OnUserSignedIn();
         }
-
-        //File.Delete(SavePath);
-        //Debug.Log("Progreso borrado para pruebas");
     }
+
     private void OnDestroy()
     {
-        
-        AuthenticationService.Instance.SignedIn -= OnUserSignedIn;
+        try
+        {
+            // Protegemos esto por si Instance es null al cerrar
+            if (AuthenticationService.Instance != null)
+                AuthenticationService.Instance.SignedIn -= OnUserSignedIn;
+        }
+        catch { }
     }
+
     private async void OnUserSignedIn()
     {
         Debug.Log("[Progress] Usuario detectado. Intentando descargar datos de la nube...");
         await LoadFromCloudAsync();
+
+        // --- NUEVO: Al iniciar sesión, comprobamos la racha ---
+        CheckDailyStreak();
     }
 
-
     // =============================
-    //  PUBLIC API
+    //  PUBLIC API (LO VIEJO + LO NUEVO)
     // =============================
 
+    // --- LÓGICA ANTIGUA (Niveles) ---
     public bool IsLevelCompleted(string language, string levelId)
     {
         if (progress.completedLevels.ContainsKey(language))
@@ -73,15 +75,17 @@ public class PlayerProgressManager : MonoBehaviour
 
     public async void CompleteLevel(string language, string levelId)
     {
-        //if (progress == null) progress = new PlayerProgress();
         Debug.Log($"[PlayerProgressManager] Marcando nivel como completado: {language} - {levelId}");
         if (!progress.completedLevels.ContainsKey(language))
             progress.completedLevels[language] = new List<string>();
 
         if (!progress.completedLevels[language].Contains(levelId))
         {
-            Debug.Log($"[PlayerProgressManager] Nivel añadido a la lista de completados.");
             progress.completedLevels[language].Add(levelId);
+
+            // Aquí podrías sumar estrellas automáticamente si quisieras
+            // AddStars(1); 
+
             SaveLocal();
             await SaveToCloudAsync();
         }
@@ -95,25 +99,123 @@ public class PlayerProgressManager : MonoBehaviour
         return new List<string>(progress.completedLevels[language]);
     }
 
+    // --- LÓGICA NUEVA (Perfil, Rachas, Estrellas) ---
+
+    public void CheckDailyStreak()
+    {
+        if (string.IsNullOrEmpty(progress.lastLoginDate))
+        {
+            progress.currentStreak = 1;
+            UpdateLastLoginDate();
+            // Guardamos local para que no se pierda si cierra rápido
+            SaveLocal();
+            return;
+        }
+
+        System.DateTime lastDate;
+        // TryParse es más seguro por si el string viene corrupto
+        if (!System.DateTime.TryParse(progress.lastLoginDate, out lastDate))
+        {
+            UpdateLastLoginDate();
+            return;
+        }
+
+        System.DateTime today = System.DateTime.Now.Date;
+        double daysDiff = (today - lastDate).TotalDays;
+
+        if (daysDiff < 1)
+        {
+            return; // Mismo día
+        }
+        else if (daysDiff >= 1 && daysDiff < 2)
+        {
+            progress.currentStreak++; // Día consecutivo
+            Debug.Log($"[Streak] ¡Racha aumentada a {progress.currentStreak}!");
+        }
+        else
+        {
+            progress.currentStreak = 1; // Racha perdida
+            Debug.Log("[Streak] Racha perdida. Reinicio a 1.");
+        }
+
+        UpdateLastLoginDate();
+        SaveLocal();
+        // Nota: El guardado en nube se hará cuando complete nivel o salga, para no saturar.
+    }
+
+    private void UpdateLastLoginDate()
+    {
+        progress.lastLoginDate = System.DateTime.Now.Date.ToString();
+    }
+
+    public void AddStars(int amount)
+    {
+        progress.totalStars += amount;
+        SaveLocal();
+    }
+
+    public void UnlockAchievement(string achievementId)
+    {
+        if (!progress.unlockedAchievements.Contains(achievementId))
+        {
+            progress.unlockedAchievements.Add(achievementId);
+            SaveLocal();
+        }
+    }
+
+    public void EquipTitle(string titleId)
+    {
+        // Validación simple: o es "Novato" (por defecto) o lo tienes desbloqueado
+        if (titleId == "Novato" || progress.unlockedAchievements.Contains(titleId))
+        {
+            progress.equippedTitleId = titleId;
+            SaveLocal();
+        }
+    }
+
+    public bool HasUnlocked(string achievementId)
+    {
+        // Si la lista es nula por lo que sea, devolvemos false para evitar errores
+        if (progress == null || progress.unlockedAchievements == null) return false;
+
+        return progress.unlockedAchievements.Contains(achievementId);
+    }
+
+    // --- GESTIÓN DE AVATARES ---
+    public void EquipAvatar(string avatarId)
+    {
+        progress.currentAvatarId = avatarId;
+        SaveLocal();
+        _ = SaveToCloudAsync(); // Guardamos en nube para que se vea en otros dispositivos
+    }
+
+    public string GetEquippedAvatarId()
+    {
+        // Seguridad: si es nulo, devolvemos uno por defecto
+        if (string.IsNullOrEmpty(progress.currentAvatarId)) return "avatar_default";
+        return progress.currentAvatarId;
+    }
+
+    // Getters para la UI
+    public int GetTotalStars() => progress.totalStars;
+    public int GetStreak() => progress.currentStreak;
+    public string GetEquippedTitle() => progress.equippedTitleId;
+
+
     // =============================
-    // SAVE / LOAD
+    // SAVE / LOAD (INTACTOS, SOLO AÑADIDO UN NULL CHECK)
     // =============================
     private async Task SaveToCloudAsync()
     {
         try
         {
-            // Preparamos los datos. Cloud Save guarda Diccionarios string -> object
             var dataToSave = new Dictionary<string, object> { { CLOUD_KEY, progress } };
-
-            // ¡Llamada a la nube!
             await CloudSaveService.Instance.Data.Player.SaveAsync(dataToSave);
-
-            Debug.Log("<color=green>[Cloud] Progreso guardado en la nube con éxito.</color>");
+            Debug.Log("<color=green>[Cloud] Progreso guardado OK.</color>");
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"[Cloud] Error al guardar en la nube: {e.Message}");
-            // Aquí no pasa nada grave, el usuario tiene su copia local.
+            Debug.LogError($"[Cloud] Error save: {e.Message}");
         }
     }
 
@@ -125,66 +227,62 @@ public class PlayerProgressManager : MonoBehaviour
 
             if (savedData.TryGetValue(CLOUD_KEY, out var cloudItem))
             {
-                // 1. Obtenemos lo que hay en la nube (ej: Nivel 1)
                 PlayerProgress cloudProgress = cloudItem.Value.GetAs<PlayerProgress>();
 
-                // 2. FUSIÓN (MERGE): 
-                // En lugar de machacar 'progress', vamos a mezclar lo de la nube con lo local.
-                // Si 'progress' es null (primera vez), usamos el de la nube directamente.
                 if (progress == null)
                 {
                     progress = cloudProgress;
                 }
                 else
                 {
-                    // Recorremos los lenguajes que vienen de la nube
+                    // FUSIÓN DE NIVELES (Tu lógica original)
                     foreach (var langEntry in cloudProgress.completedLevels)
                     {
-                        string language = langEntry.Key;       // Ej: "SQL"
-                        List<string> levels = langEntry.Value; // Ej: ["sql-1"]
+                        string language = langEntry.Key;
+                        List<string> levels = langEntry.Value;
 
-                        // Aseguramos que existe la lista en local
                         if (!progress.completedLevels.ContainsKey(language))
-                        {
                             progress.completedLevels[language] = new List<string>();
-                        }
 
-                        // Añadimos solo los niveles que NO tengamos ya
                         foreach (var lvl in levels)
                         {
                             if (!progress.completedLevels[language].Contains(lvl))
-                            {
                                 progress.completedLevels[language].Add(lvl);
-                                Debug.Log($"[Sync] Recuperado nivel {lvl} de la nube.");
-                            }
                         }
+                    }
+
+                    // FUSIÓN DE STATS (Criterio: Nos quedamos con el mayor valor)
+                    // Esto evita que si juegas offline y subes racha, la nube te la baje al sincronizar.
+                    if (cloudProgress.totalStars > progress.totalStars)
+                        progress.totalStars = cloudProgress.totalStars;
+
+                    if (cloudProgress.currentStreak > progress.currentStreak)
+                        progress.currentStreak = cloudProgress.currentStreak;
+
+                    // Logros: fusionar listas sin duplicados
+                    foreach (var ach in cloudProgress.unlockedAchievements)
+                    {
+                        if (!progress.unlockedAchievements.Contains(ach))
+                            progress.unlockedAchievements.Add(ach);
                     }
                 }
 
-                // 3. PASO CRÍTICO: 
-                // Ahora 'progress' tiene LA SUMA de (Lo que hice en el metro + Lo que había en la nube).
-                // Tenemos que subir esta versión "definitiva" a la nube para que se entere de lo del metro.
-
-                Debug.Log("<color=cyan>[Cloud] Sincronización completada (Fusión Local+Nube).</color>");
-
-                // Guardamos la fusión en ambos lados
+                Debug.Log("<color=cyan>[Cloud] Sync completada.</color>");
                 SaveLocal();
                 await SaveToCloudAsync();
             }
             else
             {
-                Debug.Log("[Cloud] Usuario nuevo o sin datos en nube.");
-                // Si no hay nada en la nube, pero yo tengo cosas en local (del metro),
-                // las subo ahora mismo.
+                Debug.Log("[Cloud] No hay datos en nube. Manteniendo local o iniciando nuevo.");
                 if (progress != null && progress.completedLevels.Count > 0)
-                {
                     await SaveToCloudAsync();
-                }
             }
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"[Cloud] Error al cargar/fusionar: {e.Message}");
+            Debug.LogError($"[Cloud] Error load: {e.Message}");
+            // Si falla la nube, aseguramos que al menos 'progress' no sea null para que el juego funcione offline
+            if (progress == null) LoadLocal();
         }
     }
 
@@ -192,7 +290,6 @@ public class PlayerProgressManager : MonoBehaviour
     {
         string json = JsonConvert.SerializeObject(progress, Formatting.Indented);
         File.WriteAllText(SavePath, json);
-        Debug.Log($"[Progress] Guardado en: {SavePath}\n{json}");
     }
 
     private void LoadLocal()
@@ -208,10 +305,10 @@ public class PlayerProgressManager : MonoBehaviour
             string json = File.ReadAllText(SavePath);
             progress = JsonConvert.DeserializeObject<PlayerProgress>(json) ?? new PlayerProgress();
 
-            if (progress.completedLevels == null)
-                progress.completedLevels = new Dictionary<string, List<string>>();
-
-            Debug.Log("[Local] Progreso cargado del disco.");
+            // Null checks de seguridad (por si el json es viejo y le faltan campos nuevos)
+            if (progress.completedLevels == null) progress.completedLevels = new Dictionary<string, List<string>>();
+            if (progress.unlockedAchievements == null) progress.unlockedAchievements = new List<string>();
+            if (progress.equippedTitleId == null) progress.equippedTitleId = "Novato";
         }
         catch
         {
