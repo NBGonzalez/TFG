@@ -1,16 +1,8 @@
-using UnityEngine;
+using System.Collections.Generic;
+using System.Threading.Tasks; // Necesario para operaciones asíncronas (red)
 
-public class ILeaderboardProvider : MonoBehaviour
+public interface ILeaderboardProvider
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // Devuelve una Tarea (Task) que en el futuro nos dará una Lista de entradas
+    Task<List<LeaderboardEntry>> GetRanking();
 }

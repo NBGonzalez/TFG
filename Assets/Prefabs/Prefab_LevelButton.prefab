@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6236809301877003747}
   - component: {fileID: 679345969399993549}
   m_Layer: 5
-  m_Name: LevelButtonPrefab
+  m_Name: Prefab_LevelButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
