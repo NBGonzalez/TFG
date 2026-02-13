@@ -17,5 +17,5 @@ MonoBehaviour:
   description: Has completado los fundamentos de SQL.
   icon: {fileID: -5834305448958590551, guid: c9cc4a6d1d67ba74297600a57fb4ce40, type: 3}
   titleColor: {r: 0.67768776, g: 0.8628458, b: 0.9150943, a: 1}
-  requirementType: 2
+  requirementType: 1
   requirementValue: 5

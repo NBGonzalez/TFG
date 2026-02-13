@@ -1,3 +1,4 @@
+// LevelCompletedUI.cs
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -28,6 +29,11 @@ public class LevelCompletedUI : MonoBehaviour
     [SerializeField] private ParticleSystem confetti1;
     [SerializeField] private ParticleSystem confetti2;
 
+    // --- VARIABLES INTERNAS ---
+    private string _languageId;
+    private string _levelId;
+    private int _starsEarned = 0; // Aquí guardamos la nota final
+
     private void Awake()
     {
         SetAlpha(titleGroup, 0);
@@ -41,8 +47,11 @@ public class LevelCompletedUI : MonoBehaviour
         continueButton.onClick.AddListener(OnContinuePressed);
     }
 
-    public void Setup(string levelName, int aciertos, int fallos)
+    public void Setup(string language, string levelId, string levelName, int aciertos, int fallos)
     {
+        _languageId = language;
+        _levelId = levelId;
+
         gameObject.SetActive(true);
         levelNameText.text = levelName;
 
@@ -65,15 +74,17 @@ public class LevelCompletedUI : MonoBehaviour
         yield return StartCoroutine(CountUpScore(aciertos, total));
 
         // 4. Calcular estrellas
-        int starsEarned = 0;
-        if (porcentaje >= 0.3f) starsEarned = 1;
-        if (porcentaje >= 0.6f) starsEarned = 2;
-        if (porcentaje >= 0.99f) starsEarned = 3;
+        _starsEarned = 0;
+        if (porcentaje >= 0.3f) _starsEarned = 1;
+        if (porcentaje >= 0.6f) _starsEarned = 2;
+        if (porcentaje >= 0.99f) _starsEarned = 3;
+
+        Debug.Log($"Nota calculada: {_starsEarned} estrellas.");
 
         // 5. Encender estrellas (VIBRA AL APARECER)
-        if (starsEarned >= 1) yield return StartCoroutine(PopStar(star1Filled));
-        if (starsEarned >= 2) yield return StartCoroutine(PopStar(star2Filled));
-        if (starsEarned >= 3) yield return StartCoroutine(PopStar(star3Filled));
+        if (_starsEarned >= 1) yield return StartCoroutine(PopStar(star1Filled));
+        if (_starsEarned >= 2) yield return StartCoroutine(PopStar(star2Filled));
+        if (_starsEarned >= 3) yield return StartCoroutine(PopStar(star3Filled));
 
         yield return new WaitForSeconds(0.2f);
 
@@ -83,7 +94,7 @@ public class LevelCompletedUI : MonoBehaviour
         SetBurstCycles(confetti1, 1);
         SetBurstCycles(confetti2, 1);
 
-        if (starsEarned == 3)
+        if (_starsEarned == 3)
         {
             SetBurstCycles(confetti1, 2);
             SetBurstCycles(confetti2, 2);
@@ -91,14 +102,14 @@ public class LevelCompletedUI : MonoBehaviour
         }
 
         // 6.2 Disparo visual (Las partículas se encargan de sus propios delays visuales)
-        if (starsEarned >= 1 && confetti1 != null) confetti1.Play();
-        if (starsEarned >= 2 && confetti2 != null) confetti2.Play();
+        if (_starsEarned >= 1 && confetti1 != null) confetti1.Play();
+        if (_starsEarned >= 2 && confetti2 != null) confetti2.Play();
 
         // 6.3 SECUENCIA DE VIBRACIÓN CRONOMETRADA
         // Simulamos los tiempos que me has dicho para que la vibración coincida
 
         // --- MOMENTO 0.0s: Salta Confetti 1 (Burst 1) ---
-        if (starsEarned >= 1)
+        if (_starsEarned >= 1)
         {
             // Vibración seca y corta (50ms, intensidad media-alta)
             Vibration.Vibrate(50, 50);
@@ -108,7 +119,7 @@ public class LevelCompletedUI : MonoBehaviour
         // Esperamos 0.3 segundos
         yield return new WaitForSeconds(0.3f);
 
-        if (starsEarned >= 2)
+        if (_starsEarned >= 2)
         {
             // Vibración seca (50ms, intensidad media-alta)
             Vibration.Vibrate(50, 100);
@@ -118,7 +129,7 @@ public class LevelCompletedUI : MonoBehaviour
         // Ya hemos esperado 0.3s, así que esperamos 0.2s más para llegar a 0.5s
         yield return new WaitForSeconds(0.2f);
 
-        if (starsEarned == 3)
+        if (_starsEarned == 3)
         {
             // Vibración seca para el rebote
             Vibration.Vibrate(50, 150);
@@ -236,7 +247,17 @@ public class LevelCompletedUI : MonoBehaviour
 
     private void OnContinuePressed()
     {
-        Debug.Log("Botón de continuar pulsado.");
+        if (_starsEarned > 0)
+        {
+            Debug.Log("Guardando progreso y saliendo...");
+            PlayerProgressManager.Instance.CompleteLevel(_languageId, _levelId, _starsEarned);
+        }
+        else
+        {
+            Debug.Log("Nivel no superado (0 estrellas). No se guarda.");
+        }
+
+        // Volver al menú
         SceneManager.LoadScene("MainScene");
     }
 }

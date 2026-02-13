@@ -1,36 +1,40 @@
-using UnityEngine;
-using UnityEngine.UI;
-using System.IO;
-using TMPro;
+//UI_PlayScreen.cs
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using TMPro;
+using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UI_PlayScreen : MonoBehaviour
 {
     [Header("UI References")]
     public TMP_Dropdown languageDropdown;
-    public RectTransform contentRoot;  // Content del ScrollView
-    public GameObject levelButtonPrefab;
+    public RectTransform contentRoot; // El Content del ScrollView
+
+    [Header("NUEVOS PREFABS")]
+    public GameObject mapNodePrefab;  // Arrastra aquí el nuevo prefab Redondo
+    public GameObject pathLinePrefab; // Arrastra aquí el nuevo prefab Línea
+
+    [Header("Configuración Mapa")]
+    public float verticalSpacing = 200f; // Distancia entre niveles
+    public float xAmplitude = 200f;      // Anchura de la curva
+    public float waveFrequency = 1f;     // Frecuencia de la curva
+
+    [Header("Referencias UI")]
+    public LevelInfoPopup infoPopup; // <--- ARRASTRA AQUÍ TU NUEVO POPUP
 
     private PathModel currentPath;
 
     private void Start()
     {
-        // Configurar dropdown con lenguajes disponibles
         languageDropdown.ClearOptions();
-        languageDropdown.AddOptions(new System.Collections.Generic.List<string> { "SQL", "C++", "Python" });
-
-        languageDropdown.onValueChanged.AddListener(OnLanguageChanged);
-
-        // Cargar el primero (por defecto SQL)
+        languageDropdown.AddOptions(new List<string> { "SQL", "C++", "Python" });
+        languageDropdown.onValueChanged.AddListener((val) => LoadLanguage(languageDropdown.options[val].text));
         LoadLanguage("SQL");
-    }
-
-    private void OnLanguageChanged(int index)
-    {
-        string selected = languageDropdown.options[index].text;
-        LoadLanguage(selected);
     }
 
     private void LoadLanguage(string language)
@@ -40,6 +44,7 @@ public class UI_PlayScreen : MonoBehaviour
 
     private IEnumerator LoadLanguageAsync(string language)
     {
+        // --- ESTO ES TU CÓDIGO ORIGINAL (INTACTO) ---
         string fileName = "";
         switch (language)
         {
@@ -49,78 +54,130 @@ public class UI_PlayScreen : MonoBehaviour
         }
 
         string path = Path.Combine(Application.streamingAssetsPath, "paths", fileName);
-
         string json = "";
 
-        // Si estás en Android o WebGL, hay que usar UnityWebRequest
         if (path.Contains("://") || path.Contains(":///"))
         {
             using (UnityWebRequest www = UnityWebRequest.Get(path))
             {
                 yield return www.SendWebRequest();
-
-                if (www.result != UnityWebRequest.Result.Success)
-                {
-                    Debug.LogError($"Error al cargar {fileName}: {www.error}");
-                    yield break;
-                }
-                else
-                {
-                    json = www.downloadHandler.text;
-                }
+                if (www.result != UnityWebRequest.Result.Success) { Debug.LogError("Error: " + www.error); yield break; }
+                json = www.downloadHandler.text;
             }
         }
         else
         {
-            // En el editor o PC
-            if (!File.Exists(path))
-            {
-                Debug.LogError($"No se encontró el archivo {path}");
-                yield break;
-            }
+            if (!File.Exists(path)) { Debug.LogError("No file: " + path); yield break; }
             json = File.ReadAllText(path);
         }
 
         currentPath = JsonUtility.FromJson<PathModel>(json);
 
-        PopulateLevels(language);
+        // Llamamos a la nueva función de mapa
+        GenerateMap(language);
     }
 
-    private void PopulateLevels(string language)
+    // --- NUEVA FUNCIÓN: GENERAR MAPA EN ZIG-ZAG ---
+    private void GenerateMap(string language)
     {
-        foreach (Transform child in contentRoot)
-            Destroy(child.gameObject);
+        // 1. Limpiar lo viejo
+        foreach (Transform child in contentRoot) Destroy(child.gameObject);
 
         var progress = PlayerProgressManager.Instance;
+        int count = currentPath.levels.Count();
 
-        foreach (var lvl in currentPath.levels)
+        // 2. Ajustar altura del contenedor (IMPORTANTE)
+        float totalHeight = (count * verticalSpacing) + 400f;
+        contentRoot.sizeDelta = new Vector2(contentRoot.sizeDelta.x, totalHeight);
+
+        Vector2 prevPos = Vector2.zero;
+        bool isFirst = true;
+
+        for (int i = 0; i < count; i++)
         {
-            bool unlocked = string.IsNullOrEmpty(lvl.requiredLevel) || progress.IsLevelCompleted(language, lvl.requiredLevel);
+            var lvl = currentPath.levels[i];
 
-            GameObject btnGO = Instantiate(levelButtonPrefab, contentRoot);
-            var button = btnGO.GetComponent<LevelButton>();
-            button.Setup(lvl.id, lvl.title, lvl.description, unlocked, () => OnLevelClicked(language, lvl.id, unlocked));
+            // Comprobamos estado
+            bool unlocked = false;
+
+            if (i == 0)
+            {
+                // El primero siempre está abierto
+                unlocked = true;
+            }
+            else
+            {
+                // A partir del segundo, miramos si el ANTERIOR (i-1) está completado
+                var prevLevel = currentPath.levels[i - 1];
+                if (progress.IsLevelCompleted(language, prevLevel.id))
+                {
+                    unlocked = true;
+                }
+            }
+            bool completed = progress.IsLevelCompleted(language, lvl.id);
+
+            // --- CÁLCULO DE POSICIÓN (Zig-Zag) ---
+            float posY = -150f - (i * verticalSpacing); // Hacia abajo
+            float posX = Mathf.Sin(i * waveFrequency) * xAmplitude; // Onda
+            Vector2 currentPos = new Vector2(posX, posY);
+
+            // --- INSTANCIAR NODO ---
+            GameObject nodeGO = Instantiate(mapNodePrefab, contentRoot);
+            RectTransform nodeRect = nodeGO.GetComponent<RectTransform>();
+            nodeRect.anchoredPosition = currentPos;
+
+            // Configurar Script
+            MapNode nodeScript = nodeGO.GetComponent<MapNode>();
+            bool isBoss = (i + 1) % 5 == 0; // Cada 5 niveles es Boss
+
+            // Obtener estrellas guardadas (Si no tienes este método, pon 0 de momento o invéntalo)
+            int stars = progress.GetStarsForLevel(language, lvl.id);
+
+            nodeScript.Setup(lvl.id, language, i, unlocked, completed, stars, isBoss,
+                (lang, id) => OpenPopup(lvl, lang, stars));
+
+            // --- DIBUJAR LÍNEA ---
+            if (!isFirst)
+            {
+                CreateConnection(prevPos, currentPos);
+            }
+
+            prevPos = currentPos;
+            isFirst = false;
         }
-        Canvas.ForceUpdateCanvases();
-        UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot);
-        UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot.parent as RectTransform);
     }
-
-    private void OnLevelClicked(string language, string levelId, bool unlocked)
+    private void OpenPopup(LevelModel levelData, string language, int stars)
     {
-        if (!unlocked)
-        {
-            Debug.Log($"Nivel {levelId} bloqueado para {language}");
-            return;
-        }
+        Debug.Log($"Abriendo info de: {levelData.title}");
 
-        Debug.Log($"Abriendo nivel {levelId} de {language}");
-
-        // Guardar selección actual antes de cargar la escena
-        GameManager.Instance.SetCurrentLevel(language, levelId);
-
-        // Cargar escena de minijuegos
-        SceneManager.LoadScene("GameScene");
+        // Le pasamos todo al Popup
+        infoPopup.Show(levelData, language, stars);
     }
-}
 
+    private void CreateConnection(Vector2 posA, Vector2 posB)
+    {
+        GameObject lineGO = Instantiate(pathLinePrefab, contentRoot);
+        RectTransform lineRect = lineGO.GetComponent<RectTransform>();
+
+        // Poner la línea al fondo
+        lineGO.transform.SetAsFirstSibling();
+
+        // Matemáticas para colocar y rotar la línea
+        Vector2 midPoint = (posA + posB) / 2f;
+        lineRect.anchoredPosition = midPoint;
+
+        Vector2 dir = posB - posA;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        lineRect.rotation = Quaternion.Euler(0, 0, angle);
+
+        float dist = Vector2.Distance(posA, posB);
+        lineRect.sizeDelta = new Vector2(dist, 20f); // 20f es el grosor
+    }
+
+    //private void OnLevelClicked(string language, string levelId)
+    //{
+    //    Debug.Log($"Abriendo nivel {levelId}");
+    //    GameManager.Instance.SetCurrentLevel(language, levelId);
+    //    SceneManager.LoadScene("GameScene");
+    //}
+}

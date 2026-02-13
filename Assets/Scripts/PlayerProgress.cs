@@ -1,18 +1,19 @@
+//PlayerProgress.cs
+
 using System;
 using System.Collections.Generic;
 
 [Serializable]
 public class PlayerProgress
 {
-    // --- JUEGO ---
-    public Dictionary<string, List<string>> completedLevels = new Dictionary<string, List<string>>();
+    // --- JUEGO (SINGLE SOURCE OF TRUTH) ---
+    // Diccionario único. Si un nivel está aquí, es que está completado.
+    // Clave 1: Lenguaje ("SQL") -> Clave 2: Nivel ("sql-1") -> Valor: Estrellas (1, 2 o 3)
+    public Dictionary<string, Dictionary<string, int>> levelStars = new Dictionary<string, Dictionary<string, int>>();
 
     // --- PERFIL ---
     public string equippedTitleId = "Novato";
-
-    // NUEVO: El ID del avatar que llevamos puesto
     public string currentAvatarId = "avatar_default";
-
     public List<string> unlockedAchievements = new List<string>();
 
     // --- STATS ---

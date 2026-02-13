@@ -4,20 +4,17 @@
     {
       "id": "sql-1",
       "title": "Cláusula SELECT",
-      "description": "Aprende a seleccionar datos.",
-      "requiredLevel": ""
+      "description": "Aprende a seleccionar datos."
     },
     {
       "id": "sql-2",
       "title": "Cláusula FROM",
-      "description": "Aprende a obtener datos desde tablas.",
-      "requiredLevel": "sql-1"
+      "description": "Aprende a obtener datos desde tablas."
     },
     {
       "id": "sql-3",
       "title": "Cláusula WHERE",
-      "description": "Filtra resultados según condiciones.",
-      "requiredLevel": "sql-2"
+      "description": "Filtra resultados según condiciones."
     }
   ]
 }

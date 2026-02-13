@@ -1,3 +1,4 @@
+//GameSceneManager.cs
 using System.IO;
 using UnityEngine;
 using Newtonsoft.Json;
@@ -116,25 +117,14 @@ public class GameSceneManager : MonoBehaviour
     {
         if (index >= currentLevelData.minigames.Count)
         {
-            Debug.Log("Nivel completado");
-            // Mostrar UI de nivel completado
-            // CAMBIO AQUÍ: Condición de victoria
-            if (index >= currentLevelData.minigames.Count)
-            {
-                FinishLevel();
-                return;
-            }
-
-            //Guardar partida.
-            PlayerProgressManager.Instance.CompleteLevel(currentLevelData.language, currentLevelData.levelId);
-
-            UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
+            FinishLevel();
             return;
         }
 
         if (currentLevelData == null)
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
+            return;
         }
 
         var data = currentLevelData.minigames[index];
@@ -251,29 +241,35 @@ public class GameSceneManager : MonoBehaviour
 
     private void FinishLevel()
     {
-        Debug.Log("Nivel completado. Guardando y mostrando victoria.");
+        Debug.Log("Nivel completado. Calculando resultados...");
 
-        // 1. Guardar partida (Esto ya lo tenías)
-        PlayerProgressManager.Instance.CompleteLevel(currentLevelData.language, currentLevelData.levelId);
+        // Ahora solo le pasamos los datos a la UI, y ella decidirá si guarda o no.
 
-        // 2. Limpiar el último minijuego activo
+        // 1. Limpiar el último minijuego activo
         ClearCurrentMiniGame();
 
-        // 3. Ocultar la UI Base del juego (El marco, título, botón atrás...)
+        // 2. Ocultar la UI Base del juego
         if (miniGameBaseClass != null)
         {
             miniGameBaseClass.gameObject.SetActive(false);
         }
 
-        // 4. Mostrar pantalla de victoria en lugar de cambiar de escena
+        // 3. Mostrar pantalla de victoria con los NUEVOS DATOS
         if (levelCompletedInstance != null)
         {
-            levelCompletedInstance.Setup(currentLevelData.levelTitle, totalSuccess, totalFailure);
+            // --- CAMBIO: NUEVOS ARGUMENTOS ---
+            // Ahora pasamos Language y LevelID para que la UI sepa qué nivel guardar luego
+            levelCompletedInstance.Setup(
+                currentLevelData.language,
+                currentLevelData.levelId,
+                currentLevelData.levelTitle,
+                totalSuccess,
+                totalFailure
+            );
         }
         else
         {
-            // Fallback por si se te olvidó poner la UI, para que no se quede pillado
-            Debug.LogWarning("No has asignado LevelCompletedUI. Volviendo al menú directamente.");
+            Debug.LogWarning("No has asignado LevelCompletedUI. Volviendo al menú.");
             UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
         }
     }

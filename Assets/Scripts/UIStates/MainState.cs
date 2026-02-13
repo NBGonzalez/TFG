@@ -8,6 +8,9 @@ public class MainState : UIStateBase
     [SerializeField] private Button friendsButton;
     [SerializeField] private Button optionsButton;
 
+    [Header("DEBUG (Solo desarrollo)")]
+    [SerializeField] private Button debugResetButton;
+
     public override void OnEnter()
     {
         playButton.onClick.AddListener(() => stateManager.ChangeState("Play"));
@@ -22,6 +25,12 @@ public class MainState : UIStateBase
         profileButton.onClick.RemoveAllListeners();
         friendsButton.onClick.RemoveAllListeners();
         optionsButton.onClick.RemoveAllListeners();
+    }
+
+    public void OnResetClicked()
+    {
+        // Llamamos a la función destructora del Manager
+        PlayerProgressManager.Instance.ResetAllProgress();
     }
 }
 
