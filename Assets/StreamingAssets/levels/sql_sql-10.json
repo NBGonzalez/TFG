@@ -1,0 +1,59 @@
+{
+    "language": "SQL",
+    "levelId": "sql-10",
+    "levelTitle": "BOSS: El Analista",
+    "minigames": [
+        {
+            "type": "Quizz",
+            "title": "Jerarquía",
+            "content": "¿Dónde se coloca el ORDER BY?",
+            "options": [
+                "Antes del WHERE",
+                "Después del WHERE",
+                "Antes del FROM",
+                "Al principio"
+            ],
+            "correctAnswer": "Después del WHERE"
+        },
+        {
+            "type": "FillBlanks",
+            "title": "La Gran Consulta",
+            "content": "SELECT * FROM ventas WHERE total > 100 ____1 pais = 'USA' ____2 BY fecha DESC;",
+            "blanks": [
+                {
+                    "id": 1,
+                    "correct": "AND"
+                },
+                {
+                    "id": 2,
+                    "correct": "ORDER"
+                }
+            ],
+            "options": [
+                "AND",
+                "ORDER",
+                "OR",
+                "WHERE"
+            ]
+        },
+        {
+            "type": "Arrows",
+            "title": "Repaso Total",
+            "content": "Une concepto y palabra clave.",
+            "pairs": [
+                {
+                    "left": "Filtro",
+                    "right": "WHERE"
+                },
+                {
+                    "left": "Condición doble",
+                    "right": "AND"
+                },
+                {
+                    "left": "Ranking",
+                    "right": "ORDER BY"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+{
+    "language": "SQL",
+    "levelId": "sql-3",
+    "levelTitle": "El Filtro Mágico",
+    "minigames": [
+        {
+            "type": "Explain",
+            "title": "Cláusula WHERE",
+            "content": "No queremos ver a todos los usuarios, solo a los mayores de edad. Usamos WHERE (donde) para filtrar."
+        },
+        {
+            "type": "Quizz",
+            "title": "Lógica",
+            "content": "¿Qué consulta obtiene a los usuarios con nivel 10?",
+            "options": [
+                "SELECT * FROM users WHERE level > 10",
+                "SELECT * FROM users WHERE level = 10",
+                "SELECT WHERE level = 10",
+                "GET users LEVEL 10"
+            ],
+            "correctAnswer": "SELECT * FROM users WHERE level = 10"
+        },
+        {
+            "type": "FillBlanks",
+            "title": "Filtra por precio",
+            "content": "SELECT * FROM items ____1 precio ____2 100;",
+            "blanks": [
+                {
+                    "id": 1,
+                    "correct": "WHERE"
+                },
+                {
+                    "id": 2,
+                    "correct": "<"
+                }
+            ],
+            "options": [
+                "WHERE",
+                "<",
+                "SELECT",
+                "FROM",
+                "price"
+            ]
+        }
+    ]
+}

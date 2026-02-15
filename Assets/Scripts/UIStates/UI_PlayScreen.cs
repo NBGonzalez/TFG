@@ -93,6 +93,9 @@ public class UI_PlayScreen : MonoBehaviour
         Vector2 prevPos = Vector2.zero;
         bool isFirst = true;
 
+        // --- VARIABLE PARA EL AUTO-SCROLL ---
+        float lastUnlockedY = 0f; // Aquí guardaremos la posición Y del último nivel disponible
+
         for (int i = 0; i < count; i++)
         {
             var lvl = currentPath.levels[i];
@@ -121,6 +124,13 @@ public class UI_PlayScreen : MonoBehaviour
             float posX = Mathf.Sin(i * waveFrequency) * xAmplitude; // Onda
             Vector2 currentPos = new Vector2(posX, posY);
 
+            // --- ACTUALIZAR PUNTO DE SCROLL ---
+            // Si este nivel está desbloqueado, actualizamos la "meta" del scroll
+            if (unlocked)
+            {
+                lastUnlockedY = posY;
+            }
+
             // --- INSTANCIAR NODO ---
             GameObject nodeGO = Instantiate(mapNodePrefab, contentRoot);
             RectTransform nodeRect = nodeGO.GetComponent<RectTransform>();
@@ -145,6 +155,43 @@ public class UI_PlayScreen : MonoBehaviour
             prevPos = currentPos;
             isFirst = false;
         }
+        StartCoroutine(ApplyAutoScroll(lastUnlockedY, totalHeight));
+    }
+    // Cambiamos 'void' por 'IEnumerator'
+    private IEnumerator ApplyAutoScroll(float targetY, float contentTotalHeight)
+    {
+        // --- LA MAGIA: ESPERAR UN FRAME ---
+        // Esto deja que Unity actualice la UI, los tamaños y el ScrollRect
+        yield return null;
+
+        // Truco extra: Forzar la actualización de los Canvas por si acaso
+        Canvas.ForceUpdateCanvases();
+
+        // 1. Obtener la altura de la ventana visible (Viewport)
+        float viewportHeight = 0f;
+        if (contentRoot.parent != null)
+        {
+            RectTransform viewport = contentRoot.parent as RectTransform;
+            if (viewport != null) viewportHeight = viewport.rect.height;
+        }
+
+        if (viewportHeight == 0) viewportHeight = Screen.height;
+
+        // 2. Calcular la posición ideal
+        // targetY es negativo. Lo pasamos a positivo.
+        // Restamos mitad de pantalla para centrar.
+        float finalContentY = Mathf.Abs(targetY) - (viewportHeight * 0.5f);
+
+        // 3. Limitar (Clamp)
+        // OJO: contentTotalHeight debe ser mayor que viewportHeight para hacer scroll
+        float maxScroll = Mathf.Max(0, contentTotalHeight - viewportHeight);
+
+        finalContentY = Mathf.Clamp(finalContentY, 0, maxScroll);
+
+        // 4. Aplicar
+        contentRoot.anchoredPosition = new Vector2(contentRoot.anchoredPosition.x, finalContentY);
+
+        Debug.Log($"[AutoScroll] TargetY: {targetY} | FinalPos: {finalContentY}");
     }
     private void OpenPopup(LevelModel levelData, string language, int stars)
     {

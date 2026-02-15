@@ -89,9 +89,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8f07c1f06f5be142ae54db758ae98ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MiniGameFillBlanks
-  questionText: {fileID: 0}
   optionsContainer: {fileID: 8231288886234115429}
-  buttonPrefab: {fileID: 5496636572819199026, guid: 324bff6b582cb824ea6ae22fdb81cd58, type: 3}
+  buttonPrefab: {fileID: 1374979827332164924, guid: 7c9654b762cf91c45bc8abb21437a7cb, type: 3}
 --- !u!1 &7970945394619303804
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,0 +1,52 @@
+{
+    "language": "SQL",
+    "levelId": "sql-9",
+    "levelTitle": "Top 10",
+    "minigames": [
+        {
+            "type": "Explain",
+            "title": "Al revés",
+            "content": "Para ordenar de Mayor a Menor (ej: puntuaciones altas) añadimos DESC al final. Si solo queremos los 3 mejores, usamos LIMIT 3."
+        },
+        {
+            "type": "Arrows",
+            "title": "Direcciones",
+            "content": "Une el modificador con su efecto.",
+            "pairs": [
+                {
+                    "left": "ASC",
+                    "right": "A -> Z"
+                },
+                {
+                    "left": "DESC",
+                    "right": "Z -> A"
+                },
+                {
+                    "left": "LIMIT",
+                    "right": "Cortar resultados"
+                }
+            ]
+        },
+        {
+            "type": "FillBlanks",
+            "title": "El Ganador",
+            "content": "SELECT * FROM scores ORDER BY puntos ____1 ____2 1;",
+            "blanks": [
+                {
+                    "id": 1,
+                    "correct": "DESC"
+                },
+                {
+                    "id": 2,
+                    "correct": "LIMIT"
+                }
+            ],
+            "options": [
+                "DESC",
+                "LIMIT",
+                "ASC",
+                "TOP"
+            ]
+        }
+    ]
+}

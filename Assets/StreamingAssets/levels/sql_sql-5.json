@@ -1,0 +1,64 @@
+{
+    "language": "SQL",
+    "levelId": "sql-5",
+    "levelTitle": "BOSS: El Examen",
+    "minigames": [
+        {
+            "type": "Quizz",
+            "title": "Teoría Rápida",
+            "content": "¿Cuál es el orden correcto de una consulta básica?",
+            "options": [
+                "FROM -> SELECT -> WHERE",
+                "SELECT -> WHERE -> FROM",
+                "SELECT -> FROM -> WHERE",
+                "WHERE -> SELECT -> FROM"
+            ],
+            "correctAnswer": "SELECT -> FROM -> WHERE"
+        },
+        {
+            "type": "Arrows",
+            "title": "Operadores",
+            "content": "Empareja el símbolo con su significado.",
+            "pairs": [
+                {
+                    "left": "*",
+                    "right": "Todas las columnas"
+                },
+                {
+                    "left": "=",
+                    "right": "Igualdad"
+                },
+                {
+                    "left": "<>",
+                    "right": "Distinto de"
+                }
+            ]
+        },
+        {
+            "type": "FillBlanks",
+            "title": "La Consulta Final",
+            "content": "____1 nombre, edad ____2 alumnos ____3 edad >= 18;",
+            "blanks": [
+                {
+                    "id": 1,
+                    "correct": "SELECT"
+                },
+                {
+                    "id": 2,
+                    "correct": "FROM"
+                },
+                {
+                    "id": 3,
+                    "correct": "WHERE"
+                }
+            ],
+            "options": [
+                "SELECT",
+                "FROM",
+                "WHERE",
+                "ORDER",
+                "alumnos"
+            ]
+        }
+    ]
+}

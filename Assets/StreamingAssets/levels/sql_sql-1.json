@@ -1,64 +1,49 @@
 {
   "language": "SQL",
   "levelId": "sql-1",
-  "levelTitle": "Introducción a SQL",
+  "levelTitle": "El Gran Almacén",
   "minigames": [
     {
       "type": "Explain",
-      "title": "¿Qué es SQL?",
-      "content": "SQL (Structured Query Language) es un lenguaje utilizado para gestionar y consultar bases de datos relacionales. Aprenderás a usar comandos como SELECT, INSERT, UPDATE y DELETE."
+      "title": "¿Qué es una Tabla?",
+      "content": "Imagina una hoja de cálculo. Una Base de Datos es un conjunto de tablas. Las columnas son los 'tipos' de datos (Nombre, Edad) y las filas son los registros (Juan, 25)."
     },
     {
       "type": "Quizz",
-      "title": "Primera consulta",
-      "content": "¿Qué comando se usa para obtener datos de una tabla?",
+      "title": "Conceptos",
+      "content": "En una tabla de 'Usuarios', ¿qué sería el correo electrónico?",
       "options": [
-        "GET",
-        "SELECT",
-        "SHOW",
-        "FETCH"
+        "Una Fila",
+        "Una Columna",
+        "Una Tabla",
+        "Un Select"
       ],
-      "correctAnswer": "SELECT"
+      "correctAnswer": "Una Columna"
     },
     {
-      "type": "Arrows",
-      "title": "Relaciona los conceptos",
-      "content": "Une cada comando con su descripción.",
-      "pairs": [
-        {
-          "left": "SELECT",
-          "right": "Extraer datos"
-        },
-        {
-          "left": "INSERT",
-          "right": "Añadir registros"
-        },
-        {
-          "left": "DELETE",
-          "right": "Eliminar datos"
-        }
-      ]
+      "type": "Explain",
+      "title": "Seleccionarlo todo",
+      "content": "Para ver TODOS los datos de una tabla, usamos el asterisco (*). Es como decir 'Dame todo'."
     },
     {
       "type": "FillBlanks",
-      "title": "Completa la sentencia",
-      "content": "____1 * FROM ____2;",
+      "title": "Tu primera sentencia",
+      "content": "SELECT ____1 FROM ____2;",
       "blanks": [
         {
           "id": 1,
-          "correct": "SELECT"
+          "correct": "*"
         },
         {
           "id": 2,
-          "correct": "empleados"
+          "correct": "usuarios"
         }
       ],
       "options": [
+        "usuarios",
+        "*",
         "SELECT",
-        "DELETE",
-        "INSERT",
-        "CREATE",
-        "empleados"
+        "WHERE"
       ]
     }
   ]

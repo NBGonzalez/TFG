@@ -1,59 +1,51 @@
 {
     "language": "SQL",
     "levelId": "sql-2",
-    "levelTitle": "Cláusula FROM",
+    "levelTitle": "Siendo Selectivos",
     "minigames": [
         {
             "type": "Explain",
-            "title": "¿Qué es la cláusula FROM?",
-            "content": "La cláusula FROM indica de qué tabla (o tablas) se obtienen los datos en una consulta SQL. Siempre acompaña a SELECT y define la fuente principal de información. Por ejemplo: SELECT nombre FROM usuarios;"
-        },
-        {
-            "type": "Quizz",
-            "title": "¿Qué función cumple la cláusula FROM?",
-            "options": [
-                "Define una tabla.",
-                "Ordena los resultados.",
-                "Filtra los datos.",
-                "Renombra columnas."
-            ],
-            "correctAnswer": "Define la tabla desde la cual se obtienen los datos."
-        },
-        {
-            "type": "FillBlanks",
-            "title": "Completa la sentencia",
-            "content": "SELECT nombre, edad ___ usuarios;",
-            "blanks": [
-                {
-                    "id": 1,
-                    "correct": "FROM"
-                }
-            ],
-            "options": [
-                "SELECT",
-                "FROM",
-                "INSERT",
-                "CREATE",
-                "empleados"
-            ]
+            "title": "Ahorrando energía",
+            "content": "A veces la tabla tiene 100 columnas y solo quieres el nombre. En lugar de *, escribimos los nombres de las columnas separados por comas."
         },
         {
             "type": "Arrows",
-            "title": "Relaciona los conceptos",
-            "content": "Une cada comando con su descripción.",
+            "title": "Traduce al SQL",
+            "content": "Relaciona la petición humana con la consulta SQL.",
             "pairs": [
                 {
-                    "left": "SELECT nombre FROM productos",
-                    "right": "Consulta datos de la tabla productos"
+                    "left": "Dame todo",
+                    "right": "SELECT *"
                 },
                 {
-                    "left": "SELECT * FROM empleados",
-                    "right": "Obtiene todas las columnas de la tabla empleados"
+                    "left": "Solo nombres",
+                    "right": "SELECT nombre"
                 },
                 {
-                    "left": "FROM clientes",
-                    "right": "Indica la tabla de origen de los datos"
+                    "left": "Nombre y edad",
+                    "right": "SELECT nombre, edad"
                 }
+            ]
+        },
+        {
+            "type": "FillBlanks",
+            "title": "Lista de la compra",
+            "content": "SELECT ____1, precio FROM ____2;",
+            "blanks": [
+                {
+                    "id": 1,
+                    "correct": "producto"
+                },
+                {
+                    "id": 2,
+                    "correct": "tienda"
+                }
+            ],
+            "options": [
+                "producto",
+                "tienda",
+                "*",
+                "DONDE"
             ]
         }
     ]
