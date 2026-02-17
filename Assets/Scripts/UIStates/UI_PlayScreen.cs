@@ -16,16 +16,16 @@ public class UI_PlayScreen : MonoBehaviour
     public RectTransform contentRoot; // El Content del ScrollView
 
     [Header("NUEVOS PREFABS")]
-    public GameObject mapNodePrefab;  // Arrastra aquí el nuevo prefab Redondo
-    public GameObject pathLinePrefab; // Arrastra aquí el nuevo prefab Línea
+    public GameObject mapNodePrefab;
+    public GameObject pathLinePrefab;
 
     [Header("Configuración Mapa")]
-    public float verticalSpacing = 200f; // Distancia entre niveles
-    public float xAmplitude = 200f;      // Anchura de la curva
-    public float waveFrequency = 1f;     // Frecuencia de la curva
+    public float verticalSpacing = 200f;
+    public float xAmplitude = 200f;
+    public float waveFrequency = 1f;
 
     [Header("Referencias UI")]
-    public LevelInfoPopup infoPopup; // <--- ARRASTRA AQUÍ TU NUEVO POPUP
+    public LevelInfoPopup infoPopup;
 
     private PathModel currentPath;
 
@@ -44,7 +44,6 @@ public class UI_PlayScreen : MonoBehaviour
 
     private IEnumerator LoadLanguageAsync(string language)
     {
-        // --- ESTO ES TU CÓDIGO ORIGINAL (INTACTO) ---
         string fileName = "";
         switch (language)
         {
@@ -72,133 +71,128 @@ public class UI_PlayScreen : MonoBehaviour
         }
 
         currentPath = JsonUtility.FromJson<PathModel>(json);
-
-        // Llamamos a la nueva función de mapa
         GenerateMap(language);
     }
 
-    // --- NUEVA FUNCIÓN: GENERAR MAPA EN ZIG-ZAG ---
     private void GenerateMap(string language)
     {
-        // 1. Limpiar lo viejo
+        // 1. Limpiar hijos
         foreach (Transform child in contentRoot) Destroy(child.gameObject);
 
-        var progress = PlayerProgressManager.Instance;
-        int count = currentPath.levels.Count();
+        // --- RESET TOTAL ---
+        contentRoot.anchorMin = new Vector2(0.5f, 1f);
+        contentRoot.anchorMax = new Vector2(0.5f, 1f);
+        contentRoot.pivot = new Vector2(0.5f, 1f);
+        contentRoot.anchoredPosition = Vector2.zero;
 
-        // 2. Ajustar altura del contenedor (IMPORTANTE)
-        float totalHeight = (count * verticalSpacing) + 400f;
+        var progress = PlayerProgressManager.Instance;
+        int count = currentPath.levels.Length;
+
+        // 2. Calcular Altura
+        float paddingBottom = 1000f;
+        float totalHeight = (count * verticalSpacing) + paddingBottom;
         contentRoot.sizeDelta = new Vector2(contentRoot.sizeDelta.x, totalHeight);
 
-        Vector2 prevPos = Vector2.zero;
+        // --- VARIABLES DE POSICIÓN ---
+        // Usaremos 'prevCenterPos' para guardar el CENTRO del nodo anterior, no su parte de arriba.
+        Vector2 prevCenterPos = Vector2.zero;
         bool isFirst = true;
+        float lastUnlockedY = 0f;
 
-        // --- VARIABLE PARA EL AUTO-SCROLL ---
-        float lastUnlockedY = 0f; // Aquí guardaremos la posición Y del último nivel disponible
-
+        // 3. Generar Nodos
         for (int i = 0; i < count; i++)
         {
             var lvl = currentPath.levels[i];
 
-            // Comprobamos estado
-            bool unlocked = false;
-
-            if (i == 0)
+            bool unlocked = (i == 0);
+            if (i > 0)
             {
-                // El primero siempre está abierto
-                unlocked = true;
-            }
-            else
-            {
-                // A partir del segundo, miramos si el ANTERIOR (i-1) está completado
                 var prevLevel = currentPath.levels[i - 1];
-                if (progress.IsLevelCompleted(language, prevLevel.id))
-                {
-                    unlocked = true;
-                }
+                if (progress.IsLevelCompleted(language, prevLevel.id)) unlocked = true;
             }
             bool completed = progress.IsLevelCompleted(language, lvl.id);
 
-            // --- CÁLCULO DE POSICIÓN (Zig-Zag) ---
-            float posY = -150f - (i * verticalSpacing); // Hacia abajo
-            float posX = Mathf.Sin(i * waveFrequency) * xAmplitude; // Onda
-            Vector2 currentPos = new Vector2(posX, posY);
+            // Posición ANCLAJE (Parte superior del nodo)
+            float posY = -150f - (i * verticalSpacing);
+            float posX = Mathf.Sin(i * waveFrequency) * xAmplitude;
+            Vector2 currentAnchorPos = new Vector2(posX, posY);
 
-            // --- ACTUALIZAR PUNTO DE SCROLL ---
-            // Si este nivel está desbloqueado, actualizamos la "meta" del scroll
-            if (unlocked)
-            {
-                lastUnlockedY = posY;
-            }
+            if (unlocked) lastUnlockedY = posY;
 
-            // --- INSTANCIAR NODO ---
+            // Instanciar
             GameObject nodeGO = Instantiate(mapNodePrefab, contentRoot);
             RectTransform nodeRect = nodeGO.GetComponent<RectTransform>();
-            nodeRect.anchoredPosition = currentPos;
 
-            // Configurar Script
+            // Forzar anclajes
+            nodeRect.anchorMin = new Vector2(0.5f, 1f);
+            nodeRect.anchorMax = new Vector2(0.5f, 1f);
+            nodeRect.pivot = new Vector2(0.5f, 1f);
+
+            nodeRect.anchoredPosition = currentAnchorPos;
+
             MapNode nodeScript = nodeGO.GetComponent<MapNode>();
-            bool isBoss = (i + 1) % 5 == 0; // Cada 5 niveles es Boss
-
-            // Obtener estrellas guardadas (Si no tienes este método, pon 0 de momento o invéntalo)
+            bool isBoss = (i + 1) % 5 == 0;
             int stars = progress.GetStarsForLevel(language, lvl.id);
 
+            // Configuramos el nodo (Esto aplicará la escala si es Boss)
             nodeScript.Setup(lvl.id, language, i, unlocked, completed, stars, isBoss,
                 (lang, id) => OpenPopup(lvl, lang, stars));
 
-            // --- DIBUJAR LÍNEA ---
-            if (!isFirst)
-            {
-                CreateConnection(prevPos, currentPos);
-            }
+            // --- CÁLCULO DEL CENTRO VISUAL (MAGIA AQUÍ) ---
+            // 1. Obtenemos la altura del nodo (normalmente 100px o lo que mida tu prefab)
+            float nodeHeight = nodeRect.rect.height;
 
-            prevPos = currentPos;
+            // 2. Obtenemos la escala (si es Boss, será 1.3, si no 1.0)
+            float scale = nodeGO.transform.localScale.y;
+
+            // 3. Calculamos cuánto hay que bajar para llegar al centro
+            // (Altura / 2) * Escala
+            float offsetToCenter = (nodeHeight / 2f) * scale;
+
+            // 4. Posición del Centro = Posición Arriba - Offset
+            Vector2 currentCenterPos = currentAnchorPos - new Vector2(0, offsetToCenter);
+            // ----------------------------------------------
+
+            // Dibujamos la línea de CENTRO a CENTRO
+            if (!isFirst) CreateConnection(prevCenterPos, currentCenterPos);
+
+            // Guardamos el centro actual para la siguiente vuelta
+            prevCenterPos = currentCenterPos;
             isFirst = false;
         }
+
+        // 4. Iniciar AutoScroll
         StartCoroutine(ApplyAutoScroll(lastUnlockedY, totalHeight));
     }
-    // Cambiamos 'void' por 'IEnumerator'
+
     private IEnumerator ApplyAutoScroll(float targetY, float contentTotalHeight)
     {
-        // --- LA MAGIA: ESPERAR UN FRAME ---
-        // Esto deja que Unity actualice la UI, los tamaños y el ScrollRect
-        yield return null;
-
-        // Truco extra: Forzar la actualización de los Canvas por si acaso
+        yield return new WaitForEndOfFrame();
         Canvas.ForceUpdateCanvases();
 
-        // 1. Obtener la altura de la ventana visible (Viewport)
+        ScrollRect scrollRect = contentRoot.GetComponentInParent<ScrollRect>();
+        if (scrollRect != null) scrollRect.velocity = Vector2.zero;
+
         float viewportHeight = 0f;
         if (contentRoot.parent != null)
         {
             RectTransform viewport = contentRoot.parent as RectTransform;
-            if (viewport != null) viewportHeight = viewport.rect.height;
+            viewportHeight = viewport.rect.height;
         }
+        if (viewportHeight <= 0) viewportHeight = Screen.height;
 
-        if (viewportHeight == 0) viewportHeight = Screen.height;
+        Debug.Log($"[AutoScroll] Viewport Height: {viewportHeight}");
 
-        // 2. Calcular la posición ideal
-        // targetY es negativo. Lo pasamos a positivo.
-        // Restamos mitad de pantalla para centrar.
-        float finalContentY = Mathf.Abs(targetY) - (viewportHeight * 0.5f);
+        float targetY_Positive = Mathf.Abs(targetY);
+        float centerOffset = viewportHeight * 0.5f;
+        float finalPos = targetY_Positive - centerOffset;
 
-        // 3. Limitar (Clamp)
-        // OJO: contentTotalHeight debe ser mayor que viewportHeight para hacer scroll
-        float maxScroll = Mathf.Max(0, contentTotalHeight - viewportHeight);
+        float maxScrollPossible = contentTotalHeight - viewportHeight;
+        if (maxScrollPossible < 0) maxScrollPossible = 0;
 
-        finalContentY = Mathf.Clamp(finalContentY, 0, maxScroll);
+        finalPos = Mathf.Clamp(finalPos, 0, maxScrollPossible);
 
-        // 4. Aplicar
-        contentRoot.anchoredPosition = new Vector2(contentRoot.anchoredPosition.x, finalContentY);
-
-        Debug.Log($"[AutoScroll] TargetY: {targetY} | FinalPos: {finalContentY}");
-    }
-    private void OpenPopup(LevelModel levelData, string language, int stars)
-    {
-        Debug.Log($"Abriendo info de: {levelData.title}");
-
-        // Le pasamos todo al Popup
-        infoPopup.Show(levelData, language, stars);
+        contentRoot.anchoredPosition = new Vector2(contentRoot.anchoredPosition.x, finalPos);
     }
 
     private void CreateConnection(Vector2 posA, Vector2 posB)
@@ -206,10 +200,13 @@ public class UI_PlayScreen : MonoBehaviour
         GameObject lineGO = Instantiate(pathLinePrefab, contentRoot);
         RectTransform lineRect = lineGO.GetComponent<RectTransform>();
 
-        // Poner la línea al fondo
+        // --- SEGURIDAD PARA LÍNEAS ---
+        // ¡IMPORTANTE! Las líneas también necesitan saber que el (0,0) es el techo.
+        lineRect.anchorMin = new Vector2(0.5f, 1f);
+        lineRect.anchorMax = new Vector2(0.5f, 1f);
+        lineRect.pivot = new Vector2(0.5f, 0.5f); // El pivote de la línea SÍ va al centro para rotar bien
         lineGO.transform.SetAsFirstSibling();
 
-        // Matemáticas para colocar y rotar la línea
         Vector2 midPoint = (posA + posB) / 2f;
         lineRect.anchoredPosition = midPoint;
 
@@ -218,13 +215,12 @@ public class UI_PlayScreen : MonoBehaviour
         lineRect.rotation = Quaternion.Euler(0, 0, angle);
 
         float dist = Vector2.Distance(posA, posB);
-        lineRect.sizeDelta = new Vector2(dist, 20f); // 20f es el grosor
+        lineRect.sizeDelta = new Vector2(dist, 20f);
+        //lineRect.transform.position.y -= 10f; // Ajuste vertical para que la línea quede centrada entre los nodos
     }
 
-    //private void OnLevelClicked(string language, string levelId)
-    //{
-    //    Debug.Log($"Abriendo nivel {levelId}");
-    //    GameManager.Instance.SetCurrentLevel(language, levelId);
-    //    SceneManager.LoadScene("GameScene");
-    //}
+    private void OpenPopup(LevelModel levelData, string language, int stars)
+    {
+        infoPopup.Show(levelData, language, stars);
+    }
 }
