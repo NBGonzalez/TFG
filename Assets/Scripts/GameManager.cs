@@ -1,3 +1,4 @@
+// GameManager.cs
 using UnityEngine;
 
 public class GameManager : MonoBehaviour

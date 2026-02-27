@@ -40,10 +40,10 @@ public class GameSceneManager : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(LoadLevelAsync());
+        //StartCoroutine(LoadLevelAsync());
+        LoadLevelFromPlayFab();
     }
-
-    private IEnumerator LoadLevelAsync()
+    private void LoadLevelFromPlayFab()
     {
         // Resetear estadísticas
         totalSuccess = 0;
@@ -53,45 +53,30 @@ public class GameSceneManager : MonoBehaviour
         string language = GameManager.Instance.currentLanguage;
         string levelId = GameManager.Instance.currentLevelId;
 
-        string fileName = $"{language.ToLower()}_{levelId.ToLower()}.json";
-        string path = Path.Combine(Application.streamingAssetsPath, "levels", fileName);
+        // ¡LA MAGIA! Le pedimos el nivel a PlayFab y nos quedamos esperando a que responda
+        PlayFabManager.Instancia.PedirNivel(language, levelId, OnNivelRecibido);
+    }
 
-        string json = "";
-
-        // Soporte para Android/WebGL: UnityWebRequest
-        if (path.Contains("://") || path.Contains(":///"))
+    // Esta función se ejecuta automáticamente cuando PlayFab nos entrega el JSON
+    private void OnNivelRecibido(string json)
+    {
+        if (string.IsNullOrEmpty(json))
         {
-            using (UnityWebRequest www = UnityWebRequest.Get(path))
-            {
-                yield return www.SendWebRequest();
-
-                if (www.result != UnityWebRequest.Result.Success)
-                {
-                    Debug.LogError($"Error al cargar {fileName}: {www.error}");
-                    yield break;
-                }
-                json = www.downloadHandler.text;
-            }
-        }
-        else
-        {
-            if (!File.Exists(path))
-            {
-                Debug.LogError($"No se encontró el archivo del nivel: {path}");
-                yield break;
-            }
-            json = File.ReadAllText(path);
+            Debug.LogError("Error al cargar el nivel de PlayFab. Volviendo al menú.");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
+            return;
         }
 
+        // Deserializamos el texto igual que antes
         currentLevelData = JsonConvert.DeserializeObject<LevelData>(json);
 
         if (currentLevelData == null)
         {
             Debug.LogError("Error al deserializar el JSON del nivel");
-            yield break;
+            return;
         }
 
-        Debug.Log($"Nivel cargado: {currentLevelData.levelTitle} con {currentLevelData.minigames.Count} minijuegos.");
+        Debug.Log($"Nivel listo en GameScene: {currentLevelData.levelTitle} con {currentLevelData.minigames.Count} minijuegos.");
 
         // Instanciar la UI base UNA sola vez (si se ha proporcionado)
         if (miniGameBaseClassPrefab != null)
@@ -101,7 +86,6 @@ public class GameSceneManager : MonoBehaviour
             if (miniGameBaseClass == null)
             {
                 Debug.LogError("baseUIPrefab no contiene MiniGameBaseClass. Asigna el script en el prefab.");
-                // seguimos pero sin baseUIInstance
             }
         }
         else
@@ -112,6 +96,76 @@ public class GameSceneManager : MonoBehaviour
         // Mostrar el primer minijuego
         ShowMiniGame(currentMiniGameIndex);
     }
+
+    //private IEnumerator LoadLevelAsync()
+    //{
+    //    // Resetear estadísticas
+    //    totalSuccess = 0;
+    //    totalFailure = 0;
+
+    //    // Leer selección guardada en GameManager
+    //    string language = GameManager.Instance.currentLanguage;
+    //    string levelId = GameManager.Instance.currentLevelId;
+
+    //    string fileName = $"{language.ToLower()}_{levelId.ToLower()}.json";
+    //    string path = Path.Combine(Application.streamingAssetsPath, "levels", fileName);
+
+    //    string json = "";
+
+    //    // Soporte para Android/WebGL: UnityWebRequest
+    //    if (path.Contains("://") || path.Contains(":///"))
+    //    {
+    //        using (UnityWebRequest www = UnityWebRequest.Get(path))
+    //        {
+    //            yield return www.SendWebRequest();
+
+    //            if (www.result != UnityWebRequest.Result.Success)
+    //            {
+    //                Debug.LogError($"Error al cargar {fileName}: {www.error}");
+    //                yield break;
+    //            }
+    //            json = www.downloadHandler.text;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        if (!File.Exists(path))
+    //        {
+    //            Debug.LogError($"No se encontró el archivo del nivel: {path}");
+    //            yield break;
+    //        }
+    //        json = File.ReadAllText(path);
+    //    }
+
+    //    currentLevelData = JsonConvert.DeserializeObject<LevelData>(json);
+
+    //    if (currentLevelData == null)
+    //    {
+    //        Debug.LogError("Error al deserializar el JSON del nivel");
+    //        yield break;
+    //    }
+
+    //    Debug.Log($"Nivel cargado: {currentLevelData.levelTitle} con {currentLevelData.minigames.Count} minijuegos.");
+
+    //    // Instanciar la UI base UNA sola vez (si se ha proporcionado)
+    //    if (miniGameBaseClassPrefab != null)
+    //    {
+    //        GameObject go = Instantiate(miniGameBaseClassPrefab);
+    //        miniGameBaseClass = go.GetComponent<MiniGameBaseClass>();
+    //        if (miniGameBaseClass == null)
+    //        {
+    //            Debug.LogError("baseUIPrefab no contiene MiniGameBaseClass. Asigna el script en el prefab.");
+    //            // seguimos pero sin baseUIInstance
+    //        }
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("baseUIPrefab no asignado: se usará miniGameContainer como punto de montaje (fallback).");
+    //    }
+
+    //    // Mostrar el primer minijuego
+    //    ShowMiniGame(currentMiniGameIndex);
+    //}
 
     private void ShowMiniGame(int index)
     {
