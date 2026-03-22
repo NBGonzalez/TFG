@@ -20,6 +20,7 @@ public class ProfileState : UIStateBase
     [Header("--- Títulos ---")]
     [SerializeField] private Transform titlesGridContent;
     [SerializeField] private GameObject titleSlotPrefab;
+    [SerializeField] private TextMeshProUGUI unlockedTitlesCountText;
 
     [Header("--- Módulos ---")]
     [SerializeField] private UI_AvatarPicker avatarPickerModule; // REFERENCIA CLAVE al nuevo script
@@ -111,6 +112,8 @@ public class ProfileState : UIStateBase
         // Limpieza...
         foreach (Transform child in titlesGridContent) Destroy(child.gameObject);
 
+        int unlockedCount = 0;
+
         foreach (var titleData in allTitlesData)
         {
             GameObject newSlot = Instantiate(titleSlotPrefab, titlesGridContent);
@@ -148,6 +151,11 @@ public class ProfileState : UIStateBase
                     progress.UnlockAchievement(titleData.id);
                     // Aquí podríamos lanzar un sonido de "¡Nuevo Logro!"
                 }
+
+            }
+            if (isUnlocked)
+            {
+                unlockedCount++; // Contamos este título como desbloqueado para mostrarlo en el texto
             }
 
             // Configuramos el slot visualmente
@@ -156,6 +164,7 @@ public class ProfileState : UIStateBase
                 RefreshUI();
             });
         }
+        unlockedTitlesCountText.text = $"Títulos Desbloqueados: {unlockedCount}/{allTitlesData.Length}";
     }
 
     public override void OnExit()

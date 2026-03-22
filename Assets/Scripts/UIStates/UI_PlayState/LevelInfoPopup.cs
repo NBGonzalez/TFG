@@ -71,7 +71,7 @@ public class LevelInfoPopup : MonoBehaviour
         // Lógica de carga de nivel
         Debug.Log($"JUGANDO: {_currentLanguage} - {_currentLevelId}");
         GameManager.Instance.SetCurrentLevel(_currentLanguage, _currentLevelId);
-        SceneManager.LoadScene("GameScene");
+        BackgroundTransition.Instance.ToggleTransitionAndLoad("GameScene");
     }
 
     // --- CORUTINAS DE ANIMACIÓN ---

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
 
 public class UI_AvatarPicker : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class UI_AvatarPicker : MonoBehaviour
     [SerializeField] private Button closeButton;
     [SerializeField] private Transform gridContent;
     [SerializeField] private GameObject avatarSlotPrefab;
+    [SerializeField] private TextMeshProUGUI unlockedAvatarsCountText;
 
     // Datos internos
     private ProfileAvatarSO[] allAvatarsData;
@@ -42,6 +44,8 @@ public class UI_AvatarPicker : MonoBehaviour
         var progress = PlayerProgressManager.Instance;
         string currentId = progress.GetEquippedAvatarId();
 
+        int unlockedCount = 0; // Para mostrar el contador de avatares desbloqueados
+
         // 2. Crear fichas
         foreach (var avData in allAvatarsData)
         {
@@ -53,6 +57,12 @@ public class UI_AvatarPicker : MonoBehaviour
             if (!isUnlocked && !string.IsNullOrEmpty(avData.requiredAchievementId))
             {
                 isUnlocked = progress.HasUnlocked(avData.requiredAchievementId);
+            }
+
+            //Aumento del contador de avatares desbloqueados
+            if (isUnlocked)
+            {
+                unlockedCount++;
             }
 
             bool isSelected = avData.id == currentId;
@@ -68,5 +78,6 @@ public class UI_AvatarPicker : MonoBehaviour
                 onAvatarChangedCallback?.Invoke();
             });
         }
+        unlockedAvatarsCountText.text = $"Avatares Desbloqueados: {unlockedCount}/{allAvatarsData.Length}";
     }
 }

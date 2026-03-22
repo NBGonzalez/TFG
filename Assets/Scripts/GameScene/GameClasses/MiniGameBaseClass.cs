@@ -52,7 +52,9 @@ public class MiniGameBaseClass : MonoBehaviour
 
     protected void OnBackPressed()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
+        Debug.Log("[MiniGameBaseClass] Back button pressed. Returning to MainScene.");
+        BackgroundTransition.Instance.ToggleTransitionAndLoad("MainScene");
+        //UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
     }
 
     // Helpers reutilizables

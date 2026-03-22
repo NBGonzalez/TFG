@@ -258,6 +258,7 @@ public class LevelCompletedUI : MonoBehaviour
         }
 
         // Volver al menú
-        SceneManager.LoadScene("MainScene");
+        BackgroundTransition.Instance.ToggleTransitionAndLoad("MainScene");
+        //SceneManager.LoadScene("MainScene");
     }
 }

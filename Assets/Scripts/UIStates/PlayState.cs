@@ -9,7 +9,7 @@ public class PlayState : UIStateBase
     public override void OnEnter()
     {
         backButton.onClick.AddListener(() => stateManager.ChangeState("Main"));
-        Debug.Log("STATE: Play");
+        //Debug.Log("STATE: Play");
     }
 
     public override void OnExit()

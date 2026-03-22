@@ -24,9 +24,10 @@ public class MiniGameData
     public string correctAnswer;       // Para Quizz (FillBlanks ya no usa esto)
 
     public List<PairData> pairs;       // Para Arrows
-
     
     public List<FillBlankEntry> blanks;// Para FillBlanks
+
+    public List<string> images;        // Opcional: rutas de imágenes a mostrar (pueden ser usadas por cualquier tipo de minijuego)
 }
 
 [System.Serializable]

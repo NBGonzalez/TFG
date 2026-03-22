@@ -45,7 +45,7 @@ public class UIStateManager : MonoBehaviour
         }
         else
         {
-            Debug.Log($"Prefab {prefab.name} encontrado correctamente");
+            //Debug.Log($"Prefab {prefab.name} encontrado correctamente");
         }
 
 

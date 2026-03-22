@@ -168,7 +168,7 @@ public class PlayFabManager : MonoBehaviour
             // Si ya está en la mochila, no hacemos nada
             if (nivelesEnCache.ContainsKey(claveSiguiente)) return;
 
-            Debug.Log($"[PlayFabManager] Pre-cargando en la sombra el siguiente nivel: {claveSiguiente}...");
+            //Debug.Log($"[PlayFabManager] Pre-cargando en la sombra el siguiente nivel: {claveSiguiente}...");
 
             var request = new GetTitleDataRequest { Keys = new List<string> { claveSiguiente } };
             PlayFabClientAPI.GetTitleData(request, (result) =>
@@ -176,7 +176,7 @@ public class PlayFabManager : MonoBehaviour
                 // Si el nivel existe (puede que el jugador esté en el último nivel y no haya más), lo guardamos
                 if (result.Data.ContainsKey(claveSiguiente))
                 {
-                    Debug.Log($"[PlayFabManager] Pre-carga exitosa. Nivel {claveSiguiente} guardado en la recámara.");
+                    //Debug.Log($"[PlayFabManager] Pre-carga exitosa. Nivel {claveSiguiente} guardado en la recámara.");
                     GuardarEnMochila(claveSiguiente, result.Data[claveSiguiente]);
                 }
             }, (error) => { /* Silenciamos los errores de pre-carga para no asustar, ya que es en segundo plano */ });
