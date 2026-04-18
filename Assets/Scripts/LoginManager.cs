@@ -200,4 +200,27 @@ public class LoginManager : MonoBehaviour
             Debug.LogException(ex);
         }
     }
+
+    // ============================
+    // OBTENER NOMBRE DEL JUGADOR
+    // ============================
+    public string GetPlayerName()
+    {
+        // 1. Prioridad máxima: Si está en Google Play, devolvemos su nombre real (Ej: "Juan Perez")
+        if (PlayGamesPlatform.Instance.IsAuthenticated())
+        {
+            return PlayGamesPlatform.Instance.GetUserDisplayName();
+        }
+        // 2. Si está logeado como anónimo en Unity, le damos un nombre genérico con parte de su ID
+        else if (AuthenticationService.Instance.IsSignedIn)
+        {
+            string id = AuthenticationService.Instance.PlayerId;
+            // Cortamos el ID para que no quede un churro gigante en la pantalla del amigo
+            string shortId = id.Length >= 5 ? id.Substring(0, 5) : id;
+            return "Jugador_" + shortId;
+        }
+
+        // 3. Si por algún motivo está offline o probando en el Editor de Unity
+        return "Creador Anónimo";
+    }
 }

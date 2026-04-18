@@ -9,6 +9,7 @@ public class ItineraryState : UIStateBase
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public override void OnEnter()
     {
+        ItineraryCrossSceneData.itineraryIdToEdit = null;
         backButton.onClick.AddListener(() => stateManager.ChangeState("Main"));
         createItineraryButton.onClick.AddListener(() => BackgroundTransition.Instance.ToggleTransitionAndLoad("ItineraryScene"));
         //Debug.Log("STATE: Itinerary");
