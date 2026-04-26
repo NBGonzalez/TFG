@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     public string currentLanguage { get; private set; }
     public string currentLevelId { get; private set; }
 
+    public bool isLocal { get; private set; }
+
     void Awake()
     {
         if (Instance == null)
@@ -18,9 +20,10 @@ public class GameManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    public void SetCurrentLevel(string language, string levelId)
+    public void SetCurrentLevel(string language, string levelId, bool isLocalContent = false)
     {
         currentLanguage = language;
         currentLevelId = levelId;
+        isLocal = isLocalContent;
     }
 }

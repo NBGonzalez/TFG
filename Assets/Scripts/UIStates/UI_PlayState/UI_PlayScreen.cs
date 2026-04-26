@@ -19,7 +19,7 @@ public class UI_PlayScreen : MonoBehaviour
     public GameObject mapNodePrefab;
     public GameObject pathLinePrefab;
 
-    [Header("ConfiguraciÛn Mapa")]
+    [Header("Configuraci√≥n Mapa")]
     public float verticalSpacing = 200f;
     public float xAmplitude = 200f;
     public float waveFrequency = 1f;
@@ -27,8 +27,9 @@ public class UI_PlayScreen : MonoBehaviour
     [Header("Referencias UI")]
     public LevelInfoPopup infoPopup;
 
-    // AquÌ guardaremos los Paths convertidos en clases C# para no volver a pedirselos a PlayFab
+    // Aqu√≠ guardaremos los Paths convertidos en clases C# para no volver a pedirselos a PlayFab
     private Dictionary<string, PathModel> pathsEnMemoria = new Dictionary<string, PathModel>();
+    private Dictionary<string, bool> localPathFlags = new Dictionary<string, bool>();
     private PathModel currentPath;
 
     private void Start()
@@ -42,47 +43,112 @@ public class UI_PlayScreen : MonoBehaviour
         // Cuando este prefab nace, comprueba si el PlayFabManager ya ha terminado de descargar
         if (PlayFabManager.Instancia != null && PlayFabManager.Instancia.descargaCompletada)
         {
-            Debug.Log("UI_PlayScreen: °He nacido y el Manager ya tiene los datos! Los cojo.");
+            Debug.Log("UI_PlayScreen: ¬°He nacido y el Manager ya tiene los datos! Los cojo.");
             RecibirDatosDeLaNube(PlayFabManager.Instancia.pathsGuardados);
         }
         else
         {
-            // Si el internet va lento y a˙n no ha descargado, no pasa nada. 
-            // El PlayFabManager nos buscar· y nos los dar· en cuanto termine.
-            Debug.Log("UI_PlayScreen: He nacido pero PlayFab a˙n est· descargando. Toca esperar un segundo...");
+            // Si el internet va lento y a√∫n no ha descargado, no pasa nada. 
+            // El PlayFabManager nos buscar√° y nos los dar√° en cuanto termine.
+            Debug.Log("UI_PlayScreen: He nacido pero PlayFab a√∫n est√° descargando. Toca esperar un segundo...");
         }
     }
     // ==========================================
-    // ESTA ES LA FUNCI”N NUEVA QUE LLAMA PLAYFAB
+    // ESTA ES LA FUNCI√ìN NUEVA QUE LLAMA PLAYFAB
     // ==========================================
     public void RecibirDatosDeLaNube(Dictionary<string, string> jsonDescargados)
     {
         pathsEnMemoria.Clear();
+        localPathFlags.Clear();
         List<string> nombresParaDesplegable = new List<string>();
 
+        // 1. CARGAMOS LOS OFICIALES (PLAYFAB)
         foreach (var archivo in jsonDescargados)
         {
-            // Convertimos el texto JSON en nuestro PathModel
             PathModel modelo = JsonUtility.FromJson<PathModel>(archivo.Value);
+            string nombreUI = "‚≠ê " + modelo.language;
 
-            // Lo guardamos en memoria usando el nombre bonito (ej: "SQL")
-            pathsEnMemoria.Add(modelo.language, modelo);
-            nombresParaDesplegable.Add(modelo.language);
+            pathsEnMemoria.Add(nombreUI, modelo);
+            localPathFlags.Add(nombreUI, false);
+            nombresParaDesplegable.Add(nombreUI);
         }
 
-        // Llenamos el desplegable con los nombres encontrados en la nube
-        languageDropdown.AddOptions(nombresParaDesplegable);
+        // 2. CARGAMOS LOS LOCALES (DISCO DURO)
+        string[] archivosLocales = Directory.GetFiles(Application.persistentDataPath, "custom-*.json");
+        Debug.Log($"üîç ESC√ÅNER: He encontrado {archivosLocales.Length} itinerarios locales en tu disco duro.");
 
-        // Si hemos descargado algo, dibujamos el primer itinerario autom·ticamente
+        foreach (string ruta in archivosLocales)
+        {
+            try
+            {
+                string json = File.ReadAllText(ruta);
+                CustomItineraryData data = JsonUtility.FromJson<CustomItineraryData>(json);
+
+                PathModel pm = new PathModel();
+                pm.language = data.itineraryId;
+
+                pm.levels = new LevelModel[data.levels.Count];
+                for (int i = 0; i < data.levels.Count; i++)
+                {
+                    pm.levels[i] = new LevelModel
+                    {
+                        id = data.levels[i].levelId,
+                        title = data.levels[i].levelTitle,
+                        description = data.levels[i].levelDescription
+                    };
+                }
+
+                // --- MEJORA: NOMBRES INDESTRUCTIBLES ---
+                // Si el jugador no le puso t√≠tulo, le ponemos uno por defecto para que no salga en blanco
+                string tituloReal = string.IsNullOrWhiteSpace(data.title) ? "Itinerario Sin T√≠tulo" : data.title;
+                string nombreUI = "üìÇ " + tituloReal;
+
+                // Si hay dos itinerarios llamados exactamente igual (ej: dos "üìÇ Matem√°ticas"), 
+                // les ponemos un n√∫mero al lado para que el Dropdown no explote (ej: "üìÇ Matem√°ticas (1)")
+                int contador = 1;
+                string nombreOriginal = nombreUI;
+                while (pathsEnMemoria.ContainsKey(nombreUI))
+                {
+                    nombreUI = $"{nombreOriginal} ({contador})";
+                    contador++;
+                }
+
+                pathsEnMemoria.Add(nombreUI, pm);
+                localPathFlags.Add(nombreUI, true);
+                nombresParaDesplegable.Add(nombreUI);
+
+                Debug.Log($"‚úÖ Cargado en el Dropdown: {nombreUI}");
+            }
+            catch (System.Exception e) { Debug.LogError("Error leyendo archivo local: " + e.Message); }
+        }
+
+        // 3. ACTUALIZAMOS UI
+        languageDropdown.AddOptions(nombresParaDesplegable);
         if (nombresParaDesplegable.Count > 0)
         {
             CambiarMapaActivo(nombresParaDesplegable[0]);
+        }
+        // 4. MAGIA UI: Ajustar el tama√±o del desplegable din√°micamente
+        if (languageDropdown.template != null)
+        {
+            RectTransform templateRect = languageDropdown.template;
+
+            // Cu√°nto mide de alto cada bot√≥n de texto de tu Dropdown (Suele ser entre 20 y 40)
+            float alturaPorOpcion = 50f;
+            // Un tope para que, si tienes 50 itinerarios, no se salga por debajo de la pantalla del m√≥vil
+            float alturaMaximaPantalla = 400f;
+
+            // Calculamos la altura total multiplicando los items
+            float alturaCalculada = nombresParaDesplegable.Count * alturaPorOpcion;
+
+            // Le aplicamos el nuevo tama√±o (cogiendo el menor entre lo calculado y el tope m√°ximo)
+            templateRect.sizeDelta = new Vector2(templateRect.sizeDelta.x, Mathf.Min(alturaCalculada, alturaMaximaPantalla));
         }
     }
 
     private void AlCambiarDesplegable(int indice)
     {
-        // Miramos quÈ texto ha elegido el jugador en el desplegable (ej: "SQL")
+        // Miramos qu√© texto ha elegido el jugador en el desplegable (ej: "SQL")
         string lenguajeElegido = languageDropdown.options[indice].text;
         CambiarMapaActivo(lenguajeElegido);
     }
@@ -148,16 +214,26 @@ public class UI_PlayScreen : MonoBehaviour
         var progress = PlayerProgressManager.Instance;
         int count = currentPath.levels.Length;
 
+        // CLAVE REAL del itinerario para consultar el progreso.
+        // Para oficiales, currentPath.language == language (nombre UI).
+        // Para custom, currentPath.language es el ID real ("custom-XXXX") y language
+        // es el nombre decorado del dropdown ("\ud83d\udcdd Como cuidar Bonsais"), por lo que
+        // debemos usar siempre currentPath.language para que coincida con lo que guarda
+        // PlayerProgressManager.CompleteLevel().
+        string progressKey = currentPath.language;
+
         // 2. Calcular Altura
         float paddingBottom = 1000f;
         float totalHeight = (count * verticalSpacing) + paddingBottom;
         contentRoot.sizeDelta = new Vector2(contentRoot.sizeDelta.x, totalHeight);
 
-        // --- VARIABLES DE POSICI”N ---
+        // --- VARIABLES DE POSICI√ìN ---
         // Usaremos 'prevCenterPos' para guardar el CENTRO del nodo anterior, no su parte de arriba.
         Vector2 prevCenterPos = Vector2.zero;
         bool isFirst = true;
         float lastUnlockedY = 0f;
+
+        bool isMapLocal = localPathFlags[language];
 
         // 3. Generar Nodos
         for (int i = 0; i < count; i++)
@@ -168,11 +244,11 @@ public class UI_PlayScreen : MonoBehaviour
             if (i > 0)
             {
                 var prevLevel = currentPath.levels[i - 1];
-                if (progress.IsLevelCompleted(language, prevLevel.id)) unlocked = true;
+                if (progress.IsLevelCompleted(progressKey, prevLevel.id)) unlocked = true;
             }
-            bool completed = progress.IsLevelCompleted(language, lvl.id);
+            bool completed = progress.IsLevelCompleted(progressKey, lvl.id);
 
-            // PosiciÛn ANCLAJE (Parte superior del nodo)
+            // Posici√≥n ANCLAJE (Parte superior del nodo)
             float posY = -150f - (i * verticalSpacing);
             float posX = Mathf.Sin(i * waveFrequency) * xAmplitude;
             Vector2 currentAnchorPos = new Vector2(posX, posY);
@@ -192,28 +268,28 @@ public class UI_PlayScreen : MonoBehaviour
 
             MapNode nodeScript = nodeGO.GetComponent<MapNode>();
             bool isBoss = (i + 1) % 5 == 0;
-            int stars = progress.GetStarsForLevel(language, lvl.id);
+            int stars = progress.GetStarsForLevel(progressKey, lvl.id);
 
-            // Configuramos el nodo (Esto aplicar· la escala si es Boss)
-            nodeScript.Setup(lvl.id, language, i, unlocked, completed, stars, isBoss,
-                (lang, id) => OpenPopup(lvl, lang, stars));
+            // Configuramos el nodo (Esto aplicar√° la escala si es Boss)
+            nodeScript.Setup(lvl.id, currentPath.language, i, unlocked, completed, stars, isBoss, isMapLocal,
+                (lang, id, localFlag) => OpenPopup(lvl, lang, stars, localFlag));
 
-            // --- C¡LCULO DEL CENTRO VISUAL (MAGIA AQUÕ) ---
+            // --- C√ÅLCULO DEL CENTRO VISUAL (MAGIA AQU√ç) ---
             // 1. Obtenemos la altura del nodo (normalmente 100px o lo que mida tu prefab)
             float nodeHeight = nodeRect.rect.height;
 
-            // 2. Obtenemos la escala (si es Boss, ser· 1.3, si no 1.0)
+            // 2. Obtenemos la escala (si es Boss, ser√° 1.3, si no 1.0)
             float scale = nodeGO.transform.localScale.y;
 
-            // 3. Calculamos cu·nto hay que bajar para llegar al centro
+            // 3. Calculamos cu√°nto hay que bajar para llegar al centro
             // (Altura / 2) * Escala
             float offsetToCenter = (nodeHeight / 2f) * scale;
 
-            // 4. PosiciÛn del Centro = PosiciÛn Arriba - Offset
+            // 4. Posici√≥n del Centro = Posici√≥n Arriba - Offset
             Vector2 currentCenterPos = currentAnchorPos - new Vector2(0, offsetToCenter);
             // ----------------------------------------------
 
-            // Dibujamos la lÌnea de CENTRO a CENTRO
+            // Dibujamos la l√≠nea de CENTRO a CENTRO
             if (!isFirst) CreateConnection(prevCenterPos, currentCenterPos);
 
             // Guardamos el centro actual para la siguiente vuelta
@@ -260,11 +336,11 @@ public class UI_PlayScreen : MonoBehaviour
         GameObject lineGO = Instantiate(pathLinePrefab, contentRoot);
         RectTransform lineRect = lineGO.GetComponent<RectTransform>();
 
-        // --- SEGURIDAD PARA LÕNEAS ---
-        // °IMPORTANTE! Las lÌneas tambiÈn necesitan saber que el (0,0) es el techo.
+        // --- SEGURIDAD PARA L√çNEAS ---
+        // ¬°IMPORTANTE! Las l√≠neas tambi√©n necesitan saber que el (0,0) es el techo.
         lineRect.anchorMin = new Vector2(0.5f, 1f);
         lineRect.anchorMax = new Vector2(0.5f, 1f);
-        lineRect.pivot = new Vector2(0.5f, 0.5f); // El pivote de la lÌnea SÕ va al centro para rotar bien
+        lineRect.pivot = new Vector2(0.5f, 0.5f); // El pivote de la l√≠nea S√ç va al centro para rotar bien
         lineGO.transform.SetAsFirstSibling();
 
         Vector2 midPoint = (posA + posB) / 2f;
@@ -276,11 +352,11 @@ public class UI_PlayScreen : MonoBehaviour
 
         float dist = Vector2.Distance(posA, posB);
         lineRect.sizeDelta = new Vector2(dist, 20f);
-        //lineRect.transform.position.y -= 10f; // Ajuste vertical para que la lÌnea quede centrada entre los nodos
+        //lineRect.transform.position.y -= 10f; // Ajuste vertical para que la l√≠nea quede centrada entre los nodos
     }
 
-    private void OpenPopup(LevelModel levelData, string language, int stars)
+    private void OpenPopup(LevelModel levelData, string language, int stars, bool isLocal)
     {
-        infoPopup.Show(levelData, language, stars);
+        infoPopup.Show(levelData, language, stars, isLocal);
     }
 }

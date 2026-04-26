@@ -109,7 +109,15 @@ public class PlayerProgressManager : MonoBehaviour
 
             // Guardamos inmediatamente
             SaveLocal();
-            await SaveToCloudAsync();
+            if (!language.StartsWith("custom-"))
+            {
+                await SaveToCloudAsync();
+                Debug.Log("[Progress] Estrellas oficiales subidas a PlayFab.");
+            }
+            else
+            {
+                Debug.Log("[Progress] Estrellas locales guardadas solo en el disco duro.");
+            }
         }
         else
         {

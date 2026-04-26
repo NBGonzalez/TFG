@@ -1,7 +1,8 @@
 // MapNode.cs
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
+using UnityEngine.SocialPlatforms;
+using UnityEngine.UI;
 
 public class MapNode : MonoBehaviour
 {
@@ -25,10 +26,10 @@ public class MapNode : MonoBehaviour
 
     private string _levelId;
     private string _language;
-    private System.Action<string, string> _onClick;
+    private System.Action<string, string, bool> _onClick;
 
     // AÑADIMOS "starsEarned" A LOS PARÁMETROS
-    public void Setup(string id, string language, int index, bool unlocked, bool completed, int starsEarned, bool isBoss, System.Action<string, string> onClick)
+    public void Setup(string id, string language, int index, bool unlocked, bool completed, int starsEarned, bool isBoss, bool isLocal, System.Action<string, string, bool> onClick)
     {
         _levelId = id;
         _language = language;
@@ -62,7 +63,7 @@ public class MapNode : MonoBehaviour
         else transform.localScale = Vector3.one;
 
         button.onClick.RemoveAllListeners();
-        button.onClick.AddListener(() => _onClick?.Invoke(_language, _levelId));
+        button.onClick.AddListener(() => _onClick?.Invoke(_language, _levelId, isLocal));
     }
 
     // Función auxiliar para pintar estrellas

@@ -1,8 +1,9 @@
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using UnityEngine.SceneManagement;
 using System.Collections;
+using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms;
+using UnityEngine.UI;
 
 public class LevelInfoPopup : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class LevelInfoPopup : MonoBehaviour
 
     private string _currentLanguage;
     private string _currentLevelId;
+    private bool _isLocal;
 
     private void Awake()
     {
@@ -38,10 +40,11 @@ public class LevelInfoPopup : MonoBehaviour
     }
 
     // --- FUNCIÓN PRINCIPAL: MOSTRAR ---
-    public void Show(LevelModel levelData, string language, int starsCount)
+    public void Show(LevelModel levelData, string language, int starsCount, bool isLocal)
     {
         _currentLanguage = language;
         _currentLevelId = levelData.id;
+        _isLocal = isLocal; // Lo guardamos
 
         // 1. Rellenar datos
         titleText.text = levelData.title;
@@ -70,7 +73,7 @@ public class LevelInfoPopup : MonoBehaviour
     {
         // Lógica de carga de nivel
         Debug.Log($"JUGANDO: {_currentLanguage} - {_currentLevelId}");
-        GameManager.Instance.SetCurrentLevel(_currentLanguage, _currentLevelId);
+        GameManager.Instance.SetCurrentLevel(_currentLanguage, _currentLevelId, _isLocal);
         BackgroundTransition.Instance.ToggleTransitionAndLoad("GameScene");
     }
 

@@ -40,8 +40,14 @@ public class GameSceneManager : MonoBehaviour
 
     private void Start()
     {
-        //StartCoroutine(LoadLevelAsync());
-        LoadLevelFromPlayFab();
+        if (GameManager.Instance.isLocal)
+        {
+            LoadLevelFromLocal();
+        }
+        else
+        {
+            LoadLevelFromPlayFab();
+        }
     }
     private void LoadLevelFromPlayFab()
     {
@@ -91,6 +97,65 @@ public class GameSceneManager : MonoBehaviour
         else
         {
             Debug.Log("baseUIPrefab no asignado: se usará miniGameContainer como punto de montaje (fallback).");
+        }
+
+        // Mostrar el primer minijuego
+        ShowMiniGame(currentMiniGameIndex);
+    }
+
+    private void LoadLevelFromLocal()
+    {
+        totalSuccess = 0;
+        totalFailure = 0;
+
+        // Si es local, "currentLanguage" guarda el ID del itinerario (ej: "custom-12345")
+        string itineraryId = GameManager.Instance.currentLanguage;
+        string targetLevelId = GameManager.Instance.currentLevelId;
+
+        string path = Path.Combine(Application.persistentDataPath, itineraryId + ".json");
+
+        if (!File.Exists(path))
+        {
+            Debug.LogError("Archivo local no encontrado: " + path);
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
+            return;
+        }
+
+        // 1. Leemos el Super-JSON
+        string json = File.ReadAllText(path);
+
+        // Cuidado: Usamos JsonUtility porque así guardamos en ItineraryCreatorManager
+        CustomItineraryData customData = JsonUtility.FromJson<CustomItineraryData>(json);
+
+        // 2. Buscamos el nivel específico dentro de todo el itinerario
+        CustomLevelData targetCustomLevel = customData.levels.Find(l => l.levelId == targetLevelId);
+
+        if (targetCustomLevel == null)
+        {
+            Debug.LogError("Nivel no encontrado en el itinerario local.");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
+            return;
+        }
+
+        // 3. EL TRADUCTOR: Convertimos el CustomLevelData al LevelData clásico que esperan tus minijuegos
+        currentLevelData = new LevelData();
+        currentLevelData.language = itineraryId;
+        currentLevelData.levelId = targetCustomLevel.levelId;
+        currentLevelData.levelTitle = targetCustomLevel.levelTitle;
+        // ¡La lista de minijuegos es idéntica en ambas clases, se pasa directamente!
+        currentLevelData.minigames = targetCustomLevel.minigames;
+
+        Debug.Log($"[LOCAL] Nivel listo: {currentLevelData.levelTitle} con {currentLevelData.minigames.Count} minijuegos.");
+        ConfigurarUIyEmpezar();
+    }
+
+    // He extraído esta parte que se repetía en ambos cargadores
+    private void ConfigurarUIyEmpezar()
+    {
+        if (miniGameBaseClassPrefab != null)
+        {
+            GameObject go = Instantiate(miniGameBaseClassPrefab);
+            miniGameBaseClass = go.GetComponent<MiniGameBaseClass>();
         }
 
         // Mostrar el primer minijuego
@@ -297,8 +362,6 @@ public class GameSceneManager : MonoBehaviour
     {
         Debug.Log("Nivel completado. Calculando resultados...");
 
-        // Ahora solo le pasamos los datos a la UI, y ella decidirá si guarda o no.
-
         // 1. Limpiar el último minijuego activo
         ClearCurrentMiniGame();
 
@@ -311,10 +374,11 @@ public class GameSceneManager : MonoBehaviour
         // 3. Mostrar pantalla de victoria con los NUEVOS DATOS
         if (levelCompletedInstance != null)
         {
-            // --- CAMBIO: NUEVOS ARGUMENTOS ---
-            // Ahora pasamos Language y LevelID para que la UI sepa qué nivel guardar luego
+            //  ¡EL PARCHE DEFINITIVO! 
+            // Usamos GameManager.Instance.currentLanguage para garantizar que la llave 
+            // de guardado ("custom-XXX") sea exactamente la misma que usó el mapa al entrar.
             levelCompletedInstance.Setup(
-                currentLevelData.language,
+                GameManager.Instance.currentLanguage, // ¡La Llave Maestra!
                 currentLevelData.levelId,
                 currentLevelData.levelTitle,
                 totalSuccess,
