@@ -393,6 +393,7 @@ MonoBehaviour:
   authorText: {fileID: 4751977928595628533}
   editButton: {fileID: 3596497286974869144}
   deleteButton: {fileID: 4374083736462123661}
+  shareButton: {fileID: 2792405316923938356}
 --- !u!1 &2646925725486912807
 GameObject:
   m_ObjectHideFlags: 0
