@@ -11,7 +11,7 @@ public class MiniGameArrows : MonoBehaviour, IMiniGame
     [Header("UI")]
     [SerializeField] private Transform leftColumn;   // container (VerticalLayoutGroup)
     [SerializeField] private Transform rightColumn;  // container (VerticalLayoutGroup)
-    [SerializeField] private GameObject buttonPrefab; // prefab botón (con TMP hijo)
+    [SerializeField] private GameObject buttonPrefab; // prefab botÃ³n (con TMP hijo)
 
     private MiniGameData data;
     private MiniGameBaseClass baseUI;
@@ -181,24 +181,20 @@ public class MiniGameArrows : MonoBehaviour, IMiniGame
         }
         else
         {
-            // Reporta a la clase base un fallo, y esta a su vez al manager
             baseUI.ReportFailure();
-
-            StartCoroutine(HandleWrongPair(selectedLeft, selectedRight));
+            StartCoroutine(HandleWrongPair(selectedLeft, selectedRight, expected, chosen));
         }
     }
 
-    private IEnumerator HandleWrongPair(Button a, Button b)
+    private IEnumerator HandleWrongPair(Button a, Button b, string expected, string chosen)
     {
+        foreach(var btn in generatedButtons) if (btn != null) btn.interactable = false;
+
         if (a != null) baseUI.SetButtonColor(a, Color.red);
         if (b != null) baseUI.SetButtonColor(b, Color.red);
 
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.5f);
 
-        if (a != null) baseUI.SetButtonColor(a, Color.white);
-        if (b != null) baseUI.SetButtonColor(b, Color.white);
-
-        selectedLeft = null;
-        selectedRight = null;
+        baseUI.TriggerFailurePopup("Relacionar: " + data.content, chosen, expected);
     }
 }

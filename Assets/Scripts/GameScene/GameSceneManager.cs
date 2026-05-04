@@ -1,4 +1,4 @@
-//GameSceneManager.cs
+ï»¿//GameSceneManager.cs
 using System.IO;
 using UnityEngine;
 using Newtonsoft.Json;
@@ -8,14 +8,14 @@ using UnityEngine.Networking;
 public class GameSceneManager : MonoBehaviour
 {
     [Header("Mount points")]
-    [Tooltip("Fallback: si no usas baseUIPrefab, se instanciarán los minijuegos aquí.")]
+    [Tooltip("Fallback: si no usas baseUIPrefab, se instanciarï¿½n los minijuegos aquï¿½.")]
     public Transform miniGameContainer;
 
     [Header("Optional base UI (recommended)")]
     [Tooltip("Prefab que contiene Canvas, Title, Content, BackButton y GameArea (MiniGameBaseClass)")]
     public GameObject miniGameBaseClassPrefab;
 
-    private MiniGameBaseClass miniGameBaseClass; // instancia única del UI base
+    private MiniGameBaseClass miniGameBaseClass; // instancia ï¿½nica del UI base
 
     private LevelData currentLevelData;
     private int currentMiniGameIndex = 0;
@@ -30,6 +30,12 @@ public class GameSceneManager : MonoBehaviour
     // y su interfaz para poder TearDown() correctamente.
     private GameObject currentMiniGameGO;
     private IMiniGame currentIMiniGame;
+
+    [Header("Failure UI")]
+    public FailurePopupUI failurePopupInstance;
+
+    [Header("Efectos Visuales")]
+    public GlowController glowController;
 
     [Header("End Game UI")]
     public LevelCompletedUI levelCompletedInstance;
@@ -51,24 +57,24 @@ public class GameSceneManager : MonoBehaviour
     }
     private void LoadLevelFromPlayFab()
     {
-        // Resetear estadísticas
+        // Resetear estadï¿½sticas
         totalSuccess = 0;
         totalFailure = 0;
 
-        // Leer selección guardada en GameManager
+        // Leer selecciï¿½n guardada en GameManager
         string language = GameManager.Instance.currentLanguage;
         string levelId = GameManager.Instance.currentLevelId;
 
-        // ¡LA MAGIA! Le pedimos el nivel a PlayFab y nos quedamos esperando a que responda
+        // ï¿½LA MAGIA! Le pedimos el nivel a PlayFab y nos quedamos esperando a que responda
         PlayFabManager.Instancia.PedirNivel(language, levelId, OnNivelRecibido);
     }
 
-    // Esta función se ejecuta automáticamente cuando PlayFab nos entrega el JSON
+    // Esta funciï¿½n se ejecuta automï¿½ticamente cuando PlayFab nos entrega el JSON
     private void OnNivelRecibido(string json)
     {
         if (string.IsNullOrEmpty(json))
         {
-            Debug.LogError("Error al cargar el nivel de PlayFab. Volviendo al menú.");
+            Debug.LogError("Error al cargar el nivel de PlayFab. Volviendo al menï¿½.");
             UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
             return;
         }
@@ -96,7 +102,7 @@ public class GameSceneManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("baseUIPrefab no asignado: se usará miniGameContainer como punto de montaje (fallback).");
+            Debug.Log("baseUIPrefab no asignado: se usarï¿½ miniGameContainer como punto de montaje (fallback).");
         }
 
         // Mostrar el primer minijuego
@@ -124,10 +130,10 @@ public class GameSceneManager : MonoBehaviour
         // 1. Leemos el Super-JSON
         string json = File.ReadAllText(path);
 
-        // Cuidado: Usamos JsonUtility porque así guardamos en ItineraryCreatorManager
+        // Cuidado: Usamos JsonUtility porque asï¿½ guardamos en ItineraryCreatorManager
         CustomItineraryData customData = JsonUtility.FromJson<CustomItineraryData>(json);
 
-        // 2. Buscamos el nivel específico dentro de todo el itinerario
+        // 2. Buscamos el nivel especï¿½fico dentro de todo el itinerario
         CustomLevelData targetCustomLevel = customData.levels.Find(l => l.levelId == targetLevelId);
 
         if (targetCustomLevel == null)
@@ -137,19 +143,19 @@ public class GameSceneManager : MonoBehaviour
             return;
         }
 
-        // 3. EL TRADUCTOR: Convertimos el CustomLevelData al LevelData clásico que esperan tus minijuegos
+        // 3. EL TRADUCTOR: Convertimos el CustomLevelData al LevelData clï¿½sico que esperan tus minijuegos
         currentLevelData = new LevelData();
         currentLevelData.language = itineraryId;
         currentLevelData.levelId = targetCustomLevel.levelId;
         currentLevelData.levelTitle = targetCustomLevel.levelTitle;
-        // ¡La lista de minijuegos es idéntica en ambas clases, se pasa directamente!
+        // ï¿½La lista de minijuegos es idï¿½ntica en ambas clases, se pasa directamente!
         currentLevelData.minigames = targetCustomLevel.minigames;
 
         Debug.Log($"[LOCAL] Nivel listo: {currentLevelData.levelTitle} con {currentLevelData.minigames.Count} minijuegos.");
         ConfigurarUIyEmpezar();
     }
 
-    // He extraído esta parte que se repetía en ambos cargadores
+    // He extraï¿½do esta parte que se repetï¿½a en ambos cargadores
     private void ConfigurarUIyEmpezar()
     {
         if (miniGameBaseClassPrefab != null)
@@ -164,11 +170,11 @@ public class GameSceneManager : MonoBehaviour
 
     //private IEnumerator LoadLevelAsync()
     //{
-    //    // Resetear estadísticas
+    //    // Resetear estadï¿½sticas
     //    totalSuccess = 0;
     //    totalFailure = 0;
 
-    //    // Leer selección guardada en GameManager
+    //    // Leer selecciï¿½n guardada en GameManager
     //    string language = GameManager.Instance.currentLanguage;
     //    string levelId = GameManager.Instance.currentLevelId;
 
@@ -196,7 +202,7 @@ public class GameSceneManager : MonoBehaviour
     //    {
     //        if (!File.Exists(path))
     //        {
-    //            Debug.LogError($"No se encontró el archivo del nivel: {path}");
+    //            Debug.LogError($"No se encontrï¿½ el archivo del nivel: {path}");
     //            yield break;
     //        }
     //        json = File.ReadAllText(path);
@@ -225,7 +231,7 @@ public class GameSceneManager : MonoBehaviour
     //    }
     //    else
     //    {
-    //        Debug.Log("baseUIPrefab no asignado: se usará miniGameContainer como punto de montaje (fallback).");
+    //        Debug.Log("baseUIPrefab no asignado: se usarï¿½ miniGameContainer como punto de montaje (fallback).");
     //    }
 
     //    // Mostrar el primer minijuego
@@ -264,7 +270,7 @@ public class GameSceneManager : MonoBehaviour
         // Limpiar el minijuego anterior (TearDown + Destroy)
         ClearCurrentMiniGame();
 
-        // Si hay baseUIInstance, actualizar título / content antes de instanciar contenido
+        // Si hay baseUIInstance, actualizar tï¿½tulo / content antes de instanciar contenido
         if (miniGameBaseClass != null)
             miniGameBaseClass.Show(data, this);
 
@@ -279,11 +285,11 @@ public class GameSceneManager : MonoBehaviour
 
         if (prefabToLoad == null)
         {
-            Debug.LogError($"No se encontró prefab para el tipo: {data.type}");
+            Debug.LogError($"No se encontrï¿½ prefab para el tipo: {data.type}");
             return;
         }
 
-        // Instanciar el prefab DENTRO del mountPoint (heredará el canvas del base UI si existe)
+        // Instanciar el prefab DENTRO del mountPoint (heredarï¿½ el canvas del base UI si existe)
         currentMiniGameGO = Instantiate(prefabToLoad, mountPoint);
 
         // Buscar en los componentes del gameObject el primero que implemente IMiniGame
@@ -317,7 +323,7 @@ public class GameSceneManager : MonoBehaviour
         {
             if (c is IMiniGame im) return im;
         }
-        // también buscar en hijos (en el caso de que el script esté en un child)
+        // tambiï¿½n buscar en hijos (en el caso de que el script estï¿½ en un child)
         var childComps = go.GetComponentsInChildren<MonoBehaviour>(true);
         foreach (var c in childComps)
         {
@@ -349,6 +355,22 @@ public class GameSceneManager : MonoBehaviour
         }
     }
 
+    public void HandleMiniGameFailure(MiniGameData data, string question, string userAns, string correctAns)
+    {
+        currentLevelData.minigames.Add(data);
+        ClearCurrentMiniGame();
+        
+        if (failurePopupInstance != null)
+        {
+            failurePopupInstance.Setup(question, userAns, correctAns);
+        }
+        else
+        {
+            Debug.LogWarning("No hay FailurePopupUI asignado. Pasando al siguiente minijuego.");
+            NextMiniGame();
+        }
+    }
+
     public void RecordResult(bool esAcierto)
     {
         if (esAcierto) totalSuccess++;
@@ -362,7 +384,7 @@ public class GameSceneManager : MonoBehaviour
     {
         Debug.Log("Nivel completado. Calculando resultados...");
 
-        // 1. Limpiar el último minijuego activo
+        // 1. Limpiar el ï¿½ltimo minijuego activo
         ClearCurrentMiniGame();
 
         // 2. Ocultar la UI Base del juego
@@ -374,11 +396,11 @@ public class GameSceneManager : MonoBehaviour
         // 3. Mostrar pantalla de victoria con los NUEVOS DATOS
         if (levelCompletedInstance != null)
         {
-            //  ¡EL PARCHE DEFINITIVO! 
+            //  ï¿½EL PARCHE DEFINITIVO! 
             // Usamos GameManager.Instance.currentLanguage para garantizar que la llave 
-            // de guardado ("custom-XXX") sea exactamente la misma que usó el mapa al entrar.
+            // de guardado ("custom-XXX") sea exactamente la misma que usï¿½ el mapa al entrar.
             levelCompletedInstance.Setup(
-                GameManager.Instance.currentLanguage, // ¡La Llave Maestra!
+                GameManager.Instance.currentLanguage, // ï¿½La Llave Maestra!
                 currentLevelData.levelId,
                 currentLevelData.levelTitle,
                 totalSuccess,
@@ -387,13 +409,13 @@ public class GameSceneManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("No has asignado LevelCompletedUI. Volviendo al menú.");
+            Debug.LogWarning("No has asignado LevelCompletedUI. Volviendo al menï¿½.");
             UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
         }
     }
 
     // -------------------------
-    // API pública simple
+    // API pï¿½blica simple
     // -------------------------
     public void NextMiniGame()
     {
@@ -406,4 +428,5 @@ public class GameSceneManager : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
     }
 }
+
 

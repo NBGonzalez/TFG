@@ -61,7 +61,7 @@ public class MiniGameFillBlanks : MonoBehaviour, IMiniGame
         {
             foreach (var bl in data.blanks)
             {
-                playerAnswers[bl.id] = ""; // vacío al inicio
+                playerAnswers[bl.id] = ""; // vacÃ­o al inicio
             }
         }
 
@@ -102,17 +102,17 @@ public class MiniGameFillBlanks : MonoBehaviour, IMiniGame
 
             generatedButtons.Add(btn);
 
-            // reset visual con helper del baseUI (si está)
+            // reset visual con helper del baseUI (si estÃ¡)
             baseUI?.SetButtonColor(btn, Color.white);
         }
     }
 
     // -------------------------
-    // Selección de opción
+    // SelecciÃ³n de opciÃ³n
     // -------------------------
     private void OnSelected(Button btn, string selected)
     {
-        // buscar primer hueco vacío (orden por id creciente)
+        // buscar primer hueco vacÃ­o (orden por id creciente)
         int targetId = -1;
         foreach (var kv in playerAnswers)
         {
@@ -126,7 +126,7 @@ public class MiniGameFillBlanks : MonoBehaviour, IMiniGame
         if (targetId == -1)
         {
             // todos llenos
-            baseUI?.ShowError("Todos los huecos ya están completos.");
+            baseUI?.ShowError("Todos los huecos ya estÃ¡n completos.");
             return;
         }
 
@@ -135,40 +135,56 @@ public class MiniGameFillBlanks : MonoBehaviour, IMiniGame
         ReplacePlaceholderInDisplayedContent(targetId, selected);
         UpdateBaseContentText();
 
-        // chequeo automático si ya están todos rellenados
+        // chequeo automÃ¡tico si ya estÃ¡n todos rellenados
         if (AllFilled())
         {
             if (AllCorrect())
             {
                 baseUI.ReportSuccess();
-                // éxito: marcar botón pulsado en verde (feedback breve) y avanzar
+                // Ã©xito: marcar botÃ³n pulsado en verde (feedback breve) y avanzar
                 baseUI?.SetButtonColor(btn, Color.green);
                 // usar coroutine del baseUI para respetar delays
                 if (baseUI != null) baseUI.StartCoroutine(baseUI.NextMiniGameDelayed(0.6f));
             }
             else
             {
-                baseUI.ReportFailure();
-                // error: parpadeo en rojo en el botón que se ha pulsado
-                if (baseUI != null)
-                    baseUI.StartCoroutine(baseUI.FlashButtonColor(btn, Color.red));
-                baseUI?.ShowError("Hay respuestas incorrectas. Intenta de nuevo.");
-                // no bloqueamos, permitimos reintentos: vaciamos solo los huecos incorrectos para que reconozca cambios
-                ClearIncorrectAnswers();
-                UpdateBaseContentText();
+                foreach(var b in generatedButtons) if (b != null) b.interactable = false;
+
+                string firstWrongChosen = "";
+                string firstWrongCorrect = "";
+                foreach (var bl in data.blanks)
+                {
+                    if (playerAnswers.ContainsKey(bl.id) && playerAnswers[bl.id] != bl.correct)
+                    {
+                        firstWrongChosen = playerAnswers[bl.id];
+                        firstWrongCorrect = bl.correct;
+                        break;
+                    }
+                }
+
+                baseUI.StartCoroutine(FailSequenceFillBlanks(btn, firstWrongChosen, firstWrongCorrect));
             }
         }
     }
 
+    private IEnumerator FailSequenceFillBlanks(Button btn, string chosen, string correct)
+    {
+        baseUI.ReportFailure();
+        baseUI?.ShowError("Hay respuestas incorrectas.");
+        if (baseUI != null) yield return baseUI.StartCoroutine(baseUI.FlashButtonColor(btn, Color.red, 0.5f));
+        
+        baseUI.TriggerFailurePopup(data.content, chosen, correct);
+    }
+
     // -------------------------
-    // Manipulación del texto mostrado
+    // ManipulaciÃ³n del texto mostrado
     // -------------------------
     private void ReplacePlaceholderInDisplayedContent(int blankId, string chosen)
     {
         string placeholder = $"____{blankId}";
 
-        // Reemplazamos la primera aparición del placeholder por la elección.
-        // Para evitar reemplazar otras apariciones idénticas (si existieran),
+        // Reemplazamos la primera apariciÃ³n del placeholder por la elecciÃ³n.
+        // Para evitar reemplazar otras apariciones idÃ©nticas (si existieran),
         // construimos la nueva cadena manualmente.
         int idx = displayedContent.IndexOf(placeholder);
         if (idx >= 0)
@@ -181,14 +197,14 @@ public class MiniGameFillBlanks : MonoBehaviour, IMiniGame
     {
         if (baseUI != null && baseUI.contentText != null)
         {
-            // Puedes añadir estilo aquí (por ej color) si quieres:
+            // Puedes aÃ±adir estilo aquÃ­ (por ej color) si quieres:
             // actualmente ya hemos insertado el texto elegido directamente en displayedContent
             baseUI.contentText.text = displayedContent;
         }
     }
 
     // -------------------------
-    // Validación helpers
+    // ValidaciÃ³n helpers
     // -------------------------
     private bool AllFilled()
     {
@@ -208,7 +224,7 @@ public class MiniGameFillBlanks : MonoBehaviour, IMiniGame
         return true;
     }
 
-    // Vacía únicamente las respuestas que están incorrectas (para permitir reintentos)
+    // VacÃ­a Ãºnicamente las respuestas que estÃ¡n incorrectas (para permitir reintentos)
     private void ClearIncorrectAnswers()
     {
         if (data == null || data.blanks == null) return;
@@ -220,12 +236,12 @@ public class MiniGameFillBlanks : MonoBehaviour, IMiniGame
                 wrongIds.Add(bl.id);
         }
 
-        // restaurar placeholders en displayedContent para cada id erróneo
+        // restaurar placeholders en displayedContent para cada id errÃ³neo
         foreach (int id in wrongIds)
         {
             string placeholder = $"____{id}";
 
-            // Reemplazamos la respuesta actual por el placeholder (la primera aparición)
+            // Reemplazamos la respuesta actual por el placeholder (la primera apariciÃ³n)
             // Buscamos la respuesta (playerAnswers[id]) y la sustituimos por el placeholder
             string answer = playerAnswers[id] ?? "";
             int idx = displayedContent.IndexOf(answer);
@@ -234,7 +250,7 @@ public class MiniGameFillBlanks : MonoBehaviour, IMiniGame
                 displayedContent = displayedContent.Substring(0, idx) + placeholder + displayedContent.Substring(idx + answer.Length);
             }
 
-            playerAnswers[id] = ""; // marcar vacío de nuevo
+            playerAnswers[id] = ""; // marcar vacÃ­o de nuevo
         }
     }
 }

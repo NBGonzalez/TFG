@@ -7,7 +7,7 @@ using System.Collections;
 public class MiniGameBaseClass : MonoBehaviour
 {
     [Header("Base UI")]
-    [Tooltip("Título del minijuego (data.title)")]
+    [Tooltip("TÃ­tulo del minijuego (data.title)")]
     public TextMeshProUGUI titleText;
 
     [Tooltip("Texto principal del minijuego (data.content)")]
@@ -31,7 +31,7 @@ public class MiniGameBaseClass : MonoBehaviour
         this.data = data;
         this.manager = mgr;
 
-        // Título
+        // TÃ­tulo
         if (titleText != null)
             titleText.text = data.title ?? "";
 
@@ -39,7 +39,7 @@ public class MiniGameBaseClass : MonoBehaviour
         if (contentText != null)
             contentText.text = data.content ?? "";
 
-        // Feedback vacío por defecto
+        // Feedback vacÃ­o por defecto
         if (feedbackText != null)
             feedbackText.text = "";
 
@@ -55,6 +55,14 @@ public class MiniGameBaseClass : MonoBehaviour
         Debug.Log("[MiniGameBaseClass] Back button pressed. Returning to MainScene.");
         BackgroundTransition.Instance.ToggleTransitionAndLoad("MainScene");
         //UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
+    }
+
+    public void TriggerFailurePopup(string question, string userAns, string correctAns)
+    {
+        if (manager != null)
+        {
+            manager.HandleMiniGameFailure(data, question, userAns, correctAns);
+        }
     }
 
     // Helpers reutilizables
@@ -83,11 +91,15 @@ public class MiniGameBaseClass : MonoBehaviour
 
     public void ReportSuccess()
     {
+        if (manager.glowController != null) manager.glowController.ShowResult(true);
+
         if (manager != null) manager.RecordResult(true);
     }
 
     public void ReportFailure()
     {
+        if (manager.glowController != null) manager.glowController.ShowResult(false);
+
         if (manager != null) manager.RecordResult(false);
     }
 

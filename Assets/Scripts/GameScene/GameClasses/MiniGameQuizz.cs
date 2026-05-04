@@ -3,12 +3,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System.Collections;
 
 public class MiniGameQuizz : MonoBehaviour, IMiniGame
 {
-    [Header("UI Dinámica")]
-    [SerializeField] private Transform optionsContainer; // Arrastra el panel Vertical aquí
-    [SerializeField] private GameObject buttonPrefab;    // Arrastra Universal_Button aquí
+    [Header("UI DinÃ¡mica")]
+    [SerializeField] private Transform optionsContainer; // Arrastra el panel Vertical aquÃ­
+    [SerializeField] private GameObject buttonPrefab;    // Arrastra Universal_Button aquÃ­
 
     private MiniGameData data;
     private MiniGameBaseClass baseUI;
@@ -52,7 +53,7 @@ public class MiniGameQuizz : MonoBehaviour, IMiniGame
             var tmp = options[i]; options[i] = options[j]; options[j] = tmp;
         }
 
-        // Instanciar botones DINÁMICAMENTE
+        // Instanciar botones DINÃMICAMENTE
         foreach (string opt in options)
         {
             GameObject go = Instantiate(buttonPrefab, optionsContainer);
@@ -70,7 +71,7 @@ public class MiniGameQuizz : MonoBehaviour, IMiniGame
             btn.onClick.AddListener(() => OnOptionSelected(btn, selectedOpt));
         }
 
-        // Forzar update del layout (Truco sucio pero útil en móviles)
+        // Forzar update del layout (Truco sucio pero Ãºtil en mÃ³viles)
         Canvas.ForceUpdateCanvases();
         LayoutRebuilder.ForceRebuildLayoutImmediate(optionsContainer.GetComponent<RectTransform>());
     }
@@ -88,10 +89,17 @@ public class MiniGameQuizz : MonoBehaviour, IMiniGame
         }
         else
         {
-            baseUI.ReportFailure();
-            baseUI.ShowError("Respuesta incorrecta");
-            baseUI.StartCoroutine(baseUI.FlashButtonColor(btn, Color.red));
+            answered = true; // Bloqueamos mÃ¡s clicks
+            baseUI.StartCoroutine(FailSequence(btn, selected));
         }
+    }
+
+    private IEnumerator FailSequence(Button btn, string selected)
+    {
+        baseUI.ReportFailure();
+        baseUI.ShowError("Respuesta incorrecta");
+        yield return baseUI.StartCoroutine(baseUI.FlashButtonColor(btn, Color.red, 0.5f));
+        baseUI.TriggerFailurePopup(data.content, selected, data.correctAnswer);
     }
 
     public void TearDown()
