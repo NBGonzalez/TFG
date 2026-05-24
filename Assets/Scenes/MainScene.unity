@@ -180,6 +180,7 @@ GameObject:
   - component: {fileID: 364744761}
   - component: {fileID: 364744762}
   - component: {fileID: 364744763}
+  - component: {fileID: 364744764}
   m_Layer: 0
   m_Name: '@ Managers'
   m_TagString: Untagged
@@ -263,6 +264,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c1ec726244eaa142be5a74f8a351da5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeepLinkManager
+--- !u!114 &364744764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 364744757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e3b4ee0255a0d44b92c86df184291b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AppColorManager
+  palettes:
+  - name: Theme1
+    primaryColor: {r: 0.11764706, g: 0.11764706, b: 0.18039216, a: 1}
+    secondaryColor: {r: 0, g: 0.81960785, b: 0.79607844, a: 1}
+    lightColor: {r: 0.11372549, g: 0.8235294, b: 0.8862745, a: 0}
+    buttonColor1: {r: 0.54509807, g: 0.36078432, b: 0.9647059, a: 0}
+    buttonColor2: {r: 0.023529412, g: 0.7137255, b: 0.83137256, a: 0}
+    buttonShinnyColor: {r: 0.40392157, g: 0.9098039, b: 0.9764706, a: 0}
+  - name: Theme3
+    primaryColor: {r: 0.043137256, g: 0.09019608, b: 0.078431375, a: 1}
+    secondaryColor: {r: 0.0627451, g: 0.7254902, b: 0.5058824, a: 1}
+    lightColor: {r: 0.019607844, g: 0.5882353, b: 0.4117647, a: 0}
+    buttonColor1: {r: 0.015686275, g: 0.47058824, b: 0.34117648, a: 0}
+    buttonColor2: {r: 0.05490196, g: 0.64705884, b: 0.9137255, a: 0}
+    buttonShinnyColor: {r: 0.43137255, g: 0.90588236, b: 0.7176471, a: 0}
+  - name: Theme4
+    primaryColor: {r: 0.16981131, g: 0.08410466, b: 0.08410466, a: 1}
+    secondaryColor: {r: 1, g: 0.42118448, b: 0.30196083, a: 1}
+    lightColor: {r: 0.78080547, g: 0.7882353, b: 0.094117664, a: 0}
+    buttonColor1: {r: 1, g: 0.6, b: 0, a: 0}
+    buttonColor2: {r: 1, g: 0.32941177, b: 0, a: 0}
+    buttonShinnyColor: {r: 1, g: 0.81960785, b: 0.4, a: 0}
+  - name: Theme5
+    primaryColor: {r: 0.07058824, g: 0.07058824, b: 0.07058824, a: 1}
+    secondaryColor: {r: 0.5803922, g: 0.6392157, b: 0.72156864, a: 1}
+    lightColor: {r: 0.2, g: 0.25490198, b: 0.33333334, a: 0}
+    buttonColor1: {r: 0.374466, g: 0.6048468, b: 0.9339623, a: 0}
+    buttonColor2: {r: 0.79607844, g: 0.8352941, b: 0.88235295, a: 0}
+    buttonShinnyColor: {r: 1, g: 1, b: 1, a: 0}
+  backgroundMaterial: {fileID: 2100000, guid: e01207a820aac0d4bb2669b3f143e296, type: 2}
+  backgroundGraphic: {fileID: 1167436863}
+  buttonsMaterial: {fileID: 2100000, guid: c461af65bcf5f624da14ab673460265d, type: 2}
 --- !u!1 &464794719
 GameObject:
   m_ObjectHideFlags: 0

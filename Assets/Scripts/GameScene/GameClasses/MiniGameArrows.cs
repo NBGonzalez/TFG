@@ -164,8 +164,8 @@ public class MiniGameArrows : MonoBehaviour, IMiniGame
             // Reporta a la clase base un acierto, y esta a su vez al manager
             baseUI.ReportSuccess();
 
-            baseUI.SetButtonColor(selectedLeft, Color.green);
-            baseUI.SetButtonColor(selectedRight, Color.green);
+            baseUI.SetButtonColor(selectedLeft, baseUI.CorrectColor);
+            baseUI.SetButtonColor(selectedRight, baseUI.CorrectColor);
 
             selectedLeft.interactable = false;
             selectedRight.interactable = false;
@@ -190,8 +190,8 @@ public class MiniGameArrows : MonoBehaviour, IMiniGame
     {
         foreach(var btn in generatedButtons) if (btn != null) btn.interactable = false;
 
-        if (a != null) baseUI.SetButtonColor(a, Color.red);
-        if (b != null) baseUI.SetButtonColor(b, Color.red);
+        if (a != null) baseUI.SetButtonColor(a, baseUI.IncorrectColor);
+        if (b != null) baseUI.SetButtonColor(b, baseUI.IncorrectColor);
 
         yield return new WaitForSeconds(0.5f);
 

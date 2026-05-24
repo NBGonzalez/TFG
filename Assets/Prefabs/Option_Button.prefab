@@ -148,7 +148,6 @@ GameObject:
   - component: {fileID: 3832674758527250453}
   - component: {fileID: 6813585928475978927}
   - component: {fileID: 8923933622260017103}
-  - component: {fileID: 3130984834904599719}
   - component: {fileID: 5651660427587365762}
   - component: {fileID: 7612786773738215005}
   m_Layer: 5
@@ -260,20 +259,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3130984834904599719
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1374979827332164924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
-  m_HorizontalFit: 0
-  m_VerticalFit: 2
 --- !u!114 &5651660427587365762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -290,7 +275,7 @@ MonoBehaviour:
   m_MinWidth: -1
   m_MinHeight: -1
   m_PreferredWidth: -1
-  m_PreferredHeight: -1
+  m_PreferredHeight: 100
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1

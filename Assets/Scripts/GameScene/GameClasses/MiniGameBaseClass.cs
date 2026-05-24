@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using System.IO;
 
 public class MiniGameBaseClass : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class MiniGameBaseClass : MonoBehaviour
 
     [Tooltip("Texto para mensajes/feedback corto")]
     public TextMeshProUGUI feedbackText;
+
+    [Tooltip("Componente Image que mostrará la ilustración de la carpeta Resources")]
+    public Image generalQuestionImage;
 
     [Header("Common Controls")]
     public Button backButton;
@@ -48,6 +52,38 @@ public class MiniGameBaseClass : MonoBehaviour
             backButton.onClick.RemoveAllListeners();
             backButton.onClick.AddListener(OnBackPressed);
         }
+        if (generalQuestionImage != null)
+        {
+            // Comprobamos si el JSON trae el array "images" con elementos
+            if (data.images != null && data.images.Count > 0 && !string.IsNullOrEmpty(data.images[0]))
+            {
+                // El JSON dice "sql_sql-1-1.png", extraemos solo "sql_sql-1-1" para que Unity no falle
+                string imageNameWithoutExtension = Path.GetFileNameWithoutExtension(data.images[0]);
+
+                // Construimos la ruta desde la raíz de la carpeta Resources
+                string resourcePath = "MiniGameImages/" + imageNameWithoutExtension;
+
+                // Cargamos el Sprite de forma síncrona e instantánea
+                Sprite loadedSprite = Resources.Load<Sprite>(resourcePath);
+
+                if (loadedSprite != null)
+                {
+                    generalQuestionImage.sprite = loadedSprite;
+                    //generalQuestionImage.SetNativeSize();
+                    generalQuestionImage.gameObject.SetActive(true); // Se muestra si existe
+                }
+                else
+                {
+                    Debug.LogWarning($"[Resources] No se encontró el sprite en la ruta: Resources/{resourcePath}");
+                    generalQuestionImage.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                // Si el minijuego actual (como el Quizz del JSON) no tiene imágenes, apagamos el componente
+                generalQuestionImage.gameObject.SetActive(false);
+            }
+        }
     }
 
     protected void OnBackPressed()
@@ -64,6 +100,10 @@ public class MiniGameBaseClass : MonoBehaviour
             manager.HandleMiniGameFailure(data, question, userAns, correctAns);
         }
     }
+
+    // Colores centralizados (leen de AppColorManager si existe, si no usan defaults)
+    public Color CorrectColor => AppColorManager.Instance != null ? AppColorManager.Instance.CorrectColor : Color.green;
+    public Color IncorrectColor => AppColorManager.Instance != null ? AppColorManager.Instance.IncorrectColor : Color.red;
 
     // Helpers reutilizables
     public void ShowError(string msg)

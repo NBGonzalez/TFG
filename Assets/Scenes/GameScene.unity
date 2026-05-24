@@ -5401,8 +5401,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 600, y: -200}
-  m_SizeDelta: {x: 400, y: 100}
+  m_AnchoredPosition: {x: 540, y: -200}
+  m_SizeDelta: {x: 980, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &171055830
 MonoBehaviour:
@@ -5520,7 +5520,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4205750110079984518, guid: 059c4c8c5f7430f47b55bf1c6d0cfa08, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 400
+      value: 980
       objectReference: {fileID: 0}
     - target: {fileID: 4205750110079984518, guid: 059c4c8c5f7430f47b55bf1c6d0cfa08, type: 3}
       propertyPath: m_SizeDelta.y
@@ -5556,11 +5556,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4205750110079984518, guid: 059c4c8c5f7430f47b55bf1c6d0cfa08, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 600
+      value: 540
       objectReference: {fileID: 0}
     - target: {fileID: 4205750110079984518, guid: 059c4c8c5f7430f47b55bf1c6d0cfa08, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -588.6
+      value: -648.6
       objectReference: {fileID: 0}
     - target: {fileID: 4205750110079984518, guid: 059c4c8c5f7430f47b55bf1c6d0cfa08, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -10605,6 +10605,7 @@ GameObject:
   - component: {fileID: 366340005}
   - component: {fileID: 366340004}
   - component: {fileID: 366340003}
+  - component: {fileID: 366340007}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -10727,9 +10728,29 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 600, y: -394.3}
-  m_SizeDelta: {x: 1100, y: 288.6}
+  m_AnchoredPosition: {x: 540, y: -424.3}
+  m_SizeDelta: {x: 980, y: 288.6}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &366340007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 366340002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: 1
+  m_LayoutPriority: 1
 --- !u!1 &512975357
 GameObject:
   m_ObjectHideFlags: 0
@@ -11159,10 +11180,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1080, y: 1920}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -12503,7 +12524,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac526d267996ede41b56a7cbedbf206c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GeminiService
-  apiKey: AIzaSyA_WVDk1pYVNLmCibmuPeib7jd5JdgWaRw
 --- !u!4 &1664787896
 Transform:
   m_ObjectHideFlags: 0
@@ -12691,10 +12711,10 @@ MonoBehaviour:
     m_Top: 150
     m_Bottom: 150
   m_ChildAlignment: 1
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 0
+  m_Spacing: 30
+  m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
+  m_ChildControlWidth: 1
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0

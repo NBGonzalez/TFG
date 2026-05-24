@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
 
     public bool isLocal { get; private set; }
 
+    //public string targetMainState { get; set; } = "Play";
+
     void Awake()
     {
         if (Instance == null)

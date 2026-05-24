@@ -8,36 +8,47 @@ public class GlowController : MonoBehaviour
     public Image glowImage;
 
     [Header("Ajustes de Parpadeo")]
-    public float flashDuration = 1.5f; // Cuánto dura el parpadeo en total
-    public int flashBlinks = 3;        // Cuántas veces parpadea la luz
-    public float maxAlpha = 0.8f;      // Brillo máximo (0.0 a 1.0)
-
-    [Header("Colores")]
-    public Color colorCorrect = Color.green;
-    public Color colorIncorrect = Color.red;
-    public Color colorWarning = Color.yellow; // Para los minijuegos fallados
+    public float flashDuration = 1.5f;
+    public int flashBlinks = 3;
+    public float maxAlpha = 0.8f;
 
     private Coroutine currentGlowCoroutine;
     private bool isYellowModeActive = false;
 
+    private Color ColorCorrect
+    {
+        get
+        {
+            if (AppColorManager.Instance != null)
+                return AppColorManager.Instance.CorrectColor;
+            return Color.green;
+        }
+    }
+
+    private Color ColorIncorrect
+    {
+        get
+        {
+            if (AppColorManager.Instance != null)
+                return AppColorManager.Instance.IncorrectColor;
+            return Color.red;
+        }
+    }
+
+    private Color ColorWarning => Color.yellow;
+
     private void Start()
     {
-        // Apagamos la luz al empezar
         SetGlowAlpha(0f);
     }
 
-    // =================================================================
-    // 1. EL MODO AMARILLO (Fijo, cuando juega minijuegos fallados)
-    // =================================================================
     public void SetYellowMode(bool active)
     {
         isYellowModeActive = active;
-
         if (currentGlowCoroutine != null) StopCoroutine(currentGlowCoroutine);
-
         if (active)
         {
-            glowImage.color = new Color(colorWarning.r, colorWarning.g, colorWarning.b, maxAlpha * 0.5f); // Un poco más tenue para no molestar
+            glowImage.color = new Color(ColorWarning.r, ColorWarning.g, ColorWarning.b, maxAlpha * 0.5f);
         }
         else
         {
@@ -45,50 +56,35 @@ public class GlowController : MonoBehaviour
         }
     }
 
-    // =================================================================
-    // 2. PARPADEO (Llamas a esto cuando el jugador responde)
-    // =================================================================
     public void ShowResult(bool isCorrect)
     {
         if (currentGlowCoroutine != null) StopCoroutine(currentGlowCoroutine);
-        currentGlowCoroutine = StartCoroutine(FlashRoutine(isCorrect ? colorCorrect : colorIncorrect));
+        currentGlowCoroutine = StartCoroutine(FlashRoutine(isCorrect ? ColorCorrect : ColorIncorrect));
     }
 
     private IEnumerator FlashRoutine(Color targetColor)
     {
         float timer = 0f;
-
-        // Asignamos el color base, pero con el alpha a 0
         targetColor.a = 0f;
         glowImage.color = targetColor;
-
         while (timer < flashDuration)
         {
             timer += Time.deltaTime;
-
-            // Magia matemática: Usamos un Seno para hacer la curva de parpadeo suave
-            // Multiplicamos por PI y por los parpadeos para hacer la onda
             float wave = Mathf.Sin((timer / flashDuration) * Mathf.PI * flashBlinks);
-
-            // Nos aseguramos de que el valor sea positivo (valor absoluto)
             float currentAlpha = Mathf.Abs(wave) * maxAlpha;
-
             SetGlowAlpha(currentAlpha);
             yield return null;
         }
-
-        // Al terminar el parpadeo, volvemos a como estábamos
         if (isYellowModeActive)
         {
-            SetYellowMode(true); // Vuelve al amarillo
+            SetYellowMode(true);
         }
         else
         {
-            SetGlowAlpha(0f); // Se apaga completamente
+            SetGlowAlpha(0f);
         }
     }
 
-    // Función auxiliar para cambiar la transparencia limpiamente
     private void SetGlowAlpha(float alpha)
     {
         Color c = glowImage.color;

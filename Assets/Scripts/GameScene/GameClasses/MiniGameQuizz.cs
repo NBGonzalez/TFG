@@ -83,7 +83,7 @@ public class MiniGameQuizz : MonoBehaviour, IMiniGame
         if (selected == data.correctAnswer)
         {
             answered = true;
-            baseUI.SetButtonColor(btn, Color.green);
+            baseUI.SetButtonColor(btn, baseUI.CorrectColor);
             baseUI.ReportSuccess();
             baseUI.StartCoroutine(baseUI.NextMiniGameDelayed(0.5f));
         }
@@ -98,7 +98,7 @@ public class MiniGameQuizz : MonoBehaviour, IMiniGame
     {
         baseUI.ReportFailure();
         baseUI.ShowError("Respuesta incorrecta");
-        yield return baseUI.StartCoroutine(baseUI.FlashButtonColor(btn, Color.red, 0.5f));
+        yield return baseUI.StartCoroutine(baseUI.FlashButtonColor(btn, baseUI.IncorrectColor, 0.5f));
         baseUI.TriggerFailurePopup(data.content, selected, data.correctAnswer);
     }
 

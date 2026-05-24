@@ -37,13 +37,16 @@ public class Candidate
 
 public class GeminiService : MonoBehaviour
 {
-    [Header("Configuración IA")]
-    [Tooltip("Pega aquí tu API Key de Gemini")]
-    public string apiKey;
+
+    private string apiKey;
 
     [Tooltip("Nombre del modelo. Opciones: gemini-1.5-flash-latest, gemini-1.5-pro, gemini-pro")]
     private string modelName = "gemini-2.5-flash";
 
+    private void Start()
+    {
+        apiKey = SecretKeys.GEMINI_API_KEY;
+    }
     public void AskGemini(string prompt, System.Action<string> onResponse)
     {
         StartCoroutine(PostRequest(prompt, onResponse));

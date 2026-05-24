@@ -97,3 +97,11 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# ==========================================
+# MIS ARCHIVOS IGNORADOS PERSONALIZADOS
+# ==========================================
+
+# Ignorar contraseñas y claves de API
+SecretKeys.cs
+SecretKeys.cs.meta

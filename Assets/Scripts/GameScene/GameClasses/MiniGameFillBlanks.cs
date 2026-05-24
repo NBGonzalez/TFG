@@ -142,7 +142,7 @@ public class MiniGameFillBlanks : MonoBehaviour, IMiniGame
             {
                 baseUI.ReportSuccess();
                 // éxito: marcar botón pulsado en verde (feedback breve) y avanzar
-                baseUI?.SetButtonColor(btn, Color.green);
+                baseUI?.SetButtonColor(btn, baseUI.CorrectColor);
                 // usar coroutine del baseUI para respetar delays
                 if (baseUI != null) baseUI.StartCoroutine(baseUI.NextMiniGameDelayed(0.6f));
             }
@@ -171,7 +171,7 @@ public class MiniGameFillBlanks : MonoBehaviour, IMiniGame
     {
         baseUI.ReportFailure();
         baseUI?.ShowError("Hay respuestas incorrectas.");
-        if (baseUI != null) yield return baseUI.StartCoroutine(baseUI.FlashButtonColor(btn, Color.red, 0.5f));
+        if (baseUI != null) yield return baseUI.StartCoroutine(baseUI.FlashButtonColor(btn, baseUI.IncorrectColor, 0.5f));
         
         baseUI.TriggerFailurePopup(data.content, chosen, correct);
     }

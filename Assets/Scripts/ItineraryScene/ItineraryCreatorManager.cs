@@ -165,6 +165,9 @@ public class ItineraryCreatorManager : MonoBehaviour
     // ... (Aquí siguen tus funciones OnBackButtonPressed y OnFinishButtonPressed de antes) ...
     private void OnBackButtonPressed()
     {
+        PlayerPrefs.SetString("TargetMainState", "Itinerary");
+        PlayerPrefs.Save();
+
         if (BackgroundTransition.Instance != null) BackgroundTransition.Instance.ToggleTransitionAndLoad("MainScene");
         else UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
     }
@@ -256,3 +259,5 @@ public class ItineraryCreatorManager : MonoBehaviour
         // El siguiente paso lógico iría aquí (Subirlo a PlayFab o guardarlo en el PC)
     }
 }
+
+
