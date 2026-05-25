@@ -2380,7 +2380,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
     "m_ObjectId": "375d5d69f9794a93a13a26ab52d28c1b",
     "m_Id": 0,
-    "m_DisplayName": "ColorDegradado",
+    "m_DisplayName": "ColorLight",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -3546,7 +3546,7 @@
     "m_ShaderOutputName": "A",
     "m_StageCapability": 3,
     "m_Value": {
-        "x": 0.5,
+        "x": 2.5,
         "y": 0.0,
         "z": 0.0,
         "w": 0.0
@@ -4852,10 +4852,10 @@
     "m_Guid": {
         "m_GuidSerialized": "8e8c3d63-4e6e-41c2-9a21-cf2f317099ed"
     },
-    "m_Name": "ColorDegradado",
+    "m_Name": "ColorLight",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "ColorDegradado",
-    "m_DefaultReferenceName": "_ColorDegradado",
+    "m_RefNameGeneratedByDisplayName": "ColorLight",
+    "m_DefaultReferenceName": "_ColorLight",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,

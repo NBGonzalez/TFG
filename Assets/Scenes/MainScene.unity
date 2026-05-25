@@ -287,27 +287,28 @@ MonoBehaviour:
   - name: Theme3
     primaryColor: {r: 0.043137256, g: 0.09019608, b: 0.078431375, a: 1}
     secondaryColor: {r: 0.0627451, g: 0.7254902, b: 0.5058824, a: 1}
-    lightColor: {r: 0.019607844, g: 0.5882353, b: 0.4117647, a: 0}
+    lightColor: {r: 0.22241013, g: 0.9622642, b: 0.7326542, a: 0}
     buttonColor1: {r: 0.015686275, g: 0.47058824, b: 0.34117648, a: 0}
     buttonColor2: {r: 0.05490196, g: 0.64705884, b: 0.9137255, a: 0}
     buttonShinnyColor: {r: 0.43137255, g: 0.90588236, b: 0.7176471, a: 0}
   - name: Theme4
     primaryColor: {r: 0.16981131, g: 0.08410466, b: 0.08410466, a: 1}
     secondaryColor: {r: 1, g: 0.42118448, b: 0.30196083, a: 1}
-    lightColor: {r: 0.78080547, g: 0.7882353, b: 0.094117664, a: 0}
+    lightColor: {r: 0.8969233, g: 0.9056604, b: 0.13243146, a: 0}
     buttonColor1: {r: 1, g: 0.6, b: 0, a: 0}
     buttonColor2: {r: 1, g: 0.32941177, b: 0, a: 0}
     buttonShinnyColor: {r: 1, g: 0.81960785, b: 0.4, a: 0}
   - name: Theme5
     primaryColor: {r: 0.07058824, g: 0.07058824, b: 0.07058824, a: 1}
     secondaryColor: {r: 0.5803922, g: 0.6392157, b: 0.72156864, a: 1}
-    lightColor: {r: 0.2, g: 0.25490198, b: 0.33333334, a: 0}
+    lightColor: {r: 0.6556604, g: 0.79744726, b: 1, a: 0}
     buttonColor1: {r: 0.374466, g: 0.6048468, b: 0.9339623, a: 0}
     buttonColor2: {r: 0.79607844, g: 0.8352941, b: 0.88235295, a: 0}
     buttonShinnyColor: {r: 1, g: 1, b: 1, a: 0}
   backgroundMaterial: {fileID: 2100000, guid: e01207a820aac0d4bb2669b3f143e296, type: 2}
   backgroundGraphic: {fileID: 1167436863}
   buttonsMaterial: {fileID: 2100000, guid: c461af65bcf5f624da14ab673460265d, type: 2}
+  backgroundPlayStateShader: {fileID: 2100000, guid: c39b1fb99367dcd4fa510f1a3d1c20f5, type: 2}
 --- !u!1 &464794719
 GameObject:
   m_ObjectHideFlags: 0

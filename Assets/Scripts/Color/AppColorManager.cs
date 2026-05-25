@@ -19,6 +19,7 @@ public struct ColorPalette
 public class AppColorManager : MonoBehaviour
 {
     public static AppColorManager Instance { get; private set; }
+    public static event Action OnPaletteChanged;
 
     [Header("Paletas de la aplicacion")]
     [Tooltip("Rellena cada elemento con un color primario y secundario.")]
@@ -34,6 +35,11 @@ public class AppColorManager : MonoBehaviour
     [Header("Botones")]
     [Tooltip("Arrastra aqui el material de los botones")]
     public Material buttonsMaterial;
+
+    [Header("PlayState")]
+    [Tooltip("Color del fondo en el PlayState")]
+    public Material backgroundPlayStateShader;
+
 
     // =========================================
     //  PRESETS DE DALTONISMO (definidos en codigo)
@@ -119,23 +125,45 @@ public class AppColorManager : MonoBehaviour
 
     private void ApplyPalette()
     {
-        if (palettes == null || palettes.Length == 0 || backgroundMaterial == null) return;
+        if (palettes == null || palettes.Length == 0) return;
         if (currentPaletteIndex >= palettes.Length) return;
 
         var palette = palettes[currentPaletteIndex];
-        backgroundMaterial.SetColor("_ColorBase", palette.primaryColor);
-        backgroundMaterial.SetColor("_ColorEmision", palette.secondaryColor);
-        backgroundMaterial.SetColor("_ColorLight", palette.lightColor);
 
-        backgroundGraphic.material.SetColor("_ColorBase", palette.primaryColor);
-        backgroundGraphic.material.SetColor("_ColorEmision", palette.secondaryColor);
-        backgroundGraphic.material.SetColor("_ColorLight", palette.lightColor);
+        // Fondo principal
+        if (backgroundMaterial != null)
+        {
+            backgroundMaterial.SetColor("_ColorBase", palette.primaryColor);
+            backgroundMaterial.SetColor("_ColorSecundario", palette.secondaryColor);
+            backgroundMaterial.SetColor("_ColorEmision", palette.secondaryColor);
+            backgroundMaterial.SetColor("_ColorLight", palette.lightColor);
+        }
 
-        buttonsMaterial.SetColor("_Color1", palette.buttonColor1);
-        buttonsMaterial.SetColor("_Color2", palette.buttonColor2);
-        buttonsMaterial.SetColor("_ColorShy", palette.buttonShinnyColor);
+        // Fondo del graphic
+        if (backgroundGraphic != null && backgroundGraphic.material != null)
+        {
+            backgroundGraphic.material.SetColor("_ColorBase", palette.primaryColor);
+            backgroundGraphic.material.SetColor("_ColorSecundario", palette.secondaryColor);
+            backgroundGraphic.material.SetColor("_ColorEmision", palette.secondaryColor);
+            backgroundGraphic.material.SetColor("_ColorLight", palette.lightColor);
+        }
 
+        // Botones (material compartido)
+        if (buttonsMaterial != null)
+        {
+            buttonsMaterial.SetColor("_Color1", palette.buttonColor1);
+            buttonsMaterial.SetColor("_Color2", palette.buttonColor2);
+            buttonsMaterial.SetColor("_ColorShy", palette.buttonShinnyColor);
+        }
 
+        // Fondo del PlayState
+        if (backgroundPlayStateShader != null)
+        {
+            backgroundPlayStateShader.SetColor("_BackGroundColor", palette.primaryColor);
+        }
+
+        // Avisar a todos los UIColorElement suscritos
+        OnPaletteChanged?.Invoke();
     }
 
     // =========================================
@@ -157,4 +185,15 @@ public class AppColorManager : MonoBehaviour
         ColorUtility.TryParseHtmlString(hex, out Color c);
         return c;
     }
+
+    // =========================================
+    //  GETTERS DE COLORES ACTUALES
+    // =========================================
+    public Color GetPrimaryColor() { return palettes[currentPaletteIndex].primaryColor; }
+    public Color GetSecondaryColor() { return palettes[currentPaletteIndex].secondaryColor; }
+    public Color GetLightColor() { return palettes[currentPaletteIndex].lightColor; }
+
+    public Color GetButtonColor1() { return palettes[currentPaletteIndex].buttonColor1; }
+    public Color GetButtonColor2() { return palettes[currentPaletteIndex].buttonColor2; }
+    public Color GetButtonShinyColor() { return palettes[currentPaletteIndex].buttonShinnyColor; }
 }
