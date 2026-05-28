@@ -19,6 +19,10 @@ public class LocalItineraryCardUI : MonoBehaviour
     [Tooltip("Pequeño panel que aparece brevemente diciendo que el mensaje fue copiado al portapapeles.")]
     public GameObject clipboardToastPanel;
 
+    [Header("DeleteButton")]
+    [Tooltip("Texto que aparecerá cuando borres un itinerario")]
+    public string exitText = "¿Estás seguro de que quieres borrar el itinerario?";
+
     // Variables internas para saber quiénes somos
     private string myItineraryId;
     private string myFilePath;
@@ -51,6 +55,20 @@ public class LocalItineraryCardUI : MonoBehaviour
     }
 
     private void OnDeleteClicked()
+    {
+        if (ConfirmationPopupManager.Instance != null)
+        {
+            // Pasamos el texto del Inspector y la función de abajo como "receta"
+            ConfirmationPopupManager.Instance.RequestConfirmation(exitText, ExecuteDelete);
+        }
+        else
+        {
+            // Seguro por si acaso: si no hay popup, borra directo
+            ExecuteDelete();
+        }
+    }
+
+    private void ExecuteDelete()
     {
         if (File.Exists(myFilePath))
         {

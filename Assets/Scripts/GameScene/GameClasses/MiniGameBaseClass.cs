@@ -26,6 +26,10 @@ public class MiniGameBaseClass : MonoBehaviour
     [Header("Mount point")]
     public RectTransform gameArea; // donde se instancian los minijuegos
 
+    [Header("ExitText")]
+    [Tooltip("Texto que aparecerá cuando salgas de partida")]
+    public string exitText = "¿Estás seguro de que quieres salir? Tu progreso se perderá.";
+
     protected GameSceneManager manager;
     protected MiniGameData data;
 
@@ -50,7 +54,7 @@ public class MiniGameBaseClass : MonoBehaviour
         if (backButton != null)
         {
             backButton.onClick.RemoveAllListeners();
-            backButton.onClick.AddListener(OnBackPressed);
+            backButton.onClick.AddListener(OnTryToExitMinigame);
         }
         if (generalQuestionImage != null)
         {
@@ -86,12 +90,12 @@ public class MiniGameBaseClass : MonoBehaviour
         }
     }
 
-    protected void OnBackPressed()
-    {
-        Debug.Log("[MiniGameBaseClass] Back button pressed. Returning to MainScene.");
-        BackgroundTransition.Instance.ToggleTransitionAndLoad("MainScene");
-        //UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
-    }
+    //protected void OnBackPressed()
+    //{
+    //    Debug.Log("[MiniGameBaseClass] Back button pressed. Returning to MainScene.");
+    //    BackgroundTransition.Instance.ToggleTransitionAndLoad("MainScene");
+    //    //UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
+    //}
 
     public void TriggerFailurePopup(string question, string userAns, string correctAns)
     {
@@ -159,6 +163,13 @@ public class MiniGameBaseClass : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         manager?.NextMiniGame();
+    }
+
+    public void OnTryToExitMinigame()
+    {
+        ConfirmationPopupManager.Instance.RequestConfirmation(exitText,
+            () => BackgroundTransition.Instance.ToggleTransitionAndLoad("MainScene") // <- Pasamos la función como parámetro
+        );
     }
 
     public GameSceneManager Manager => manager;
