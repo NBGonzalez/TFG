@@ -1487,6 +1487,8 @@ MonoBehaviour:
   deleteButton: {fileID: 3300667000535845559}
   moveUpButton: {fileID: 2786018654108641659}
   moveDownButton: {fileID: 3797418538229689353}
+  tituloPuro: 
+  descripcionPura: 
 --- !u!1 &9156523211048849904
 GameObject:
   m_ObjectHideFlags: 0
@@ -1654,6 +1656,22 @@ PrefabInstance:
     - target: {fileID: 4685941765303969971, guid: 18542a32426506044af7389714dd8519, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7030875453362164194, guid: 18542a32426506044af7389714dd8519, type: 3}
+      propertyPath: editButton
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7030875453362164194, guid: 18542a32426506044af7389714dd8519, type: 3}
+      propertyPath: deleteButton
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7030875453362164194, guid: 18542a32426506044af7389714dd8519, type: 3}
+      propertyPath: moveUpButton
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7030875453362164194, guid: 18542a32426506044af7389714dd8519, type: 3}
+      propertyPath: moveDownButton
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7030875453362164194, guid: 18542a32426506044af7389714dd8519, type: 3}
       propertyPath: miniGameTypeText

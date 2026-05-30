@@ -24,6 +24,8 @@ public class UIColorElement : MonoBehaviour
     [Header("Opciones Avanzadas")]
     public bool modifyButtonColorBlock = true;
 
+    private float colorSaturation = 0.6f;
+
     private Image _image;
     private Button _button;
     private TextMeshProUGUI _text;
@@ -106,8 +108,8 @@ public class UIColorElement : MonoBehaviour
             ColorRole.ButtonColor1 => AppColorManager.Instance.GetButtonColor1(),
             ColorRole.ButtonColor2 => AppColorManager.Instance.GetButtonColor2(),
             ColorRole.ButtonShiny => AppColorManager.Instance.GetButtonShinyColor(),
-            ColorRole.Correct => AppColorManager.Instance.CorrectColor,
-            ColorRole.Incorrect => AppColorManager.Instance.IncorrectColor,
+            ColorRole.Correct => Color.Lerp(AppColorManager.Instance.CorrectColor, Color.white, colorSaturation),
+            ColorRole.Incorrect => Color.Lerp(AppColorManager.Instance.IncorrectColor, Color.white, colorSaturation),
             _ => Color.white
         };
     }

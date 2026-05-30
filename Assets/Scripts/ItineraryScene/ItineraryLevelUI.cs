@@ -15,6 +15,10 @@ public class ItineraryLevelUI : MonoBehaviour
     public Button moveUpButton;      // Flecha Arriba
     public Button moveDownButton;    // Flecha Abajo
 
+    [Header("Delete Confirmation")]
+    [Tooltip("Texto que aparecerá cuando borres un nivel")]
+    public string deleteText = $"¿Estás seguro de que quieres borrar el nivel?";
+
     // NUEVO: Variables ocultas para recordar los datos puros
     public string tituloPuro;
     public string descripcionPura;
@@ -26,7 +30,9 @@ public class ItineraryLevelUI : MonoBehaviour
         if (deleteButton != null) deleteButton.onClick.AddListener(OnDeleteClicked);
         if (moveUpButton != null) moveUpButton.onClick.AddListener(OnMoveUpClicked);
         if (moveDownButton != null) moveDownButton.onClick.AddListener(OnMoveDownClicked);
-    }
+
+        //deleteText = $"¿Estás seguro de que quieres borrar el nivel {headerText.text}?";
+}
 
     public void ConfigurarNivel(string titulo, string descripcion)
     {
@@ -49,7 +55,19 @@ public class ItineraryLevelUI : MonoBehaviour
 
     private void OnDeleteClicked()
     {
-        // Al destruir el nivel, automáticamente se destruyen todos los minijuegos de su interior. ¡Magia!
+        if (ConfirmationPopupManager.Instance != null)
+        {
+            // Pasamos el texto del Inspector y la función de abajo como "receta"
+            ConfirmationPopupManager.Instance.RequestConfirmation(deleteText, ExecuteDelete);
+        }
+        else
+        {
+            // Seguro por si acaso: si no hay popup, borra directo
+            ExecuteDelete();
+        }
+    }
+    private void ExecuteDelete()
+    {
         Destroy(gameObject);
     }
 

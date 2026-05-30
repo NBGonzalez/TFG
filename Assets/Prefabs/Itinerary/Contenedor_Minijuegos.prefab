@@ -293,6 +293,18 @@ MonoBehaviour:
   deleteButton: {fileID: 3051942574352088117}
   moveUpButton: {fileID: 7510601987640025200}
   moveDownButton: {fileID: 6818417786772758330}
+  deleteText: "\xBFEst\xE1s seguro de que quieres borrar el minijuego?"
+  miData:
+    type: 
+    title: 
+    content: 
+    question: 
+    instruction: 
+    options: []
+    correctAnswer: 
+    pairs: []
+    blanks: []
+    images: []
 --- !u!1 &251992496051290283
 GameObject:
   m_ObjectHideFlags: 0

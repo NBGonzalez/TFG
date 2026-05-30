@@ -13,6 +13,10 @@ public class ItineraryMiniGameContainerUI : MonoBehaviour
     public Button moveUpButton;
     public Button moveDownButton;
 
+    [Header("Delete Confirmation")]
+    [Tooltip("Texto que aparecerá cuando borres un minijuego")]
+    public string deleteText = "¿Estás seguro de que quieres borrar el minijuego?";
+
     // ¡EL CEREBRO! Aquí se guarda ABSOLUTAMENTE TODO el JSON de esta pregunta
     public MiniGameData miData;
 
@@ -36,7 +40,25 @@ public class ItineraryMiniGameContainerUI : MonoBehaviour
         ItineraryCreatorManager.Instance.AbrirEdicionMinijuego(this);
     }
 
-    private void OnDeleteClicked() { Destroy(gameObject); }
+    private void OnDeleteClicked() {
+        if (ConfirmationPopupManager.Instance != null)
+        {
+            // Pasamos el texto del Inspector y la función de abajo como "receta"
+            ConfirmationPopupManager.Instance.RequestConfirmation(deleteText, ExecuteDelete);
+            Debug.Log($"[ItineraryMiniGameContainerUI] Solicitud de confirmación para borrar el minijuego.");
+            Debug.Log($"[ItineraryMiniGameContainerUI] Texto mostrado: {deleteText}");
+        }
+        else
+        {
+            // Seguro por si acaso: si no hay popup, borra directo
+            ExecuteDelete();
+        }
+    }
+
+    private void ExecuteDelete()
+    {
+        Destroy(gameObject);
+    }
 
     private void OnMoveUpClicked()
     {
