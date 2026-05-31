@@ -1,17 +1,18 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public enum UnlockRequirementType
 {
-    None,           // Siempre desbloqueado
-    TotalStars,     // Requiere un número de estrellas
-    StreakDays,     // Requiere días de racha
-    // LevelSpecific // (Podríamos añadirlo en el futuro)
+    None,               // Siempre desbloqueado
+    TotalStars,         // Requiere un numero de estrellas
+    StreakDays,          // Requiere dias de racha
+    SQLLevelPassed,     // Requiere haber superado un nivel de SQL
+    BiologiaLevelPassed // Requiere haber superado un nivel de Biologia
 }
 
 [CreateAssetMenu(fileName = "NewTitle", menuName = "Profile/Title Data", order = 1)]
 public class ProfileTitleSO : ScriptableObject
 {
-    [Header("Configuración Interna")]
+    [Header("Configuracion Interna")]
     public string id;
 
     [Header("Lo que ve el jugador")]
@@ -22,9 +23,9 @@ public class ProfileTitleSO : ScriptableObject
     public Color titleColor = Color.white;
 
     [Header("Requisitos de Desbloqueo")]
-    [Tooltip("¿Qué hay que hacer para conseguirlo?")]
+    [Tooltip("Que hay que hacer para conseguirlo?")]
     public UnlockRequirementType requirementType;
 
-    [Tooltip("El valor necesario. Ej: Si elegiste 'TotalStars' y pones 50, necesitas 50 estrellas.")]
+    [Tooltip("El valor necesario. Ej: Si elegiste 'TotalStars' y pones 50, necesitas 50 estrellas. Si elegiste 'SQLLevelPassed' y pones 3, necesitas superar sql-3.")]
     public int requirementValue;
 }

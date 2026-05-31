@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ec933f57de49164ca3468941c1b6ae8, type: 3}
+  m_Name: Title_Streak_10
+  m_EditorClassIdentifier: Assembly-CSharp::ProfileTitleSO
+  id: Title_Streak_10
+  titleName: Leyenda del compromiso
+  description: "Consigue 90 d\xEDas de racha!"
+  icon: {fileID: 6495682988306969357, guid: 81b0428f70c82ca4c803de42a4b574bf, type: 3}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  requirementType: 2
+  requirementValue: 90

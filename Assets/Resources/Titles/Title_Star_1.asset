@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ec933f57de49164ca3468941c1b6ae8, type: 3}
+  m_Name: Title_Star_1
+  m_EditorClassIdentifier: Assembly-CSharp::ProfileTitleSO
+  id: Title_Star_1
+  titleName: "Astr\xF3nomo Aficionado"
+  description: Consigue 6 estrellas jugando!
+  icon: {fileID: 8442483440489259830, guid: 1645b1b14da04764fb62f6e35d394a3b, type: 3}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  requirementType: 1
+  requirementValue: 6

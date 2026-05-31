@@ -27,6 +27,8 @@ public class OptionsState : UIStateBase
     [SerializeField] private float checkInterval = 0.25f;
     [SerializeField] private float timeoutSeconds = 12f;
 
+    [SerializeField] private GlowController glowController;
+
     private Coroutine linkCoroutine;
 
     // ===========================================
@@ -244,6 +246,10 @@ public class OptionsState : UIStateBase
     {
         if (AppColorManager.Instance == null) return;
         AppColorManager.Instance.SetColorBlindMode(index);
+
+        if (glowController != null) glowController.ShowColorBlindPreview();
+        Debug.Log($"[OptionState] Color Blind Mode set to index {index}");
+
         HighlightSelectedColorBlind();
     }
 

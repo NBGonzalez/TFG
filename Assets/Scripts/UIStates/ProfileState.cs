@@ -11,39 +11,55 @@ public class ProfileState : UIStateBase
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI currentTitleText;
     [SerializeField] private Image currentAvatarImage;
-    [SerializeField] private Button editAvatarButton; // El botón transparente sobre la foto
+    [SerializeField] private Button editAvatarButton;
 
     [Header("--- Stats ---")]
     [SerializeField] private TextMeshProUGUI streakText;
     [SerializeField] private TextMeshProUGUI totalStarsText;
 
-    [Header("--- Títulos ---")]
+    [Header("--- Titulos ---")]
     [SerializeField] private Transform titlesGridContent;
     [SerializeField] private GameObject titleSlotPrefab;
     [SerializeField] private TextMeshProUGUI unlockedTitlesCountText;
 
-    [Header("--- Módulos ---")]
-    [SerializeField] private UI_AvatarPicker avatarPickerModule; // REFERENCIA CLAVE al nuevo script
+    [Header("--- Panel Info Titulo Bloqueado ---")]
+    [SerializeField] private GameObject lockedTitlePanel;
+    [SerializeField] private Image lockedTitleImage;
+    [SerializeField] private TextMeshProUGUI lockedTitleNameText;
+    [SerializeField] private TextMeshProUGUI lockedTitleDescription;
+    [SerializeField] private Button lockedTitleOkButton;
+    [SerializeField] private Button lockedTitleBackgroundButton; // Boton transparente del fondo para cerrar al tocar fuera
+
+    [Header("--- Modulos ---")]
+    [SerializeField] private UI_AvatarPicker avatarPickerModule;
 
     private ProfileTitleSO[] allTitlesData;
-    private ProfileAvatarSO[] allAvatarsData; // Necesitamos esto para pintar la foto grande
+    private ProfileAvatarSO[] allAvatarsData;
 
     public override void OnEnter()
     {
         base.OnEnter();
 
-        // Cargamos datos
         allTitlesData = Resources.LoadAll<ProfileTitleSO>("Titles");
         allAvatarsData = Resources.LoadAll<ProfileAvatarSO>("Avatars");
 
         backButton.onClick.AddListener(() => stateManager.ChangeState("Main"));
 
-        // CONEXIÓN LIMPIA:
-        // Al hacer clic, le decimos al módulo: "Muéstrate, y cuando acabes, avísame (RefreshUI)"
         editAvatarButton.onClick.AddListener(() =>
         {
             avatarPickerModule.Show(onClosed: () => RefreshUI());
         });
+
+        // Configurar botones del panel de titulo bloqueado
+        if (lockedTitleOkButton != null)
+            lockedTitleOkButton.onClick.AddListener(CloseLockedTitlePanel);
+
+        if (lockedTitleBackgroundButton != null)
+            lockedTitleBackgroundButton.onClick.AddListener(CloseLockedTitlePanel);
+
+        // Asegurarse de que el panel empieza cerrado
+        if (lockedTitlePanel != null)
+            lockedTitlePanel.SetActive(false);
 
         RefreshUI();
     }
@@ -53,7 +69,6 @@ public class ProfileState : UIStateBase
         var progress = PlayerProgressManager.Instance;
         if (progress == null) return;
 
-        // Textos y Stats
         if (GooglePlayGames.PlayGamesPlatform.Instance.IsAuthenticated())
             nameText.text = GooglePlayGames.PlayGamesPlatform.Instance.GetUserDisplayName();
         else
@@ -62,18 +77,15 @@ public class ProfileState : UIStateBase
         streakText.text = progress.GetStreak().ToString();
         totalStarsText.text = progress.GetTotalStars().ToString();
 
-        // Título Equipado
         string equippedTitleId = progress.GetEquippedTitle();
         var titleData = GetTitleDataById(equippedTitleId);
         currentTitleText.text = titleData != null ? titleData.titleName : "Novato";
         if (titleData != null) currentTitleText.color = titleData.titleColor;
 
-        // Avatar Equipado (NUEVO: Esto faltaba en tu script anterior)
         string equippedAvatarId = progress.GetEquippedAvatarId();
         var avatarData = GetAvatarDataById(equippedAvatarId);
         if (avatarData != null) currentAvatarImage.sprite = avatarData.avatarImage;
 
-        // Lista de Títulos
         GenerateAchievementsGrid(progress);
     }
 
@@ -89,27 +101,8 @@ public class ProfileState : UIStateBase
         return null;
     }
 
-    //private void GenerateAchievementsGrid(PlayerProgressManager progress)
-    //{
-    //    foreach (Transform child in titlesGridContent) Destroy(child.gameObject);
-    //    foreach (var titleData in allTitlesData)
-    //    {
-    //        GameObject newSlot = Instantiate(titleSlotPrefab, titlesGridContent);
-    //        UI_TitleSlot slotScript = newSlot.GetComponent<UI_TitleSlot>();
-
-    //        // Usamos la función HasUnlocked que añadimos al Manager
-    //        bool isUnlocked = titleData.id == "Novato" || progress.HasUnlocked(titleData.id);
-
-    //        slotScript.Setup(titleData, isUnlocked, (id) => {
-    //            progress.EquipTitle(id);
-    //            RefreshUI();
-    //        });
-    //    }
-    //}
-
     private void GenerateAchievementsGrid(PlayerProgressManager progress)
     {
-        // Limpieza...
         foreach (Transform child in titlesGridContent) Destroy(child.gameObject);
 
         int unlockedCount = 0;
@@ -119,17 +112,12 @@ public class ProfileState : UIStateBase
             GameObject newSlot = Instantiate(titleSlotPrefab, titlesGridContent);
             UI_TitleSlot slotScript = newSlot.GetComponent<UI_TitleSlot>();
 
-            // --- AQUÍ ESTÁ LA LÓGICA DESACOPLADA ---
-            // El Manager no sabe nada. Es la Vista la que calcula.
-
             bool isUnlocked = false;
 
-            // 1. ¿Ya lo tengo guardado en mi lista de desbloqueados?
             if (progress.HasUnlocked(titleData.id))
             {
                 isUnlocked = true;
             }
-            // 2. Si no, ¿cumplo los requisitos AHORA MISMO?
             else
             {
                 switch (titleData.requirementType)
@@ -143,33 +131,73 @@ public class ProfileState : UIStateBase
                     case UnlockRequirementType.StreakDays:
                         if (progress.GetStreak() >= titleData.requirementValue) isUnlocked = true;
                         break;
+                    case UnlockRequirementType.SQLLevelPassed:
+                        if (progress.IsLevelCompleted("SQL", $"sql-{titleData.requirementValue}")) isUnlocked = true;
+                        break;
+                    case UnlockRequirementType.BiologiaLevelPassed:
+                        if (progress.IsLevelCompleted("Biologia", $"biologia-{titleData.requirementValue}")) isUnlocked = true;
+                        break;
                 }
 
-                // 3. Si acabo de descubrir que lo cumplo, ¡lo guardo para siempre!
                 if (isUnlocked)
                 {
                     progress.UnlockAchievement(titleData.id);
-                    // Aquí podríamos lanzar un sonido de "¡Nuevo Logro!"
                 }
-
             }
+
             if (isUnlocked)
             {
-                unlockedCount++; // Contamos este título como desbloqueado para mostrarlo en el texto
+                unlockedCount++;
             }
 
-            // Configuramos el slot visualmente
-            slotScript.Setup(titleData, isUnlocked, (id) => {
-                progress.EquipTitle(id);
-                RefreshUI();
-            });
+            // Pasamos ambos callbacks: equipar (desbloqueado) y mostrar info (bloqueado)
+            slotScript.Setup(titleData, isUnlocked,
+                onClickEquip: (id) =>
+                {
+                    progress.EquipTitle(id);
+                    RefreshUI();
+                },
+                onClickLocked: (data) =>
+                {
+                    ShowLockedTitlePanel(data);
+                }
+            );
         }
-        unlockedTitlesCountText.text = $"Títulos Desbloqueados: {unlockedCount}/{allTitlesData.Length}";
+        unlockedTitlesCountText.text = $"Titulos Desbloqueados: {unlockedCount}/{allTitlesData.Length}";
+    }
+
+    // =========================================
+    //  PANEL DE TITULO BLOQUEADO
+    // =========================================
+    private void ShowLockedTitlePanel(ProfileTitleSO data)
+    {
+        if (lockedTitlePanel == null) return;
+
+        // Rellenar el nombre, la imagen y la descripcion del titulo
+        if (lockedTitleImage != null) lockedTitleImage.sprite = data.icon;
+        if (lockedTitleNameText != null) lockedTitleNameText.text = data.titleName;
+        if (lockedTitleDescription != null) lockedTitleDescription.text = data.description;
+
+        lockedTitlePanel.SetActive(true);
+    }
+
+    private void CloseLockedTitlePanel()
+    {
+        if (lockedTitlePanel != null)
+            lockedTitlePanel.SetActive(false);
     }
 
     public override void OnExit()
     {
         backButton.onClick.RemoveAllListeners();
         editAvatarButton.onClick.RemoveAllListeners();
+
+        if (lockedTitleOkButton != null)
+            lockedTitleOkButton.onClick.RemoveAllListeners();
+
+        if (lockedTitleBackgroundButton != null)
+            lockedTitleBackgroundButton.onClick.RemoveAllListeners();
+
+        CloseLockedTitlePanel();
     }
 }

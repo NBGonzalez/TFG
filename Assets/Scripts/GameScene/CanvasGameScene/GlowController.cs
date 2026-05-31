@@ -85,6 +85,53 @@ public class GlowController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Función a parte que llamarás desde OptionsState para la previsualización de daltonismo.
+    /// </summary>
+    public void ShowColorBlindPreview()
+    {
+        // Detiene cualquier parpadeo previo (sea de opciones o de juego) para limpiar la pantalla
+        if (currentGlowCoroutine != null) StopCoroutine(currentGlowCoroutine);
+
+        // Lanza la nueva rutina exclusiva
+        currentGlowCoroutine = StartCoroutine(ColorBlindPreviewRoutine());
+    }
+
+    private IEnumerator ColorBlindPreviewRoutine()
+    {
+        // 1. Un parpadeo rápido con el color Correcto (dura 0.6 segundos, 1 parpadeo)
+        yield return StartCoroutine(StandaloneFlash(ColorCorrect, flashDuration, flashBlinks));
+
+        // Pequeña pausa de décimas de segundo con la pantalla limpia
+        yield return new WaitForSeconds(0.1f);
+
+        // 2. Un parpadeo rápido con el color Incorrecto (dura 0.6 segundos, 1 parpadeo)
+        yield return StartCoroutine(StandaloneFlash(ColorIncorrect, flashDuration, flashBlinks));
+    }
+
+    /// <summary>
+    /// Un motor de parpadeo gemelo pero aislado, que acepta tiempos personalizados 
+    /// sin leer ni alterar las variables 'flashDuration' ni 'flashBlinks' del inspector.
+    /// </summary>
+    /// 
+    private IEnumerator StandaloneFlash(Color targetColor, float customDuration, int customBlinks)
+    {
+        float timer = 0f;
+        targetColor.a = 0f;
+        glowImage.color = targetColor;
+
+        while (timer < customDuration)
+        {
+            timer += Time.deltaTime;
+            float wave = Mathf.Sin((timer / customDuration) * Mathf.PI * customBlinks);
+            float currentAlpha = Mathf.Abs(wave) * maxAlpha;
+            SetGlowAlpha(currentAlpha);
+            yield return null;
+        }
+
+        SetGlowAlpha(0f);
+    }
+
     private void SetGlowAlpha(float alpha)
     {
         Color c = glowImage.color;

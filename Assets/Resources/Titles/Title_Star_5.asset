@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1ec933f57de49164ca3468941c1b6ae8, type: 3}
-  m_Name: Title_SQL_Basic
+  m_Name: Title_Star_5
   m_EditorClassIdentifier: Assembly-CSharp::ProfileTitleSO
-  id: sql_basic
-  titleName: Explorador de Tablas
-  description: Has completado los fundamentos de SQL.
-  icon: {fileID: -5834305448958590551, guid: c9cc4a6d1d67ba74297600a57fb4ce40, type: 3}
-  titleColor: {r: 0.67768776, g: 0.8628458, b: 0.9150943, a: 1}
+  id: Title_Star_5
+  titleName: "Cart\xF3grafo Celeste"
+  description: Consigue 40 estrellas jugando!
+  icon: {fileID: -9112297490797189624, guid: 2435ae7d6a24fe7409322004b4651d7a, type: 3}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
   requirementType: 1
-  requirementValue: 5
+  requirementValue: 40

@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -9,17 +9,24 @@ public class UI_TitleSlot : MonoBehaviour
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Button myButton;
-    [SerializeField] private GameObject lockIcon; // (Opcional) Si quieres poner un candadito
+    [SerializeField] private GameObject lockIcon;
 
     // Variables internas
     private string myTitleId;
     private System.Action<string> onEquipCallback;
+    private System.Action<ProfileTitleSO> onLockedCallback;
+    private ProfileTitleSO myData;
+    private bool isUnlocked;
 
-    // Esta función la llamará el "Jefe" (ProfileState) para configurarme
-    public void Setup(ProfileTitleSO data, bool isUnlocked, System.Action<string> onClickAction)
+    public void Setup(ProfileTitleSO data, bool unlocked,
+                      System.Action<string> onClickEquip,
+                      System.Action<ProfileTitleSO> onClickLocked = null)
     {
+        myData = data;
         myTitleId = data.id;
-        onEquipCallback = onClickAction;
+        isUnlocked = unlocked;
+        onEquipCallback = onClickEquip;
+        onLockedCallback = onClickLocked;
 
         // 1. Poner datos visuales
         if (iconImage != null) iconImage.sprite = data.icon;
@@ -28,14 +35,14 @@ public class UI_TitleSlot : MonoBehaviour
         // 2. Gestionar estado Bloqueado/Desbloqueado
         if (isUnlocked)
         {
-            canvasGroup.alpha = 1f;       // Totalmente visible
-            canvasGroup.interactable = true; // Se puede clicar
+            canvasGroup.alpha = 1f;
+            canvasGroup.interactable = true;
             if (lockIcon != null) lockIcon.SetActive(false);
         }
         else
         {
-            canvasGroup.alpha = 0.5f;     // Semitransparente (apagado)
-            canvasGroup.interactable = false; // No se puede clicar
+            canvasGroup.alpha = 0.5f;
+            canvasGroup.interactable = true; // Interactable para mostrar info del titulo
             if (lockIcon != null) lockIcon.SetActive(true);
         }
 
@@ -43,9 +50,14 @@ public class UI_TitleSlot : MonoBehaviour
         myButton.onClick.RemoveAllListeners();
         myButton.onClick.AddListener(() =>
         {
-            // Al hacer clic, avisamos al Jefe: "¡Eh! Quieren equipar ESTE id"
-            Debug.Log("¡CLIC DETECTADO EN EL BOTÓN!");
-            onEquipCallback?.Invoke(myTitleId);
+            if (isUnlocked)
+            {
+                onEquipCallback?.Invoke(myTitleId);
+            }
+            else
+            {
+                onLockedCallback?.Invoke(myData);
+            }
         });
     }
 }
