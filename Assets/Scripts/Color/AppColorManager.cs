@@ -133,8 +133,8 @@ public class AppColorManager : MonoBehaviour
         // Fondo principal
         if (backgroundMaterial != null)
         {
+
             backgroundMaterial.SetColor("_ColorBase", palette.primaryColor);
-            backgroundMaterial.SetColor("_ColorSecundario", palette.secondaryColor);
             backgroundMaterial.SetColor("_ColorEmision", palette.secondaryColor);
             backgroundMaterial.SetColor("_ColorLight", palette.lightColor);
         }
@@ -143,7 +143,6 @@ public class AppColorManager : MonoBehaviour
         if (backgroundGraphic != null && backgroundGraphic.material != null)
         {
             backgroundGraphic.material.SetColor("_ColorBase", palette.primaryColor);
-            backgroundGraphic.material.SetColor("_ColorSecundario", palette.secondaryColor);
             backgroundGraphic.material.SetColor("_ColorEmision", palette.secondaryColor);
             backgroundGraphic.material.SetColor("_ColorLight", palette.lightColor);
         }

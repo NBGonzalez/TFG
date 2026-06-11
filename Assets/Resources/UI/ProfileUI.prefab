@@ -1003,8 +1003,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 360, y: -350}
-  m_SizeDelta: {x: 620, y: 100}
+  m_AnchoredPosition: {x: 540, y: -350}
+  m_SizeDelta: {x: 980, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7038548555275739377
 CanvasRenderer:
@@ -1073,7 +1073,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1748157720340146500}
-  - component: {fileID: 6830841022350751931}
+  - component: {fileID: 5107001467165512951}
   - component: {fileID: 6903888517411140701}
   m_Layer: 5
   m_Name: Content
@@ -1098,10 +1098,10 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000030052743}
-  m_SizeDelta: {x: 0, y: 15}
-  m_Pivot: {x: 0, y: 1}
---- !u!114 &6830841022350751931
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 50}
+  m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &5107001467165512951
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1110,21 +1110,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 1743590852900725929}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GridLayoutGroup
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
   m_Padding:
-    m_Left: 20
-    m_Right: 20
-    m_Top: 20
-    m_Bottom: 20
+    m_Left: 25
+    m_Right: 25
+    m_Top: 25
+    m_Bottom: 25
   m_ChildAlignment: 0
-  m_StartCorner: 0
-  m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
-  m_Spacing: {x: 25, y: 25}
-  m_Constraint: 0
-  m_ConstraintCount: 2
+  m_Spacing: 25
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!114 &6903888517411140701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2001,8 +2003,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 360, y: -790}
-  m_SizeDelta: {x: 620, y: 680}
+  m_AnchoredPosition: {x: 540, y: -1110}
+  m_SizeDelta: {x: 980, y: 1320}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6808401390339105930
 CanvasRenderer:
@@ -2541,8 +2543,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 360, y: -200}
-  m_SizeDelta: {x: 620, y: 100}
+  m_AnchoredPosition: {x: 540, y: -200}
+  m_SizeDelta: {x: 980, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6563530821355496156
 CanvasRenderer:
@@ -2972,15 +2974,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8773585, g: 0.053800307, b: 0.053800307, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 5050237576729777607, guid: db5b4bb6a8508564fb21e8b8dc88802b, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -3983,8 +3985,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_AvatarPicker
   closeButton: {fileID: 1219358683883878707}
-  gridContent: {fileID: 1748157720340146500}
+  verticalLayoutContent: {fileID: 1748157720340146500}
   avatarSlotPrefab: {fileID: 5374317409369533705, guid: e4d4e52deb1873c4382ebc3faf79049b, type: 3}
+  categoryPrefab: {fileID: 184620209489914762, guid: 3cf5cc1905cb43942b1040d83dd24315, type: 3}
   unlockedAvatarsCountText: {fileID: 6797146484258891721}
 --- !u!1 &7329035699484847818
 GameObject:

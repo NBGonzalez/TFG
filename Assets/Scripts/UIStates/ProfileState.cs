@@ -1,3 +1,4 @@
+//ProfileState.cs
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -47,7 +48,10 @@ public class ProfileState : UIStateBase
 
         editAvatarButton.onClick.AddListener(() =>
         {
-            avatarPickerModule.Show(onClosed: () => RefreshUI());
+            avatarPickerModule.Show(
+                onClosed: () => RefreshUI(),
+                onLockedClick: (lockedAvatar) => ShowLockedAvatarPanel(lockedAvatar)
+            );
         });
 
         // Configurar botones del panel de titulo bloqueado
@@ -101,54 +105,66 @@ public class ProfileState : UIStateBase
         return null;
     }
 
+    private bool IsTitleUnlocked(ProfileTitleSO titleData, PlayerProgressManager progress)
+    {
+        if (progress.HasUnlocked(titleData.id)) return true;
+
+        bool unlocked = false;
+        switch (titleData.requirementType)
+        {
+            case UnlockRequirementType.None:
+                unlocked = true;
+                break;
+            case UnlockRequirementType.TotalStars:
+                unlocked = progress.GetTotalStars() >= titleData.requirementValue;
+                break;
+            case UnlockRequirementType.StreakDays:
+                unlocked = progress.GetStreak() >= titleData.requirementValue;
+                break;
+            case UnlockRequirementType.SQLLevelPassed:
+                unlocked = progress.IsLevelCompleted("SQL", $"sql-{titleData.requirementValue}");
+                break;
+            case UnlockRequirementType.BiologiaLevelPassed:
+                unlocked = progress.IsLevelCompleted("Biologia", $"biologia-{titleData.requirementValue}");
+                break;
+        }
+
+        if (unlocked) progress.UnlockAchievement(titleData.id);
+        return unlocked;
+    }
+
     private void GenerateAchievementsGrid(PlayerProgressManager progress)
     {
         foreach (Transform child in titlesGridContent) Destroy(child.gameObject);
 
         int unlockedCount = 0;
 
+        // Ordenar: 1) Desbloqueados primero, 2) Por tipo de requisito, 3) Por valor ascendente
+        System.Array.Sort(allTitlesData, (a, b) =>
+        {
+            bool aUnlocked = IsTitleUnlocked(a, progress);
+            bool bUnlocked = IsTitleUnlocked(b, progress);
+
+            // 1. Desbloqueados antes que bloqueados
+            if (aUnlocked != bUnlocked)
+                return bUnlocked.CompareTo(aUnlocked);
+
+            // 2. Agrupar por tipo de requisito (orden del enum)
+            if (a.requirementType != b.requirementType)
+                return a.requirementType.CompareTo(b.requirementType);
+
+            // 3. Dentro del mismo tipo, ordenar por valor ascendente
+            return a.requirementValue.CompareTo(b.requirementValue);
+        });
+
         foreach (var titleData in allTitlesData)
         {
+            bool isUnlocked = IsTitleUnlocked(titleData, progress);
+
+            if (isUnlocked) unlockedCount++;
+
             GameObject newSlot = Instantiate(titleSlotPrefab, titlesGridContent);
             UI_TitleSlot slotScript = newSlot.GetComponent<UI_TitleSlot>();
-
-            bool isUnlocked = false;
-
-            if (progress.HasUnlocked(titleData.id))
-            {
-                isUnlocked = true;
-            }
-            else
-            {
-                switch (titleData.requirementType)
-                {
-                    case UnlockRequirementType.None:
-                        isUnlocked = true;
-                        break;
-                    case UnlockRequirementType.TotalStars:
-                        if (progress.GetTotalStars() >= titleData.requirementValue) isUnlocked = true;
-                        break;
-                    case UnlockRequirementType.StreakDays:
-                        if (progress.GetStreak() >= titleData.requirementValue) isUnlocked = true;
-                        break;
-                    case UnlockRequirementType.SQLLevelPassed:
-                        if (progress.IsLevelCompleted("SQL", $"sql-{titleData.requirementValue}")) isUnlocked = true;
-                        break;
-                    case UnlockRequirementType.BiologiaLevelPassed:
-                        if (progress.IsLevelCompleted("Biologia", $"biologia-{titleData.requirementValue}")) isUnlocked = true;
-                        break;
-                }
-
-                if (isUnlocked)
-                {
-                    progress.UnlockAchievement(titleData.id);
-                }
-            }
-
-            if (isUnlocked)
-            {
-                unlockedCount++;
-            }
 
             // Pasamos ambos callbacks: equipar (desbloqueado) y mostrar info (bloqueado)
             slotScript.Setup(titleData, isUnlocked,
@@ -177,6 +193,34 @@ public class ProfileState : UIStateBase
         if (lockedTitleImage != null) lockedTitleImage.sprite = data.icon;
         if (lockedTitleNameText != null) lockedTitleNameText.text = data.titleName;
         if (lockedTitleDescription != null) lockedTitleDescription.text = data.description;
+
+        lockedTitlePanel.SetActive(true);
+    }
+
+    private void ShowLockedAvatarPanel(ProfileAvatarSO avatarData)
+    {
+        if (lockedTitlePanel == null) return;
+
+        // Mostrar la imagen del avatar
+        if (lockedTitleImage != null) lockedTitleImage.sprite = avatarData.avatarImage;
+
+        // Buscar el titulo asociado para obtener nombre y descripcion
+        ProfileTitleSO associatedTitle = null;
+        if (!string.IsNullOrEmpty(avatarData.requiredAchievementId))
+        {
+            associatedTitle = GetTitleDataById(avatarData.requiredAchievementId);
+        }
+
+        if (associatedTitle != null)
+        {
+            if (lockedTitleNameText != null) lockedTitleNameText.text = associatedTitle.titleName;
+            if (lockedTitleDescription != null) lockedTitleDescription.text = associatedTitle.description;
+        }
+        else
+        {
+            if (lockedTitleNameText != null) lockedTitleNameText.text = "Bloqueado";
+            if (lockedTitleDescription != null) lockedTitleDescription.text = "Consigue el logro necesario para desbloquear este avatar.";
+        }
 
         lockedTitlePanel.SetActive(true);
     }

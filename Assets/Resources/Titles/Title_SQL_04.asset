@@ -16,6 +16,6 @@ MonoBehaviour:
   titleName: SQL-Wizzard
   description: Completa el nivel 10 de SQL!
   icon: {fileID: -7567097080799792204, guid: cf2d9511af05b1e4e9361e903fd77a8c, type: 3}
-  titleColor: {r: 1, g: 0.495283, b: 0.97767854, a: 1}
+  titleColor: {r: 0.3160377, g: 0.77339137, b: 1, a: 1}
   requirementType: 3
   requirementValue: 10

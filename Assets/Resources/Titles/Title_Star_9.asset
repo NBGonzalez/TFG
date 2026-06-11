@@ -16,6 +16,6 @@ MonoBehaviour:
   titleName: "Deidad C\xF3smica"
   description: Consigue 150 estrellas jugando!
   icon: {fileID: -2158222849928273861, guid: f035c0a66ab00d045940b00743dfe6a3, type: 3}
-  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  titleColor: {r: 0.96684986, g: 1, b: 0.5330188, a: 1}
   requirementType: 1
   requirementValue: 150

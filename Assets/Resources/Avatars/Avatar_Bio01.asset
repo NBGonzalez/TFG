@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9065dddc006939f4391515e21a804432, type: 3}
+  m_Name: Avatar_Bio01
+  m_EditorClassIdentifier: Assembly-CSharp::ProfileAvatarSO
+  id: Avatar_Bio01
+  avatarImage: {fileID: 4571262675812757822, guid: 948d731bac257334b897485b0517f681, type: 3}
+  isFree: 0
+  requiredAchievementId: Title_Bio_03

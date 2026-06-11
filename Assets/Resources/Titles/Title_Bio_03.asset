@@ -16,6 +16,6 @@ MonoBehaviour:
   titleName: "Soberano de la Evoluci\xF3n"
   description: Completa el nivel 10 de Biologia!
   icon: {fileID: -4518707904468296059, guid: 90218b8cc2212464bb9d25205b1c1512, type: 3}
-  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  titleColor: {r: 0.4719206, g: 0.990566, b: 0.5019081, a: 1}
   requirementType: 4
   requirementValue: 10

@@ -41,8 +41,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AlphaClip: 0.5
     - _Angle: 45
     - _ColorMask: 15
+    - _CornerRadius: 0.1
+    - _QueueControl: -1
+    - _QueueOffset: 0
     - _ScanGap: 0.05
     - _ScanInterval: 5
     - _ScanOpacity: 0.3
@@ -57,11 +61,12 @@ Material:
     - _StencilWriteMask: 255
     - _UIMaskSoftnessX: 1
     - _UIMaskSoftnessY: 1
+    - _XRMotionVectorsPass: 1
     m_Colors:
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
-    - _Color1: {r: 0.54509807, g: 0.36078432, b: 0.9647059, a: 0}
-    - _Color2: {r: 0.023529412, g: 0.7137255, b: 0.83137256, a: 0}
-    - _ColorShy: {r: 0.40392157, g: 0.9098039, b: 0.9764706, a: 0}
+    - _Color1: {r: 0.65882355, g: 0.8627451, b: 0.8784314, a: 0}
+    - _Color2: {r: 0.72156864, g: 0.9019608, b: 0.83137256, a: 0}
+    - _ColorShy: {r: 0.9019608, g: 0.972549, b: 0.98039216, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &8464078494138110139
