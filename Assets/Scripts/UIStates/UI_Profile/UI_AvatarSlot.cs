@@ -41,8 +41,18 @@ public class UI_AvatarSlot : MonoBehaviour
         // Siempre interactable para poder mostrar info del bloqueado
         myButton.interactable = true;
 
-        // Estado "Seleccionado" (Borde verde)
+        // Estado "Seleccionado" - usar el color correcto del AppColorManager
         selectionBorder.SetActive(isSelected);
+        if (isSelected)
+        {
+            Image borderImage = selectionBorder.GetComponent<Image>();
+            if (borderImage != null && AppColorManager.Instance != null)
+            {
+                Color correctColor = AppColorManager.Instance.CorrectColor;
+                correctColor.a = 1f;
+                borderImage.color = correctColor;
+            }
+        }
 
         myButton.onClick.RemoveAllListeners();
         myButton.onClick.AddListener(() =>

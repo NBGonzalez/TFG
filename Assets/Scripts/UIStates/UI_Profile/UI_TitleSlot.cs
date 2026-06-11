@@ -10,6 +10,7 @@ public class UI_TitleSlot : MonoBehaviour
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Button myButton;
     [SerializeField] private GameObject lockIcon;
+    [SerializeField] private GameObject selectionBorder; // Borde que indica el titulo equipado
 
     // Variables internas
     private string myTitleId;
@@ -20,7 +21,8 @@ public class UI_TitleSlot : MonoBehaviour
 
     public void Setup(ProfileTitleSO data, bool unlocked,
                       System.Action<string> onClickEquip,
-                      System.Action<ProfileTitleSO> onClickLocked = null)
+                      System.Action<ProfileTitleSO> onClickLocked = null,
+                      bool isEquipped = false)
     {
         myData = data;
         myTitleId = data.id;
@@ -42,11 +44,27 @@ public class UI_TitleSlot : MonoBehaviour
         else
         {
             canvasGroup.alpha = 0.5f;
-            canvasGroup.interactable = true; // Interactable para mostrar info del titulo
+            canvasGroup.interactable = true;
             if (lockIcon != null) lockIcon.SetActive(true);
         }
 
-        // 3. Configurar el clic
+        // 3. Estado "Equipado" - usar el color correcto del AppColorManager
+        if (selectionBorder != null)
+        {
+            selectionBorder.SetActive(isEquipped);
+            if (isEquipped)
+            {
+                Image borderImage = selectionBorder.GetComponent<Image>();
+                if (borderImage != null && AppColorManager.Instance != null)
+                {
+                    Color correctColor = AppColorManager.Instance.CorrectColor;
+                    correctColor.a = 1f;
+                    borderImage.color = correctColor;
+                }
+            }
+        }
+
+        // 4. Configurar el clic
         myButton.onClick.RemoveAllListeners();
         myButton.onClick.AddListener(() =>
         {

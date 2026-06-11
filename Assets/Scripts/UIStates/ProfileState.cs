@@ -157,6 +157,8 @@ public class ProfileState : UIStateBase
             return a.requirementValue.CompareTo(b.requirementValue);
         });
 
+        string equippedTitleId = progress.GetEquippedTitle();
+
         foreach (var titleData in allTitlesData)
         {
             bool isUnlocked = IsTitleUnlocked(titleData, progress);
@@ -165,6 +167,8 @@ public class ProfileState : UIStateBase
 
             GameObject newSlot = Instantiate(titleSlotPrefab, titlesGridContent);
             UI_TitleSlot slotScript = newSlot.GetComponent<UI_TitleSlot>();
+
+            bool isEquipped = titleData.id == equippedTitleId;
 
             // Pasamos ambos callbacks: equipar (desbloqueado) y mostrar info (bloqueado)
             slotScript.Setup(titleData, isUnlocked,
@@ -176,7 +180,8 @@ public class ProfileState : UIStateBase
                 onClickLocked: (data) =>
                 {
                     ShowLockedTitlePanel(data);
-                }
+                },
+                isEquipped: isEquipped
             );
         }
         unlockedTitlesCountText.text = $"Titulos Desbloqueados: {unlockedCount}/{allTitlesData.Length}";
