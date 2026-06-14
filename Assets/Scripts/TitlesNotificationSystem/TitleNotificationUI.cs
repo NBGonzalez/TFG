@@ -9,8 +9,9 @@ public class TitleNotificationUI : MonoBehaviour
     [Header("Referencias UI del Popup")]
     [SerializeField] private RectTransform popupRect;
     [SerializeField] private CanvasGroup popupCanvasGroup;
-    [SerializeField] private Image titleIcon;
-    [SerializeField] private TextMeshProUGUI titleNameText;
+    [SerializeField] private Image notificationIcon;
+    [SerializeField] private TextMeshProUGUI defaultText;    // Texto superior (ej: "¡Has desbloqueado!")
+    [SerializeField] private TextMeshProUGUI titleText;      // Texto inferior (ej: nombre del titulo)
     [SerializeField] private Button popupButton;
 
     [Header("Navegacion")]
@@ -23,17 +24,16 @@ public class TitleNotificationUI : MonoBehaviour
 
     private Coroutine currentNotification;
     private bool isShowing = false;
+    private string currentTargetState; // Estado al que navegar si el jugador pulsa
 
     private void Start()
     {
-        // Asegurar que el popup empieza oculto
         if (popupCanvasGroup != null)
         {
             popupCanvasGroup.alpha = 0f;
             popupCanvasGroup.blocksRaycasts = false;
         }
 
-        // Configurar el boton del popup
         if (popupButton != null)
         {
             popupButton.onClick.AddListener(OnPopupClicked);
@@ -42,17 +42,16 @@ public class TitleNotificationUI : MonoBehaviour
 
     private void Update()
     {
-        // Comprobar si hay notificaciones pendientes y no se esta mostrando ninguna
         if (!isShowing && TitleNotificationManager.Instance != null && TitleNotificationManager.Instance.HasPending)
         {
-            if (TitleNotificationManager.Instance.TryDequeue(out ProfileTitleSO titleData))
+            if (TitleNotificationManager.Instance.TryDequeue(out NotificationData data))
             {
-                ShowNotification(titleData);
+                ShowNotification(data);
             }
         }
     }
 
-    private void ShowNotification(ProfileTitleSO data)
+    private void ShowNotification(NotificationData data)
     {
         if (currentNotification != null)
             StopCoroutine(currentNotification);
@@ -60,13 +59,15 @@ public class TitleNotificationUI : MonoBehaviour
         currentNotification = StartCoroutine(NotificationRoutine(data));
     }
 
-    private IEnumerator NotificationRoutine(ProfileTitleSO data)
+    private IEnumerator NotificationRoutine(NotificationData data)
     {
         isShowing = true;
+        currentTargetState = data.targetState;
 
         // Rellenar datos del popup
-        if (titleIcon != null) titleIcon.sprite = data.icon;
-        if (titleNameText != null) titleNameText.text = data.titleName;
+        if (notificationIcon != null && data.icon != null) notificationIcon.sprite = data.icon;
+        if (defaultText != null) defaultText.text = data.defaultText;
+        if (titleText != null) titleText.text = data.titleText;
 
         // Posicion inicial: fuera de pantalla (arriba)
         Vector2 hiddenPos = new Vector2(popupRect.anchoredPosition.x, slideDistance);
@@ -107,27 +108,28 @@ public class TitleNotificationUI : MonoBehaviour
 
         isShowing = false;
         currentNotification = null;
+        currentTargetState = null;
     }
 
     private void OnPopupClicked()
     {
-        // Parar la animacion actual
         if (currentNotification != null)
         {
             StopCoroutine(currentNotification);
             currentNotification = null;
         }
 
-        // Ocultar el popup inmediatamente
         popupCanvasGroup.alpha = 0f;
         popupCanvasGroup.blocksRaycasts = false;
         isShowing = false;
 
-        // Navegar al ProfileState
-        if (stateManager != null)
+        // Navegar al estado correspondiente (si hay uno definido)
+        if (stateManager != null && !string.IsNullOrEmpty(currentTargetState))
         {
-            stateManager.ChangeState("Profile");
+            stateManager.ChangeState(currentTargetState);
         }
+
+        currentTargetState = null;
     }
 
     private void OnDestroy()

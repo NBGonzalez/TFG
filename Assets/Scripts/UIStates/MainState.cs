@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 
 public class MainState : UIStateBase
@@ -32,9 +32,16 @@ public class MainState : UIStateBase
 
     public void OnResetClicked()
     {
-        // Llamamos a la función destructora del Manager
+        // Resetear el progreso del jugador
         PlayerProgressManager.Instance.ResetAllProgress();
+
+        // Resetear los datos del leaderboard para que los bots se recalculen desde 0
+        PlayerPrefs.DeleteKey("LeaderboardBaseStars");
+        PlayerPrefs.DeleteKey("LeaderboardBaseDate");
+        PlayerPrefs.DeleteKey("LeaderboardRewardDate");
+        PlayerPrefs.DeleteKey("LeaderboardLastRank");
+        PlayerPrefs.Save();
+
+        Debug.Log("[MainState] Progreso y leaderboard reseteados.");
     }
 }
-
-

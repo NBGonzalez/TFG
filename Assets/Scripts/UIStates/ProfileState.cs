@@ -135,7 +135,7 @@ public class ProfileState : UIStateBase
 
             // Encolar notificacion para el popup
             if (TitleNotificationManager.Instance != null)
-                TitleNotificationManager.Instance.EnqueueNotification(titleData);
+                TitleNotificationManager.Instance.EnqueueTitleUnlocked(titleData);
         }
         return unlocked;
     }

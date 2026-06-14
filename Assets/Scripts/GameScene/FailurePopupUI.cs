@@ -51,12 +51,15 @@ public class FailurePopupUI : MonoBehaviour
         if (aiExplanationText != null)
             aiExplanationText.text = "Pensando respuesta...";
 
-        // Formatear el prompt educativo
-        string prompt = $"Eres un profesor amable y conciso. El alumno ha fallado una pregunta de un juego educativo. " +
-                        $"Pregunta original: '{question}'. " +
-                        $"Respuesta del alumno: '{userAnswer}'. " +
-                        $"Respuesta correcta: '{correctAnswer}'. " +
-                        $"Explica brevemente (máximo 3-4 líneas) por qué su respuesta es incorrecta y por qué la correcta lo es.";
+        // Formatear el prompt con instrucciones estrictas para respuestas cortas y naturales
+        string prompt = $"Instrucciones: Responde en maximo 2 frases cortas. " +
+                        $"No saludes. No uses emojis. No uses markdown ni asteriscos. No repitas la pregunta. " +
+                        $"Ve directo al grano. Habla de tu a tu, como un companero de clase. " +
+                        $"Explica solo por que la respuesta correcta lo es.\n\n" +
+                        $"Pregunta: {question}\n" +
+                        $"El alumno respondio: {userAnswer}\n" +
+                        $"La respuesta correcta era: {correctAnswer}\n" +
+                        $"Explicacion:";
 
         GeminiService gemini = FindObjectOfType<GeminiService>();
         if (gemini != null)

@@ -6,7 +6,8 @@ public class TitleNotificationManager : MonoBehaviour
 {
     public static TitleNotificationManager Instance { get; private set; }
 
-    private Queue<ProfileTitleSO> pendingNotifications = new Queue<ProfileTitleSO>();
+    // Cola generica de notificaciones
+    private Queue<NotificationData> pendingNotifications = new Queue<NotificationData>();
 
     public bool HasPending => pendingNotifications.Count > 0;
 
@@ -23,31 +24,70 @@ public class TitleNotificationManager : MonoBehaviour
         }
     }
 
-    public void EnqueueNotification(ProfileTitleSO titleData)
+    // =========================================
+    //  API GENERICA
+    // =========================================
+
+    /// <summary>
+    /// Encola cualquier tipo de notificacion.
+    /// </summary>
+    public void Enqueue(NotificationData data)
     {
-        if (titleData != null)
+        if (data != null)
         {
-            pendingNotifications.Enqueue(titleData);
-            Debug.Log($"[TitleNotification] Notificacion encolada: {titleData.titleName}");
+            pendingNotifications.Enqueue(data);
+            Debug.Log($"[Notification] Encolada: {data.defaultText} - {data.titleText}");
         }
     }
 
-    public bool TryDequeue(out ProfileTitleSO titleData)
+    public bool TryDequeue(out NotificationData data)
     {
         if (pendingNotifications.Count > 0)
         {
-            titleData = pendingNotifications.Dequeue();
+            data = pendingNotifications.Dequeue();
             return true;
         }
-        titleData = null;
+        data = null;
         return false;
     }
 
+    // =========================================
+    //  HELPERS DE CONVENIENCIA
+    // =========================================
+
     /// <summary>
-    /// Comprueba todos los titulos y desbloquea los que cumplen requisitos.
-    /// Los que sean nuevos se encolan como notificacion.
-    /// Llamar al cargar la MainScene para detectar desbloqueos de otras escenas.
+    /// Atajo para encolar una notificacion de titulo desbloqueado.
     /// </summary>
+    public void EnqueueTitleUnlocked(ProfileTitleSO titleData)
+    {
+        if (titleData == null) return;
+
+        var data = new NotificationData(
+            icon: titleData.icon,
+            defaultText: "¡Has desbloqueado!",
+            titleText: titleData.titleName,
+            targetState: "Profile"
+        );
+        Enqueue(data);
+    }
+
+    /// <summary>
+    /// Atajo para encolar una notificacion de recompensa del leaderboard.
+    /// </summary>
+    public void EnqueueLeaderboardReward(int rank, int starsEarned, Sprite trophyIcon)
+    {
+        var data = new NotificationData(
+            icon: trophyIcon,
+            defaultText: $"¡Has quedado en el top {rank} del ranking de ayer!",
+            titleText: $"Como recompensa has obtenido {starsEarned} estrellas.",
+            targetState: "Friends"
+        );
+        Enqueue(data);
+    }
+
+    // =========================================
+    //  CHECK DE TITULOS (ya existente)
+    // =========================================
     public void CheckForNewUnlocks()
     {
         var progress = PlayerProgressManager.Instance;
@@ -57,7 +97,6 @@ public class TitleNotificationManager : MonoBehaviour
 
         foreach (var titleData in allTitles)
         {
-            // Si ya estaba desbloqueado, no es nuevo
             if (progress.HasUnlocked(titleData.id)) continue;
 
             bool unlocked = false;
@@ -83,7 +122,7 @@ public class TitleNotificationManager : MonoBehaviour
             if (unlocked)
             {
                 progress.UnlockAchievement(titleData.id);
-                EnqueueNotification(titleData);
+                EnqueueTitleUnlocked(titleData);
             }
         }
     }

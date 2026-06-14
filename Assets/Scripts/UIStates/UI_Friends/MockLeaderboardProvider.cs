@@ -7,15 +7,13 @@ using System.Linq;
 public class MockLeaderboardProvider : ILeaderboardProvider
 {
     // =========================================
-    //  POOL DE NOMBRES (variados, no solo dev)
+    //  POOL DE NOMBRES (variados)
     // =========================================
     private readonly string[] botNames =
     {
-        // Generales / creativos
         "Lucia_23", "Pablo_M", "IreneBio", "CarlosR", "Marta_99",
         "JorgeLab", "SofiaEst", "DiegoMat", "LauraQ", "RaulTech",
         "Elena_V", "PedroSci", "AlexData", "AndreaChem", "MarcosF",
-        // Mas variados
         "NuriaCell", "AdrianFis", "ClaraMed", "DanielEco", "PatriSQL",
         "HugoGen", "AlbaNeuro", "IvanCalc", "RocioLab", "SergioAI",
         "BeatrizR", "OscarBio", "PaulaNet", "RubenMat", "TeresaDev"
@@ -25,7 +23,15 @@ public class MockLeaderboardProvider : ILeaderboardProvider
     //  CONFIGURACION
     // =========================================
     private const int BOT_COUNT = 8;
-    private const float ROTATION_HOURS = 12f; // Cada cuantas horas rotan algunos bots
+
+    // Offsets ABSOLUTOS de estrellas respecto a la base del jugador.
+    // Basados en que un jugador activo gana ~25 estrellas/dia maximo.
+    // El top esta a +18, alcanzable jugando bien un dia completo.
+    private readonly int[] botOffsets = { 18, 12, 7, 3, -2, -6, -12, -18 };
+
+    // Claves de PlayerPrefs para persistencia
+    private const string PREF_BASE_STARS = "LeaderboardBaseStars";
+    private const string PREF_BASE_DATE = "LeaderboardBaseDate";
 
     public async Task<List<LeaderboardEntry>> GetRanking()
     {
@@ -35,48 +41,46 @@ public class MockLeaderboardProvider : ILeaderboardProvider
 
         // --- Datos del jugador ---
         var progress = PlayerProgressManager.Instance;
-        int playerStars = progress != null ? progress.GetTotalStars() : 0;
+        int playerStarsNow = progress != null ? progress.GetTotalStars() : 0;
 
-        // --- Cargar todos los avatares y titulos disponibles ---
+        // --- Obtener la base congelada del dia ---
+        int baseStars = GetOrUpdateDailyBase(playerStarsNow);
+
+        // --- Semilla del dia (para nombres, avatares, titulos) ---
+        string today = System.DateTime.UtcNow.ToString("yyyyMMdd");
+        int daySeed = today.GetHashCode();
+
+        // --- Cargar avatares y titulos disponibles ---
         ProfileAvatarSO[] allAvatars = Resources.LoadAll<ProfileAvatarSO>("Avatars");
         ProfileTitleSO[] allTitles = Resources.LoadAll<ProfileTitleSO>("Titles");
 
         string[] avatarIds = allAvatars.Select(a => a.id).ToArray();
         string[] titleIds = allTitles.Select(t => t.id).ToArray();
 
-        // Fallbacks por si no hay datos
         if (avatarIds.Length == 0) avatarIds = new[] { "avatar_default" };
         if (titleIds.Length == 0) titleIds = new[] { "Novato" };
 
-        // --- Semilla basada en el dia (persistencia temporal) ---
-        // Cambia cada ROTATION_HOURS horas, asi algunos bots rotan periodicamente
-        int timeSeed = (int)(System.DateTime.UtcNow.Ticks / (System.TimeSpan.TicksPerHour * ROTATION_HOURS));
-
-        // --- Generar bots con distribucion inteligente ---
-        // La clave: las estrellas de los bots se basan en las del jugador
-        // para que siempre tenga competencia cercana y alcanzable
-        int[] botStarOffsets = CalculateBotDistribution(playerStars);
-
+        // --- Generar bots ---
         for (int i = 0; i < BOT_COUNT; i++)
         {
-            // Semilla unica por bot + periodo temporal
-            // Algunos bots usan semilla par (cambian cada periodo)
-            // Otros usan semilla impar (cambian en periodos alternos)
-            // Esto hace que no todos cambien a la vez
-            int botSeed = timeSeed * 1000 + i * 137 + (i % 3 == 0 ? timeSeed / 2 : 0);
-            System.Random rng = new System.Random(botSeed);
+            // Semilla unica por bot + dia (determinista dentro del mismo dia)
+            // Cada bot tiene un offset de semilla diferente para que no todos
+            // cambien el mismo dia: algunos cambian en dias pares, otros en impares
+            int botDaySeed = daySeed + i * 7919;
+            if (i % 3 == 0) botDaySeed += (daySeed / 3); // Variacion extra para algunos
+            System.Random rng = new System.Random(botDaySeed);
 
             var bot = new LeaderboardEntry();
 
-            // Nombre: determinista por semilla
+            // Nombre determinista
             bot.userName = botNames[rng.Next(botNames.Length)];
 
-            // Estrellas: basadas en la distribucion calculada + ligera variacion por semilla
-            int baseStars = botStarOffsets[i];
-            int variation = rng.Next(-1, 2); // -1, 0 o +1 de variacion
-            bot.score = Mathf.Max(1, baseStars + variation);
+            // Estrellas: base congelada + offset fijo + pequena variacion diaria
+            int dailyVariation = rng.Next(0, 4); // 0-3 estrellas de variacion
+            int botScore = baseStars + botOffsets[i] + dailyVariation;
+            bot.score = Mathf.Max(1, botScore);
 
-            // Avatar y titulo: variados con semilla
+            // Avatar y titulo variados
             bot.avatarId = avatarIds[rng.Next(avatarIds.Length)];
             bot.titleId = titleIds[rng.Next(titleIds.Length)];
 
@@ -84,7 +88,7 @@ public class MockLeaderboardProvider : ILeaderboardProvider
             ranking.Add(bot);
         }
 
-        // --- Anadir al jugador real ---
+        // --- Anadir al jugador real (con estrellas ACTUALES, no la base) ---
         if (progress != null)
         {
             var myEntry = new LeaderboardEntry();
@@ -94,7 +98,7 @@ public class MockLeaderboardProvider : ILeaderboardProvider
             else
                 myEntry.userName = "Tu (Invitado)";
 
-            myEntry.score = playerStars;
+            myEntry.score = playerStarsNow; // Estrellas en tiempo real
             myEntry.avatarId = progress.GetEquippedAvatarId();
             myEntry.titleId = progress.GetEquippedTitle();
             myEntry.isMe = true;
@@ -112,68 +116,29 @@ public class MockLeaderboardProvider : ILeaderboardProvider
     }
 
     /// <summary>
-    /// Genera una distribucion de estrellas para los bots basada en el progreso del jugador.
-    ///
-    /// PSICOLOGIA DEL APRENDIZAJE aplicada:
-    ///
-    /// 1. EFECTO NEAR-MISS: 2 bots estan justo por encima del jugador (+1 a +4 estrellas).
-    ///    Esto genera la sensacion de "con un nivel mas les adelanto", motivando a seguir.
-    ///
-    /// 2. PROGRESO VISIBLE: 2 bots estan justo por debajo (-1 a -3 estrellas).
-    ///    El jugador ve que ha superado a otros, reforzando su autoeficacia.
-    ///
-    /// 3. META ASPIRACIONAL ALCANZABLE: El bot top esta a +30-60% de las estrellas del jugador.
-    ///    Es dificil pero NO imposible llegar al #1. Si el jugador juega mucho, puede lograrlo.
-    ///    Pero como la semilla cambia cada 12h, el top puede "subir" ligeramente, haciendo
-    ///    que mantener el #1 sea un reto continuo (no permanente).
-    ///
-    /// 4. ZONA DE CONFORT: 2 bots estan bastante por debajo (-30% a -50%).
-    ///    Esto evita la frustracion total y da sensacion de comunidad activa.
-    ///
-    /// 5. ESCALADO POR 3: Como cada nivel da max 3 estrellas, las diferencias son multiplos
-    ///    de 1-3 para que se sientan como "un nivel de diferencia".
+    /// Obtiene las estrellas base del dia actual.
+    /// Si es un dia nuevo, actualiza la base con las estrellas actuales del jugador.
+    /// Los bots se calculan sobre esta base CONGELADA, asi que mientras el jugador
+    /// gana estrellas durante el dia, SUBE en el ranking.
+    /// Al dia siguiente, la base se actualiza y los bots "avanzan" tambien.
     /// </summary>
-    private int[] CalculateBotDistribution(int playerStars)
+    private int GetOrUpdateDailyBase(int currentPlayerStars)
     {
-        int[] offsets = new int[BOT_COUNT];
+        string today = System.DateTime.UtcNow.ToString("yyyyMMdd");
+        string storedDate = PlayerPrefs.GetString(PREF_BASE_DATE, "");
 
-        // Caso especial: jugador nuevo (0-2 estrellas)
-        if (playerStars <= 2)
+        if (storedDate != today)
         {
-            offsets[0] = 6;  // Top aspiracional
-            offsets[1] = 4;  // Reto medio
-            offsets[2] = 3;  // Near-miss arriba
-            offsets[3] = 2;  // Near-miss arriba
-            offsets[4] = 1;  // Justo abajo (o igual)
-            offsets[5] = 1;  // Justo abajo
-            offsets[6] = 0;  // Abajo
-            offsets[7] = 0;  // Abajo
-            return offsets;
+            // Nuevo dia: congelar las estrellas actuales como base
+            PlayerPrefs.SetInt(PREF_BASE_STARS, currentPlayerStars);
+            PlayerPrefs.SetString(PREF_BASE_DATE, today);
+            PlayerPrefs.Save();
+
+            Debug.Log($"[Leaderboard] Nuevo dia. Base congelada: {currentPlayerStars} estrellas");
+            return currentPlayerStars;
         }
 
-        // Distribucion normal relativa al jugador
-        // Top aspiracional: +30% a +60% (alcanzable con esfuerzo)
-        offsets[0] = playerStars + Mathf.Max(3, Mathf.RoundToInt(playerStars * 0.50f));
-        offsets[1] = playerStars + Mathf.Max(2, Mathf.RoundToInt(playerStars * 0.30f));
-
-        // Near-miss arriba: +1 a +4 estrellas (efecto "casi les pillo")
-        offsets[2] = playerStars + Mathf.Clamp(Mathf.RoundToInt(playerStars * 0.10f), 2, 4);
-        offsets[3] = playerStars + 1;
-
-        // Near-miss abajo: -1 a -3 estrellas (refuerzo positivo)
-        offsets[4] = playerStars - 1;
-        offsets[5] = playerStars - Mathf.Clamp(Mathf.RoundToInt(playerStars * 0.10f), 2, 3);
-
-        // Zona de confort abajo: -30% a -50%
-        offsets[6] = playerStars - Mathf.Max(2, Mathf.RoundToInt(playerStars * 0.35f));
-        offsets[7] = playerStars - Mathf.Max(3, Mathf.RoundToInt(playerStars * 0.50f));
-
-        // Asegurar minimo de 1 estrella para todos
-        for (int i = 0; i < offsets.Length; i++)
-        {
-            offsets[i] = Mathf.Max(1, offsets[i]);
-        }
-
-        return offsets;
+        // Mismo dia: devolver la base congelada
+        return PlayerPrefs.GetInt(PREF_BASE_STARS, currentPlayerStars);
     }
 }

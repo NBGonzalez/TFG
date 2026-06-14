@@ -462,7 +462,7 @@ MonoBehaviour:
     primaryColor: {r: 0.101960786, g: 0.078431375, b: 0.2, a: 1}
     secondaryColor: {r: 0.25882354, g: 0.65882355, b: 0.6901961, a: 1}
     lightColor: {r: 1, g: 1, b: 1, a: 0}
-    buttonColor1: {r: 0.7882353, g: 0.72156864, b: 0.9411765, a: 0}
+    buttonColor1: {r: 0.79109025, g: 0.7247059, b: 0.9411765, a: 0}
     buttonColor2: {r: 0.65882355, g: 0.7529412, b: 0.9411765, a: 0}
     buttonShinnyColor: {r: 0.9411765, g: 0.92156863, b: 1, a: 0}
   - name: Theme3
@@ -1875,8 +1875,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TitleNotificationUI
   popupRect: {fileID: 1547181414}
   popupCanvasGroup: {fileID: 1547181419}
-  titleIcon: {fileID: 1288238028}
-  titleNameText: {fileID: 1490618149}
+  notificationIcon: {fileID: 1288238028}
+  defaultText: {fileID: 776132354}
+  titleText: {fileID: 1490618149}
   popupButton: {fileID: 1547181416}
   stateManager: {fileID: 43234002}
   slideDistance: 200

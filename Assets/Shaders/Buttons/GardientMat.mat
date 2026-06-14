@@ -64,9 +64,9 @@ Material:
     - _XRMotionVectorsPass: 1
     m_Colors:
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
-    - _Color1: {r: 0.9607843, g: 0.7882353, b: 0.65882355, a: 0}
-    - _Color2: {r: 0.9411765, g: 0.7490196, b: 0.627451, a: 0}
-    - _ColorShy: {r: 1, g: 0.9411765, b: 0.9019608, a: 0}
+    - _Color1: {r: 0.79109025, g: 0.7247059, b: 0.9411765, a: 0}
+    - _Color2: {r: 0.65882355, g: 0.7529412, b: 0.9411765, a: 0}
+    - _ColorShy: {r: 0.9411765, g: 0.92156863, b: 1, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &8464078494138110139
