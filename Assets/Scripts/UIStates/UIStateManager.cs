@@ -21,6 +21,10 @@ public class UIStateManager : MonoBehaviour
     {
         if (isTransitioning) return;
 
+        // Comprobar titulos desbloqueables al cargar la MainScene
+        if (TitleNotificationManager.Instance != null)
+            TitleNotificationManager.Instance.CheckForNewUnlocks();
+
         if (AuthenticationService.Instance.IsSignedIn) 
         { 
             string targetState = PlayerPrefs.GetString("TargetMainState", "Play");

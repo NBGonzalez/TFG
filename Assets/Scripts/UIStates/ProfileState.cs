@@ -129,7 +129,14 @@ public class ProfileState : UIStateBase
                 break;
         }
 
-        if (unlocked) progress.UnlockAchievement(titleData.id);
+        if (unlocked)
+        {
+            progress.UnlockAchievement(titleData.id);
+
+            // Encolar notificacion para el popup
+            if (TitleNotificationManager.Instance != null)
+                TitleNotificationManager.Instance.EnqueueNotification(titleData);
+        }
         return unlocked;
     }
 
