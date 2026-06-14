@@ -9,23 +9,21 @@ public class UI_LeaderboardSlot : MonoBehaviour
     [SerializeField] private Image rankImage;               // (Opcional) Para medallas Oro/Plata
     [SerializeField] private Image avatarImage;
     [SerializeField] private TextMeshProUGUI nameText;
-    [SerializeField] private TextMeshProUGUI titleText;     // El texto del título (ej: "Novato")
+    [SerializeField] private TextMeshProUGUI titleText;     // El texto del titulo (ej: "Novato")
     [SerializeField] private TextMeshProUGUI scoreText;
-    [SerializeField] private Image backgroundPanel;         // Para cambiar color si soy yo
 
-    [Header("Colores")]
-    [SerializeField] private Color myColor = new Color(0.8f, 1f, 0.8f); // Verde clarito
-    [SerializeField] private Color normalColor = Color.white;
+    [Header("Destacar jugador")]
+    [SerializeField] private Image myHighlightImage;        // Imagen con shader para resaltar cuando soy yo
 
-    // Esta función la llamará el FriendState
+    // Esta funcion la llamara el FriendState
     public void Setup(LeaderboardEntry data, ProfileAvatarSO avatarSO, ProfileTitleSO titleSO)
     {
-        // 1. Textos Básicos
+        // 1. Textos Basicos
         rankText.text = $"#{data.rank}";
         nameText.text = data.userName;
         scoreText.text = data.score.ToString();
 
-        // 2. Título (Usamos el dato del SO para saber nombre y color)
+        // 2. Titulo (Usamos el dato del SO para saber nombre y color)
         if (titleSO != null)
         {
             titleText.text = titleSO.titleName;
@@ -43,14 +41,23 @@ public class UI_LeaderboardSlot : MonoBehaviour
             avatarImage.sprite = avatarSO.avatarImage;
         }
 
-        // 4. ¿Soy yo? Resaltar fondo
-        if (backgroundPanel != null)
+        // 4. Soy yo? Activar la imagen de resaltado con el CorrectColor
+        if (myHighlightImage != null)
         {
-            backgroundPanel.color = data.isMe ? myColor : normalColor;
+            if (data.isMe && AppColorManager.Instance != null)
+            {
+                myHighlightImage.gameObject.SetActive(true);
+                Color highlightColor = AppColorManager.Instance.CorrectColor;
+                highlightColor.a = 1f;
+                myHighlightImage.color = highlightColor;
+            }
+            else
+            {
+                myHighlightImage.gameObject.SetActive(false);
+            }
         }
 
-        // EXTRA: Lógica simple para Top 3 (Opcional)
-        // Podríamos cambiar el color del texto del Rango si es 1, 2 o 3
+        // EXTRA: Logica simple para Top 3 (Opcional)
         if (data.rank == 1) rankText.color = Color.yellow;       // Oro
         else if (data.rank == 2) rankText.color = Color.gray;    // Plata
         else if (data.rank == 3) rankText.color = new Color(0.8f, 0.5f, 0.2f); // Bronce
