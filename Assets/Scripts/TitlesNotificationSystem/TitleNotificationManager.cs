@@ -6,8 +6,17 @@ public class TitleNotificationManager : MonoBehaviour
 {
     public static TitleNotificationManager Instance { get; private set; }
 
+    [Header("Iconos de Trofeo (para notificaciones de leaderboard)")]
+    [SerializeField] private Sprite trophyGold;
+    [SerializeField] private Sprite trophySilver;
+    [SerializeField] private Sprite trophyBronze;
+
     // Cola generica de notificaciones
     private Queue<NotificationData> pendingNotifications = new Queue<NotificationData>();
+
+    // Claves de PlayerPrefs para las recompensas del leaderboard
+    private const string PREF_REWARD_DATE = "LeaderboardRewardDate";
+    private const string PREF_LAST_RANK = "LeaderboardLastRank";
 
     public bool HasPending => pendingNotifications.Count > 0;
 
@@ -28,9 +37,6 @@ public class TitleNotificationManager : MonoBehaviour
     //  API GENERICA
     // =========================================
 
-    /// <summary>
-    /// Encola cualquier tipo de notificacion.
-    /// </summary>
     public void Enqueue(NotificationData data)
     {
         if (data != null)
@@ -55,38 +61,29 @@ public class TitleNotificationManager : MonoBehaviour
     //  HELPERS DE CONVENIENCIA
     // =========================================
 
-    /// <summary>
-    /// Atajo para encolar una notificacion de titulo desbloqueado.
-    /// </summary>
     public void EnqueueTitleUnlocked(ProfileTitleSO titleData)
     {
         if (titleData == null) return;
-
-        var data = new NotificationData(
+        Enqueue(new NotificationData(
             icon: titleData.icon,
-            defaultText: "¡Has desbloqueado!",
+            defaultText: "\u00a1Has desbloqueado!",
             titleText: titleData.titleName,
             targetState: "Profile"
-        );
-        Enqueue(data);
+        ));
     }
 
-    /// <summary>
-    /// Atajo para encolar una notificacion de recompensa del leaderboard.
-    /// </summary>
     public void EnqueueLeaderboardReward(int rank, int starsEarned, Sprite trophyIcon)
     {
-        var data = new NotificationData(
+        Enqueue(new NotificationData(
             icon: trophyIcon,
-            defaultText: $"¡Has quedado en el top {rank} del ranking de ayer!",
+            defaultText: $"\u00a1Has quedado en el top {rank} del ranking de ayer!",
             titleText: $"Como recompensa has obtenido {starsEarned} estrellas.",
             targetState: "Friends"
-        );
-        Enqueue(data);
+        ));
     }
 
     // =========================================
-    //  CHECK DE TITULOS (ya existente)
+    //  CHECK DE TITULOS
     // =========================================
     public void CheckForNewUnlocks()
     {
@@ -124,6 +121,65 @@ public class TitleNotificationManager : MonoBehaviour
                 progress.UnlockAchievement(titleData.id);
                 EnqueueTitleUnlocked(titleData);
             }
+        }
+    }
+
+    // =========================================
+    //  CHECK DE RECOMPENSA LEADERBOARD
+    // =========================================
+
+    /// <summary>
+    /// Comprueba si el jugador tiene una recompensa pendiente del dia anterior.
+    /// Se llama desde UIStateManager.Start() al cargar la MainScene.
+    /// </summary>
+    public void CheckLeaderboardReward()
+    {
+        string today = System.DateTime.UtcNow.ToString("yyyyMMdd");
+        string lastRewardDate = PlayerPrefs.GetString(PREF_REWARD_DATE, "");
+
+        // Si ya recibimos recompensa hoy, no hacer nada
+        if (lastRewardDate == today) return;
+
+        int lastRank = PlayerPrefs.GetInt(PREF_LAST_RANK, 0);
+
+        if (lastRank > 0 && lastRewardDate != "" && lastRewardDate != today)
+        {
+            int reward = GetRewardForRank(lastRank);
+            if (reward > 0 && PlayerProgressManager.Instance != null)
+            {
+                PlayerProgressManager.Instance.AddStars(reward);
+
+                Sprite trophy = GetTrophyForRank(lastRank);
+                EnqueueLeaderboardReward(lastRank, reward, trophy);
+
+                Debug.Log($"[Leaderboard] Recompensa por quedar #{lastRank}: +{reward} estrellas!");
+            }
+        }
+
+        // Marcar que ya hemos procesado la recompensa de hoy
+        PlayerPrefs.SetString(PREF_REWARD_DATE, today);
+        PlayerPrefs.Save();
+    }
+
+    private int GetRewardForRank(int rank)
+    {
+        switch (rank)
+        {
+            case 1: return 20;
+            case 2: return 10;
+            case 3: return 5;
+            default: return 0;
+        }
+    }
+
+    private Sprite GetTrophyForRank(int rank)
+    {
+        switch (rank)
+        {
+            case 1: return trophyGold;
+            case 2: return trophySilver;
+            case 3: return trophyBronze;
+            default: return null;
         }
     }
 }

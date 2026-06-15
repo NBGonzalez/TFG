@@ -15,11 +15,6 @@ public class FriendsState : UIStateBase
     [Header("Temporizador de Reset")]
     [SerializeField] private TextMeshProUGUI resetTimerText;
 
-    [Header("Iconos de Trofeo (para notificaciones)")]
-    [SerializeField] private Sprite trophyGold;
-    [SerializeField] private Sprite trophySilver;
-    [SerializeField] private Sprite trophyBronze;
-
     // Datos estaticos para "traducir" IDs a Imagenes
     private ProfileAvatarSO[] allAvatars;
     private ProfileTitleSO[] allTitles;
@@ -27,8 +22,7 @@ public class FriendsState : UIStateBase
     // Para el temporizador
     private Coroutine timerCoroutine;
 
-    // Claves de PlayerPrefs para las recompensas
-    private const string PREF_REWARD_DATE = "LeaderboardRewardDate";
+    // Clave de PlayerPrefs para guardar el rango del jugador
     private const string PREF_LAST_RANK = "LeaderboardLastRank";
 
     public override void OnEnter()
@@ -39,71 +33,12 @@ public class FriendsState : UIStateBase
         allAvatars = Resources.LoadAll<ProfileAvatarSO>("Avatars");
         allTitles = Resources.LoadAll<ProfileTitleSO>("Titles");
 
-        // Comprobar si hay recompensa pendiente del dia anterior
-        CheckAndGrantReward();
-
         // Generar el Ranking
         RefreshLeaderboard();
 
         // Iniciar el temporizador
         if (timerCoroutine != null) StopCoroutine(timerCoroutine);
         timerCoroutine = StartCoroutine(UpdateTimerRoutine());
-    }
-
-    // =========================================
-    //  RECOMPENSA POR POSICION
-    // =========================================
-    private void CheckAndGrantReward()
-    {
-        string today = System.DateTime.UtcNow.ToString("yyyyMMdd");
-        string lastRewardDate = PlayerPrefs.GetString(PREF_REWARD_DATE, "");
-
-        if (lastRewardDate == today) return;
-
-        int lastRank = PlayerPrefs.GetInt(PREF_LAST_RANK, 0);
-
-        if (lastRank > 0 && lastRewardDate != "" && lastRewardDate != today)
-        {
-            int reward = GetRewardForRank(lastRank);
-            if (reward > 0 && PlayerProgressManager.Instance != null)
-            {
-                PlayerProgressManager.Instance.AddStars(reward);
-
-                // Encolar notificacion con el trofeo correspondiente
-                if (TitleNotificationManager.Instance != null)
-                {
-                    Sprite trophy = GetTrophyForRank(lastRank);
-                    TitleNotificationManager.Instance.EnqueueLeaderboardReward(lastRank, reward, trophy);
-                }
-
-                Debug.Log($"[Leaderboard] Recompensa por quedar #{lastRank}: +{reward} estrellas!");
-            }
-        }
-
-        PlayerPrefs.SetString(PREF_REWARD_DATE, today);
-        PlayerPrefs.Save();
-    }
-
-    private int GetRewardForRank(int rank)
-    {
-        switch (rank)
-        {
-            case 1: return 20;
-            case 2: return 10;
-            case 3: return 5;
-            default: return 0;
-        }
-    }
-
-    private Sprite GetTrophyForRank(int rank)
-    {
-        switch (rank)
-        {
-            case 1: return trophyGold;
-            case 2: return trophySilver;
-            case 3: return trophyBronze;
-            default: return null;
-        }
     }
 
     // =========================================
@@ -120,6 +55,7 @@ public class FriendsState : UIStateBase
 
         if (loadingSpinner != null) loadingSpinner.SetActive(false);
 
+        // Guardar la posicion actual del jugador para la recompensa del dia siguiente
         foreach (var entry in data)
         {
             if (entry.isMe)

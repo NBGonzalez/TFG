@@ -23,7 +23,10 @@ public class UIStateManager : MonoBehaviour
 
         // Comprobar titulos desbloqueables al cargar la MainScene
         if (TitleNotificationManager.Instance != null)
+        {
             TitleNotificationManager.Instance.CheckForNewUnlocks();
+            TitleNotificationManager.Instance.CheckLeaderboardReward();
+        }
 
         if (AuthenticationService.Instance.IsSignedIn) 
         { 
