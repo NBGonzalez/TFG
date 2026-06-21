@@ -223,8 +223,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 1300c6fa4d3dbfe41a213ca8c487ef26, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -696,6 +696,7 @@ MonoBehaviour:
   generalQuestionImage: {fileID: 6824396402901280763}
   backButton: {fileID: 4406005154623862875}
   gameArea: {fileID: 1626890900972443308}
+  exitText: "\xBFEst\xE1s seguro de que quieres salir? Tu progreso se perder\xE1."
 --- !u!114 &2618344760166882396
 MonoBehaviour:
   m_ObjectHideFlags: 0

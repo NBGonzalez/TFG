@@ -99,9 +99,6 @@ MonoBehaviour:
   leaderboardSlotPrefab: {fileID: 227527002068195208, guid: dcbc490d3a726f548b00524ebcf6695d, type: 3}
   loadingSpinner: {fileID: 0}
   resetTimerText: {fileID: 8440462608321643339}
-  trophyGold: {fileID: -1956317461048301723, guid: e40e6f89f89f40e429cea03e114f0a43, type: 3}
-  trophySilver: {fileID: 6875665182210789432, guid: 1f66ee78dd459d044810dd29dc27d49d, type: 3}
-  trophyBronze: {fileID: 44357639946479129, guid: ca665800ae1b0d443aa6a871638cb7d7, type: 3}
 --- !u!225 &2409635888446059608
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -261,7 +258,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 5905209034780936079}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99999875
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -548,7 +545,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000010105941}
+  m_AnchoredPosition: {x: 0, y: 0.0007517259}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8938831961116729362
@@ -647,7 +644,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 1300c6fa4d3dbfe41a213ca8c487ef26, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1

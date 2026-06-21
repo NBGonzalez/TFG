@@ -17,19 +17,23 @@ public class UIStateManager : MonoBehaviour
     private UIStateBase currentState;
     private bool isTransitioning = false;
 
+    // Nombre del estado actual (ej: "Login", "Play"...). Lo usa TitleNotificationUI
+    // para no mostrar notificaciones mientras se esta en LoginState.
+    public string CurrentStateName { get; private set; }
+
     private void Start()
     {
         if (isTransitioning) return;
 
-        // Comprobar titulos desbloqueables al cargar la MainScene
-        if (TitleNotificationManager.Instance != null)
-        {
-            TitleNotificationManager.Instance.CheckForNewUnlocks();
-            TitleNotificationManager.Instance.CheckLeaderboardReward();
-        }
-
-        if (AuthenticationService.Instance.IsSignedIn) 
+        if (AuthenticationService.Instance.IsSignedIn)
         { 
+            // Ya hay sesion (p. ej. al volver al menu tras completar un nivel): es seguro
+            // lanzar los checks de recompensa. En arranque en frio el usuario aun no esta
+            // logueado -> no entra aqui; lo hara PlayerProgressManager.OnUserSignedIn() tras login.
+            // Los checks son idempotentes, asi que no hay riesgo de notificar dos veces.
+            if (TitleNotificationManager.Instance != null)
+                TitleNotificationManager.Instance.RunPostLoginChecks();
+
             string targetState = PlayerPrefs.GetString("TargetMainState", "Play");
             PlayerPrefs.DeleteKey("TargetMainState");
             ChangeState(targetState); 
@@ -107,6 +111,7 @@ public class UIStateManager : MonoBehaviour
         }
 
         currentState = nextState;
+        CurrentStateName = stateName;
         nextState.OnEnter();
         isTransitioning = false;
     }

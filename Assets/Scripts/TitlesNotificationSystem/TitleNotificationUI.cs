@@ -42,7 +42,16 @@ public class TitleNotificationUI : MonoBehaviour
 
     private void Update()
     {
-        if (!isShowing && TitleNotificationManager.Instance != null && TitleNotificationManager.Instance.HasPending)
+        if (isShowing) return;
+
+        // No mostrar notificaciones mientras se esta en LoginState (o sin estado aun).
+        // Quedan esperando en la cola y se mostraran al entrar en cualquier otro estado.
+        if (stateManager == null
+            || string.IsNullOrEmpty(stateManager.CurrentStateName)
+            || stateManager.CurrentStateName == "Login")
+            return;
+
+        if (TitleNotificationManager.Instance != null && TitleNotificationManager.Instance.HasPending)
         {
             if (TitleNotificationManager.Instance.TryDequeue(out NotificationData data))
             {

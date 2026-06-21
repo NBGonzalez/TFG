@@ -55,6 +55,12 @@ public class PlayerProgressManager : MonoBehaviour
         Debug.Log("[Progress] Usuario detectado. Sincronizando nube...");
         await LoadFromCloudAsync();
         CheckDailyStreak();
+
+        // Ahora que el usuario esta autenticado y el progreso sincronizado, lanzamos los
+        // checks de recompensa (titulos / leaderboard). Asi nunca se conceden ni notifican
+        // recompensas antes del login, y se evaluan sobre datos ya sincronizados.
+        if (TitleNotificationManager.Instance != null)
+            TitleNotificationManager.Instance.RunPostLoginChecks();
     }
 
     // =============================

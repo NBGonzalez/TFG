@@ -5468,7 +5468,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 1300c6fa4d3dbfe41a213ca8c487ef26, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11492,7 +11492,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Explicar porque
+  m_text: "Generar explicaci\xF3n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -12647,7 +12647,7 @@ MonoBehaviour:
   m_ChildAlignment: 1
   m_Spacing: 30
   m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 0
+  m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
@@ -12873,8 +12873,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 584296406682004073, guid: 9f595fe662a75094d87aebcaccafe5d5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7665433240237428371}
   m_SourcePrefab: {fileID: 100100000, guid: 9f595fe662a75094d87aebcaccafe5d5, type: 3}
+--- !u!1 &7665433240237428370 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 584296406682004073, guid: 9f595fe662a75094d87aebcaccafe5d5, type: 3}
+  m_PrefabInstance: {fileID: 7665433240237428369}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7665433240237428371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7665433240237428370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2723819fea9e70046a439ca0a4c76235, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GlowRoundedToggle
+  isRounded: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -83,6 +83,25 @@ public class TitleNotificationManager : MonoBehaviour
     }
 
     // =========================================
+    //  PUNTO DE ENTRADA TRAS EL LOGIN
+    // =========================================
+
+    /// <summary>
+    /// Ejecuta todos los checks de recompensa. Se llama desde
+    /// PlayerProgressManager.OnUserSignedIn(), una vez el usuario esta autenticado
+    /// y el progreso se ha sincronizado con la nube. NUNCA debe llamarse antes del
+    /// login: las recompensas no deben concederse ni notificarse sin sesion iniciada.
+    /// El orden importa: CheckLeaderboardReward lee PREF_LAST_RANK (rango de ayer) y
+    /// RefreshPlayerRank lo sobrescribe con el rango de hoy, asi que va el ultimo.
+    /// </summary>
+    public void RunPostLoginChecks()
+    {
+        CheckForNewUnlocks();
+        CheckLeaderboardReward();
+        RefreshPlayerRank();
+    }
+
+    // =========================================
     //  CHECK DE TITULOS
     // =========================================
     public void CheckForNewUnlocks()
@@ -130,14 +149,13 @@ public class TitleNotificationManager : MonoBehaviour
 
     /// <summary>
     /// Comprueba si el jugador tiene una recompensa pendiente del dia anterior.
-    /// Se llama desde UIStateManager.Start() al cargar la MainScene.
+    /// Se llama desde RunPostLoginChecks(), una vez el usuario ha iniciado sesion.
     /// </summary>
     public void CheckLeaderboardReward()
     {
         string today = System.DateTime.UtcNow.ToString("yyyyMMdd");
         string lastRewardDate = PlayerPrefs.GetString(PREF_REWARD_DATE, "");
 
-        // Si ya recibimos recompensa hoy, no hacer nada
         if (lastRewardDate == today) return;
 
         int lastRank = PlayerPrefs.GetInt(PREF_LAST_RANK, 0);
@@ -156,10 +174,39 @@ public class TitleNotificationManager : MonoBehaviour
             }
         }
 
-        // Marcar que ya hemos procesado la recompensa de hoy
         PlayerPrefs.SetString(PREF_REWARD_DATE, today);
         PlayerPrefs.Save();
     }
+
+    // =========================================
+    //  GENERAR RANKING AL INICIO
+    // =========================================
+
+    /// <summary>
+    /// Genera el ranking y guarda la posicion del jugador en PlayerPrefs.
+    /// Asi el jugador siempre tiene un rango guardado aunque no visite FriendsState.
+    /// Se llama desde RunPostLoginChecks(), una vez el usuario ha iniciado sesion.
+    /// </summary>
+    public async void RefreshPlayerRank()
+    {
+        ILeaderboardProvider provider = new MockLeaderboardProvider();
+        List<LeaderboardEntry> data = await provider.GetRanking();
+
+        foreach (var entry in data)
+        {
+            if (entry.isMe)
+            {
+                PlayerPrefs.SetInt(PREF_LAST_RANK, entry.rank);
+                PlayerPrefs.Save();
+                Debug.Log($"[Leaderboard] Rango del jugador actualizado al inicio: #{entry.rank}");
+                break;
+            }
+        }
+    }
+
+    // =========================================
+    //  HELPERS PRIVADOS
+    // =========================================
 
     private int GetRewardForRank(int rank)
     {

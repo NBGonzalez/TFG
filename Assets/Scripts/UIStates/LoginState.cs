@@ -9,7 +9,7 @@ using Unity.Services.Authentication;
 /// <summary>
 /// Estado UI simple para manejar el login:
 /// - llama a LoginManager para iniciar login (Google / Guest)
-/// - muestra un spinner básico (o deshabilita botones) mientras espera
+/// - muestra un spinner bï¿½sico (o deshabilita botones) mientras espera
 /// - espera hasta que AuthenticationService.Instance.IsSignedIn sea true (o timeout)
 /// - si OK -> stateManager.ChangeState("Main") ; si falla -> muestra error
 /// </summary>
@@ -70,10 +70,10 @@ public class LoginState : UIStateBase
             return;
         }
 
-        // Llamamos al manager para que inicie el flujo (tu implementación ya lo maneja)
+        // Llamamos al manager para que inicie el flujo (tu implementaciï¿½n ya lo maneja)
         LoginManager.Instance.LoginGooglePlayGames();
 
-        // Esperamos hasta que Unity Authentication esté firmado (o until timeout)
+        // Esperamos hasta que Unity Authentication estï¿½ firmado (o until timeout)
         if (waitCoroutine != null) StopCoroutine(waitCoroutine);
         waitCoroutine = StartCoroutine(WaitForSignInCoroutine(timeoutSeconds));
     }
@@ -100,16 +100,16 @@ public class LoginState : UIStateBase
     {
         float elapsed = 0f;
 
-        // Primero, una ligera espera inicial para dejar que los callbacks asíncronos empiecen
+        // Primero, una ligera espera inicial para dejar que los callbacks asï¿½ncronos empiecen
         yield return new WaitForSeconds(0.15f);
 
         while (elapsed < timeout)
         {
-            // Comprueba si el usuario está autenticado:
+            // Comprueba si el usuario estï¿½ autenticado:
             bool unitySigned = false;
             try
             {
-                // AuthenticationService podría no estar inicializado; protegemos con try
+                // AuthenticationService podrï¿½a no estar inicializado; protegemos con try
                 unitySigned = Unity.Services.Authentication.AuthenticationService.Instance != null
                               && Unity.Services.Authentication.AuthenticationService.Instance.IsSignedIn;
             }
@@ -118,20 +118,13 @@ public class LoginState : UIStateBase
                 unitySigned = false;
             }
 
-            // También consideramos Google Play (por si tu flow solo autentica ahí primero)
-            bool gpgSigned = false;
-            try
+            // La seï¿½al real de "conectado en la app" es Unity Authentication.
+            // Antes mirï¿½bamos tambiï¿½n PlayGamesPlatform.IsAuthenticated(), pero eso
+            // daba por bueno el login automï¿½tico de Google y hacï¿½a que el botï¿½n de
+            // invitado tambiï¿½n saltara a Main sin que el usuario lo decidiera.
+            if (unitySigned)
             {
-                gpgSigned = PlayGamesPlatform.Instance != null && PlayGamesPlatform.Instance.IsAuthenticated();
-            }
-            catch
-            {
-                gpgSigned = false;
-            }
-
-            if (unitySigned || gpgSigned)
-            {
-                // Éxito: navegar a Main
+                // ï¿½xito: navegar a Main
                 SetLoading(false);
                 SetError(null);
 
@@ -148,7 +141,7 @@ public class LoginState : UIStateBase
 
         // Timeout: fallo
         SetLoading(false);
-        SetError("Error: tiempo de espera agotado. Revisa conexión o intenta más tarde.");
+        SetError("Error: tiempo de espera agotado. Revisa conexiï¿½n o intenta mï¿½s tarde.");
         waitCoroutine = null;
     }
 

@@ -4719,6 +4719,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7772843783337516827, guid: 9f595fe662a75094d87aebcaccafe5d5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1687665589183848885}
+    - targetCorrespondingSourceObject: {fileID: 584296406682004073, guid: 9f595fe662a75094d87aebcaccafe5d5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8433058186576004053}
   m_SourcePrefab: {fileID: 100100000, guid: 9f595fe662a75094d87aebcaccafe5d5, type: 3}
 --- !u!114 &1645438110077403735 stripped
 MonoBehaviour:
@@ -4761,6 +4764,24 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8816645863852931887, guid: 9f595fe662a75094d87aebcaccafe5d5, type: 3}
   m_PrefabInstance: {fileID: 4970661429174847356}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5539568586301025557 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 584296406682004073, guid: 9f595fe662a75094d87aebcaccafe5d5, type: 3}
+  m_PrefabInstance: {fileID: 4970661429174847356}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8433058186576004053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5539568586301025557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2723819fea9e70046a439ca0a4c76235, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GlowRoundedToggle
+  isRounded: 0
 --- !u!1001 &6883392183009692904
 PrefabInstance:
   m_ObjectHideFlags: 0

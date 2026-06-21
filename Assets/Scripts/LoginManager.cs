@@ -12,6 +12,11 @@ public class LoginManager : MonoBehaviour
 
     private string m_GooglePlayGamesTokem;
 
+    // Controla que Google Play Games se active SOLO cuando el usuario lo decide.
+    private bool m_PlayGamesActivated = false;
+    // Evita que el login se lance dos veces seguidas (el botÃ³n estÃ¡ cableado por partida doble).
+    private bool m_IsSigningIn = false;
+
     
 
     private async void Awake()
@@ -21,18 +26,32 @@ public class LoginManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else Destroy(gameObject);
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
 
-        PlayGamesPlatform.DebugLogEnabled = true;
-        PlayGamesPlatform.Activate();
-        //LoginGooglePlayGames();
+        // IMPORTANTE: aqui NO activamos Google Play Games.
+        // Si llamasemos a PlayGamesPlatform.Activate() en el arranque, GPGS intentaria
+        // el login automatico (mostrando el banner "Bienvenido ..." con tu avatar).
+        // Lo activamos solo cuando el usuario pulsa el boton de Google Play.
 
-        
         if (UnityServices.State == ServicesInitializationState.Uninitialized)
         {
             Debug.Log("Services Initializing");
             await UnityServices.InitializeAsync();
         }
+    }
+
+    // Activa Google Play Games de forma perezosa: solo la primera vez que el
+    // usuario decide conectarse. Asi evitamos el inicio de sesion automatico.
+    private void EnsurePlayGamesActivated()
+    {
+        if (m_PlayGamesActivated) return;
+        PlayGamesPlatform.DebugLogEnabled = true;
+        PlayGamesPlatform.Activate();
+        m_PlayGamesActivated = true;
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -45,54 +64,58 @@ public class LoginManager : MonoBehaviour
     // ============================
     public void LoginGooglePlayGames()
     {
-        PlayGamesPlatform.Instance.Authenticate(async (success) =>
+        // Evita lanzar el login dos veces (el boton del prefab llama a
+        // StartSignInWithGooglePlayGames y, ademas, LoginState anade su propio listener).
+        if (m_IsSigningIn) return;
+        m_IsSigningIn = true;
+
+        // Activamos GPGS justo ahora: es la decision explicita del usuario de conectarse.
+        EnsurePlayGamesActivated();
+
+        PlayGamesPlatform.Instance.Authenticate(success =>
         {
             if (success == SignInStatus.Success)
             {
                 Debug.Log("Login with Google Play games successful.");
                 Debug.Log("Bienvenido -----------------> " + PlayGamesPlatform.Instance.GetUserDisplayName());
-                
 
-                PlayGamesPlatform.Instance.RequestServerSideAccess(true, code =>
+                PlayGamesPlatform.Instance.RequestServerSideAccess(true, async code =>
                 {
                     Debug.Log("Authorization code: " + code);
                     m_GooglePlayGamesTokem = code;
-                    // This token serves as an example to be used for SignInWithGooglePlayGames
+                    // Con el token disponible, conectamos con Unity Authentication.
+                    await SignInLOrLinkWithGooglePlayGamesAsync();
+                    m_IsSigningIn = false;
                 });
-                //stateManager.ChangeState("Main");
             }
             else
             {
-                //Error = "Failed to retrieve Google play games authorization code";
                 Debug.Log($"Google Play Games login unsuccessful");
+                m_IsSigningIn = false;
             }
         });
     }
 
+    // Entrada publica del boton del prefab. Reutiliza el mismo flujo que LoginState.
     public void StartSignInWithGooglePlayGames() // Happens when the player click the Sign In button.
     {
-        if (!PlayGamesPlatform.Instance.IsAuthenticated())
-        {
-            Debug.LogWarning("Not yet authenticated with Google Play Games -- attemping login again");
-            LoginGooglePlayGames();
-            return;
-        }
-        SignInLOrLinkWithGooglePlayGames();
+        LoginGooglePlayGames();
     }
-    private async void SignInLOrLinkWithGooglePlayGames() // Is new player o existing player who wants to connect to Google account?
+
+    private async Task SignInLOrLinkWithGooglePlayGamesAsync() // Jugador nuevo o jugador existente que quiere enlazar su cuenta de Google.
     {
         if (string.IsNullOrEmpty(m_GooglePlayGamesTokem))
         {
             Debug.LogWarning("Authorization code is null or empty!");
             return;
         }
-        if(!AuthenticationService.Instance.IsSignedIn) // For new Players, it creates an account for them
+        if(!AuthenticationService.Instance.IsSignedIn) // Jugador nuevo: se le crea una cuenta.
         {
             await SignInWithGooglePlayGamesAsync(m_GooglePlayGamesTokem);
         }
-        else 
+        else
         {
-            // For existing players.
+            // Jugador existente (p. ej. estaba como invitado): enlazamos la cuenta.
             await LinkWithGooglePlayGamesAsync(m_GooglePlayGamesTokem);
         }
     }
@@ -206,12 +229,14 @@ public class LoginManager : MonoBehaviour
     // ============================
     public string GetPlayerName()
     {
-        // 1. Prioridad máxima: Si está en Google Play, devolvemos su nombre real (Ej: "Juan Perez")
-        if (PlayGamesPlatform.Instance.IsAuthenticated())
+        // 1. Prioridad mï¿½xima: Si estï¿½ en Google Play, devolvemos su nombre real (Ej: "Juan Perez")
+        //    Comprobamos m_PlayGamesActivated: si el usuario entrï¿½ como invitado, GPGS
+        //    nunca se activï¿½ y no debemos tocar PlayGamesPlatform.Instance.
+        if (m_PlayGamesActivated && PlayGamesPlatform.Instance.IsAuthenticated())
         {
             return PlayGamesPlatform.Instance.GetUserDisplayName();
         }
-        // 2. Si está logeado como anónimo en Unity, le damos un nombre genérico con parte de su ID
+        // 2. Si estï¿½ logeado como anï¿½nimo en Unity, le damos un nombre genï¿½rico con parte de su ID
         else if (AuthenticationService.Instance.IsSignedIn)
         {
             string id = AuthenticationService.Instance.PlayerId;
@@ -220,7 +245,7 @@ public class LoginManager : MonoBehaviour
             return "Jugador_" + shortId;
         }
 
-        // 3. Si por algún motivo está offline o probando en el Editor de Unity
-        return "Creador Anónimo";
+        // 3. Si por algï¿½n motivo estï¿½ offline o probando en el Editor de Unity
+        return "Creador Anï¿½nimo";
     }
 }

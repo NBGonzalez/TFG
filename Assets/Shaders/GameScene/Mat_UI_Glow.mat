@@ -27,6 +27,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_7398974ce7114af4be2f3c5e767b031a_Out_0_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 1300c6fa4d3dbfe41a213ca8c487ef26, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -43,6 +47,7 @@ Material:
     m_Floats:
     - _ColorMask: 15
     - _Grosor: 1
+    - _IsRounded: 0
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
@@ -50,6 +55,7 @@ Material:
     - _StencilWriteMask: 255
     - _UIMaskSoftnessX: 1
     - _UIMaskSoftnessY: 1
+    - _isRounded: 0
     m_Colors:
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
     - _Glow_color: {r: 1, g: 1, b: 1, a: 1}

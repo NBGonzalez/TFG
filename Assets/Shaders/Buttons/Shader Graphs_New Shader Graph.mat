@@ -42,7 +42,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _ColorMask: 15
-    - _CornerRadius: 0.25
+    - _CornerRadius: 0.1
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
@@ -55,6 +55,6 @@ Material:
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
     - _Color1: {r: 0.8207547, g: 0.32907617, b: 0.7363082, a: 1}
     - _Color2: {r: 0.13082945, g: 0.7855477, b: 0.7924528, a: 1}
-    - _WidthHeight: {r: 0.75, g: 0.75, b: 0, a: 0}
+    - _WidthHeight: {r: 0.9, g: 0.9, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
