@@ -66,7 +66,7 @@ public class UI_PlayScreen : MonoBehaviour
         foreach (var archivo in jsonDescargados)
         {
             PathModel modelo = JsonUtility.FromJson<PathModel>(archivo.Value);
-            string nombreUI = "⭐ " + modelo.language;
+            string nombreUI = modelo.language;
 
             pathsEnMemoria.Add(nombreUI, modelo);
             localPathFlags.Add(nombreUI, false);
@@ -101,7 +101,7 @@ public class UI_PlayScreen : MonoBehaviour
                 // --- MEJORA: NOMBRES INDESTRUCTIBLES ---
                 // Si el jugador no le puso título, le ponemos uno por defecto para que no salga en blanco
                 string tituloReal = string.IsNullOrWhiteSpace(data.title) ? "Itinerario Sin Título" : data.title;
-                string nombreUI = "📂 " + tituloReal;
+                string nombreUI = tituloReal;
 
                 // Si hay dos itinerarios llamados exactamente igual (ej: dos "📂 Matemáticas"), 
                 // les ponemos un número al lado para que el Dropdown no explote (ej: "📂 Matemáticas (1)")
