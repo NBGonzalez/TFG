@@ -58,7 +58,7 @@ Material:
     - _ScanSharpness: 50
     - _ScanSpeed: 0.5
     - _ShadowSize: 0.48
-    - _ShadoweStrength: 0.07
+    - _ShadoweStrength: 0.25
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
@@ -69,9 +69,9 @@ Material:
     - _XRMotionVectorsPass: 1
     m_Colors:
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
-    - _Color1: {r: 0.65882355, g: 0.8627451, b: 0.8784314, a: 0}
-    - _Color2: {r: 0.72156864, g: 0.9019608, b: 0.83137256, a: 0}
-    - _ColorShy: {r: 0.9019608, g: 0.972549, b: 0.98039216, a: 0}
+    - _Color1: {r: 0.79109025, g: 0.7247059, b: 0.9411765, a: 0}
+    - _Color2: {r: 0.588, g: 0.67200005, b: 0.84, a: 0}
+    - _ColorShy: {r: 0.9411765, g: 0.92156863, b: 1, a: 0}
     - _Size: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

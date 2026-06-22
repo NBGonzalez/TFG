@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6989197677587391093}
   - component: {fileID: 4310822866352798091}
   - component: {fileID: 8596418291530405358}
+  - component: {fileID: 1441294028133136518}
   m_Layer: 5
   m_Name: UnlockRequeriment_Image
   m_TagString: Untagged
@@ -103,6 +104,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1441294028133136518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141828964440692019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 4
+  modifyButtonColorBlock: 1
 --- !u!1 &184620209489914762
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,6 +132,7 @@ GameObject:
   - component: {fileID: 2617765273032862063}
   - component: {fileID: 7677836780790101642}
   - component: {fileID: 4201975600182310993}
+  - component: {fileID: 8267816878307419130}
   m_Layer: 5
   m_Name: Prefab_AvatarCategory
   m_TagString: Untagged
@@ -237,6 +253,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_AvatarCategory
   categoryTitle: {fileID: 8921050124897832289}
   gridContent: {fileID: 4220557418687082713}
+--- !u!114 &8267816878307419130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184620209489914762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 3
+  modifyButtonColorBlock: 1
 --- !u!1 &1976411158660561219
 GameObject:
   m_ObjectHideFlags: 0
@@ -427,8 +457,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
