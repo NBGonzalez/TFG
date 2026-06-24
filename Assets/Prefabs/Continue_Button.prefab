@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4162736586291894777}
   - component: {fileID: 2932943000013162029}
   - component: {fileID: 5270806171871712678}
+  - component: {fileID: 8658362243178243700}
   m_Layer: 5
   m_Name: Continue_Button
   m_TagString: Untagged
@@ -148,6 +149,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 6
   modifyButtonColorBlock: 0
+  opacity: 1
+  backgroundDarken: 0.3
+--- !u!114 &8658362243178243700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5189003660245575734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &7401361422557214795
 GameObject:
   m_ObjectHideFlags: 0

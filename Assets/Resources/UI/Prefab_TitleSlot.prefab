@@ -201,7 +201,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: TitleText
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -448,7 +448,7 @@ GameObject:
   - component: {fileID: 8576068549387654540}
   - component: {fileID: 4167856612807295800}
   m_Layer: 5
-  m_Name: Icon
+  m_Name: Icon_Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -524,6 +524,7 @@ GameObject:
   - component: {fileID: 9140178802588696888}
   - component: {fileID: 511268122172722441}
   - component: {fileID: 80517674460023854}
+  - component: {fileID: 7597144151149476994}
   m_Layer: 5
   m_Name: Prefab_TitleSlot
   m_TagString: Untagged
@@ -623,6 +624,22 @@ MonoBehaviour:
   myButton: {fileID: 2147445886091125543}
   lockIcon: {fileID: 3563595975172811501}
   selectionBorder: {fileID: 2127466235088398530}
+--- !u!114 &7597144151149476994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7625465411788123594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 0
+  modifyButtonColorBlock: 0
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &8765218082342204278
 GameObject:
   m_ObjectHideFlags: 0

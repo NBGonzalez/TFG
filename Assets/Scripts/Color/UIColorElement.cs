@@ -15,7 +15,8 @@ public class UIColorElement : MonoBehaviour
         ButtonColor2,
         ButtonShiny,
         Correct,
-        Incorrect
+        Incorrect,
+        BackgroundColor
     }
 
     [Header("Configuración de Color")]
@@ -23,6 +24,16 @@ public class UIColorElement : MonoBehaviour
 
     [Header("Opciones Avanzadas")]
     public bool modifyButtonColorBlock = true;
+
+    [Header("Opacidad")]
+    [Tooltip("Opacidad del color del elemento. 1 = 100% opaco (por defecto). Bajalo para hacerlo translucido.")]
+    [Range(0f, 1f)]
+    public float opacity = 1f;
+
+    [Header("Fondo generado")]
+    [Tooltip("Solo para el rol BackgroundColor: cuanto se oscurece respecto al Primary. 0 = igual que Primary, 1 = negro.")]
+    [Range(0f, 1f)]
+    public float backgroundDarken = 0.3f;
 
     private float colorSaturation = 0.6f;
 
@@ -59,6 +70,28 @@ public class UIColorElement : MonoBehaviour
         return c;
     }
 
+    /// <summary>
+    /// Aplica la opacidad configurada en el inspector (por defecto 1 = opaco).
+    /// Se usa para el color propio del elemento; las superficies internas del
+    /// dropdown siguen usando Opaque() para no quedar translucidas.
+    /// </summary>
+    private Color WithOpacity(Color c)
+    {
+        c.a = opacity;
+        return c;
+    }
+
+    /// <summary>
+    /// Oscurece un color mezclandolo hacia el negro, conservando su alpha.
+    /// Se usa para generar BackgroundColor a partir del Primary.
+    /// </summary>
+    private static Color Darken(Color c, float amount)
+    {
+        Color dark = Color.Lerp(c, Color.black, amount);
+        dark.a = c.a;
+        return dark;
+    }
+
     public void UpdateVisualColor()
     {
         // Seguro de vida: Si ocurre un error aquí dentro, lo capturamos para no congelar la UI
@@ -66,7 +99,7 @@ public class UIColorElement : MonoBehaviour
         {
             if (AppColorManager.Instance == null) return;
 
-            Color targetColor = Opaque(GetColorFromRole(role));
+            Color targetColor = WithOpacity(GetColorFromRole(role));
 
             if (_dropdown != null)
             {
@@ -80,10 +113,10 @@ public class UIColorElement : MonoBehaviour
                 cb.normalColor = targetColor;
 
                 cb.highlightedColor = (role == ColorRole.Correct || role == ColorRole.Incorrect)
-                    ? Opaque(Color.Lerp(targetColor, Color.white, 0.25f))
-                    : Opaque(AppColorManager.Instance.GetButtonShinyColor());
+                    ? WithOpacity(Color.Lerp(targetColor, Color.white, 0.25f))
+                    : WithOpacity(AppColorManager.Instance.GetButtonShinyColor());
 
-                cb.pressedColor = Opaque(AppColorManager.Instance.GetSecondaryColor());
+                cb.pressedColor = WithOpacity(AppColorManager.Instance.GetSecondaryColor());
                 cb.selectedColor = targetColor;
                 _button.colors = cb;
             }
@@ -110,6 +143,9 @@ public class UIColorElement : MonoBehaviour
             ColorRole.ButtonShiny => AppColorManager.Instance.GetButtonShinyColor(),
             ColorRole.Correct => Color.Lerp(AppColorManager.Instance.CorrectColor, Color.white, colorSaturation),
             ColorRole.Incorrect => Color.Lerp(AppColorManager.Instance.IncorrectColor, Color.white, colorSaturation),
+            // Color generado: el Primary actual pero mas oscuro. Al calcularse aqui dentro
+            // de UpdateVisualColor(), se regenera solo cada vez que cambia la paleta.
+            ColorRole.BackgroundColor => Darken(AppColorManager.Instance.GetPrimaryColor(), backgroundDarken),
             _ => Color.white
         };
     }

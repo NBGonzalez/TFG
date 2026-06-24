@@ -116,8 +116,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
-  role: 4
-  modifyButtonColorBlock: 1
+  role: 0
+  modifyButtonColorBlock: 0
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &184620209489914762
 GameObject:
   m_ObjectHideFlags: 0
@@ -265,8 +267,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
-  role: 3
-  modifyButtonColorBlock: 1
+  role: 1
+  modifyButtonColorBlock: 0
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &1976411158660561219
 GameObject:
   m_ObjectHideFlags: 0
@@ -457,8 +461,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

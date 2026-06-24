@@ -177,6 +177,7 @@ GameObject:
   - component: {fileID: 99337133}
   - component: {fileID: 99337135}
   - component: {fileID: 99337134}
+  - component: {fileID: 99337136}
   m_Layer: 5
   m_Name: ConfirmationPopup_Panel
   m_TagString: Untagged
@@ -242,6 +243,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 99337132}
   m_CullTransparentMesh: 1
+--- !u!114 &99337136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 99337132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 0
+  modifyButtonColorBlock: 0
+  opacity: 0.7
+  backgroundDarken: 0.3
 --- !u!1 &108675283
 GameObject:
   m_ObjectHideFlags: 0
@@ -254,6 +271,7 @@ GameObject:
   - component: {fileID: 108675287}
   - component: {fileID: 108675286}
   - component: {fileID: 108675285}
+  - component: {fileID: 108675288}
   m_Layer: 5
   m_Name: Container_Panel
   m_TagString: Untagged
@@ -295,10 +313,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
   m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
+    m_Left: 50
+    m_Right: 50
+    m_Top: 50
+    m_Bottom: 50
   m_ChildAlignment: 4
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
@@ -345,6 +363,97 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 108675283}
+  m_CullTransparentMesh: 1
+--- !u!114 &108675288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 108675283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 8
+  modifyButtonColorBlock: 0
+  opacity: 1
+  backgroundDarken: 0.3
+--- !u!1 &192038569
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 192038570}
+  - component: {fileID: 192038572}
+  - component: {fileID: 192038571}
+  m_Layer: 5
+  m_Name: Title_Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &192038570
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192038569}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1288238026}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &192038571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192038569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 1300c6fa4d3dbfe41a213ca8c487ef26, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &192038572
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192038569}
   m_CullTransparentMesh: 1
 --- !u!1 &364744757
 GameObject:
@@ -1324,8 +1433,9 @@ GameObject:
   - component: {fileID: 1288238029}
   - component: {fileID: 1288238028}
   - component: {fileID: 1288238027}
+  - component: {fileID: 1288238030}
   m_Layer: 5
-  m_Name: Title_Image
+  m_Name: Title_ImageMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1342,7 +1452,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 192038570}
   m_Father: {fileID: 1547181414}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1408,6 +1519,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1288238025}
   m_CullTransparentMesh: 1
+--- !u!114 &1288238030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288238025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Mask
+  m_ShowMaskGraphic: 1
 --- !u!1 &1376196232
 GameObject:
   m_ObjectHideFlags: 0
@@ -1716,6 +1840,7 @@ GameObject:
   - component: {fileID: 1547181415}
   - component: {fileID: 1547181420}
   - component: {fileID: 1547181419}
+  - component: {fileID: 1547181421}
   m_Layer: 5
   m_Name: TitleUnleckedNotify_Panel
   m_TagString: Untagged
@@ -1886,6 +2011,22 @@ MonoBehaviour:
   slideDistance: 200
   slideDuration: 0.5
   displayDuration: 3.5
+--- !u!114 &1547181421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547181413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 0
+  modifyButtonColorBlock: 0
+  opacity: 0.7
+  backgroundDarken: 0.65
 --- !u!1 &1622614766
 GameObject:
   m_ObjectHideFlags: 0
@@ -2021,7 +2162,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 7
-  modifyButtonColorBlock: 0
+  modifyButtonColorBlock: 1
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &1730062989
 GameObject:
   m_ObjectHideFlags: 0
@@ -2035,6 +2178,7 @@ GameObject:
   - component: {fileID: 1730062993}
   - component: {fileID: 1730062992}
   - component: {fileID: 1730062991}
+  - component: {fileID: 1730062995}
   m_Layer: 5
   m_Name: Text_Panel
   m_TagString: Untagged
@@ -2147,6 +2291,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1730062989}
   m_CullTransparentMesh: 1
+--- !u!114 &1730062995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1730062989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 0
+  modifyButtonColorBlock: 0
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &1814280329
 GameObject:
   m_ObjectHideFlags: 0
@@ -2182,7 +2342,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 261.51}
+  m_SizeDelta: {x: 0, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1814280331
 MonoBehaviour:
@@ -2637,7 +2797,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 6
-  modifyButtonColorBlock: 0
+  modifyButtonColorBlock: 1
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &2106854355
 GameObject:
   m_ObjectHideFlags: 0

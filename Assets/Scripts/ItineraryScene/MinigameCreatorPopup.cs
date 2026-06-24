@@ -15,18 +15,18 @@ public class MinigameCreatorPopup : MonoBehaviour
     public GameObject arrowsContainer;
     public GameObject fillBlanksContainer;
 
-    [Header("Quizz Inputs (Arrastra aquí los 4 inputs y el dropdown)")]
-    public TMP_InputField[] quizzOptionsInputs; // Tamaño 4
+    [Header("Quizz Inputs (Arrastra aquï¿½ los 4 inputs y el dropdown)")]
+    public TMP_InputField[] quizzOptionsInputs; // Tamaï¿½o 4
     public TMP_Dropdown quizzCorrectDropdown;
 
     [Header("Arrows Inputs (Arrastra 3 de Izquierda y 3 de Derecha)")]
-    public TMP_InputField[] arrowLeftInputs;    // Tamaño 3
-    public TMP_InputField[] arrowRightInputs;   // Tamaño 3
+    public TMP_InputField[] arrowLeftInputs;    // Tamaï¿½o 3
+    public TMP_InputField[] arrowRightInputs;   // Tamaï¿½o 3
 
     [Header("Fill Blanks Inputs")]
     public TMP_InputField blank1CorrectInput;
     public TMP_InputField blank2CorrectInput;
-    public TMP_InputField[] fillBlankOptionsInputs; // Tamaño 4
+    public TMP_InputField[] fillBlankOptionsInputs; // Tamaï¿½o 4
 
     [Header("Controls")]
     public Button saveButton;
@@ -51,8 +51,12 @@ public class MinigameCreatorPopup : MonoBehaviour
         switch (selectedType)
         {
             case "Quizz": quizzContainer.SetActive(true); break;
+
             case "Arrows": arrowsContainer.SetActive(true); break;
+            case "Unir columnas" : arrowsContainer.SetActive(true); break;
+
             case "FillBlanks": fillBlanksContainer.SetActive(true); break;
+            case "Rellenar huecos" : fillBlanksContainer.SetActive(true); break;
         }
         Canvas.ForceUpdateCanvases();
     }
@@ -85,7 +89,7 @@ public class MinigameCreatorPopup : MonoBehaviour
             }
         }
 
-        // 2. Rellenar específicos según el tipo
+        // 2. Rellenar especï¿½ficos segï¿½n el tipo
         if (data.type == "Quizz" && data.options != null)
         {
             for (int i = 0; i < 4 && i < data.options.Count; i++)
@@ -125,13 +129,13 @@ public class MinigameCreatorPopup : MonoBehaviour
     {
         if (string.IsNullOrWhiteSpace(titleInput.text)) return;
 
-        // ¡CREAMOS EL PAQUETE DE DATOS!
+        // ï¿½CREAMOS EL PAQUETE DE DATOS!
         MiniGameData nuevoData = new MiniGameData();
         nuevoData.type = typeDropdown.options[typeDropdown.value].text;
         nuevoData.title = titleInput.text;
         nuevoData.content = contentInput.text;
 
-        // Guardamos cosas según el tipo
+        // Guardamos cosas segï¿½n el tipo
         if (nuevoData.type == "Quizz")
         {
             nuevoData.options = new List<string>();
@@ -141,7 +145,7 @@ public class MinigameCreatorPopup : MonoBehaviour
         else if (nuevoData.type == "Arrows")
         {
             nuevoData.pairs = new List<PairData>();
-            // Usamos .Length para no tener límites rígidos
+            // Usamos .Length para no tener lï¿½mites rï¿½gidos
             for (int i = 0; i < arrowLeftInputs.Length; i++)
             {
                 // Comprobamos que el jugador ha escrito algo tanto en la izquierda como en la derecha
@@ -182,7 +186,7 @@ public class MinigameCreatorPopup : MonoBehaviour
 
     private void LimpiarTodosLosCampos()
     {
-        // Limpiamos los básicos si existen
+        // Limpiamos los bï¿½sicos si existen
         if (titleInput != null) titleInput.text = "";
         if (contentInput != null) contentInput.text = "";
 

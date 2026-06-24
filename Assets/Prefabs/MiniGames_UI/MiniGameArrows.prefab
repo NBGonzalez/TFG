@@ -117,6 +117,7 @@ GameObject:
   - component: {fileID: 6400651516110777341}
   - component: {fileID: 4603071489821138533}
   - component: {fileID: 467892381318275172}
+  - component: {fileID: 5526574368304058834}
   m_Layer: 5
   m_Name: LeftColumn
   m_TagString: Untagged
@@ -223,13 +224,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
-  m_MinWidth: 0
+  m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: 0
+  m_PreferredWidth: -1
   m_PreferredHeight: -1
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &5526574368304058834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874145855739289182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 4
+  modifyButtonColorBlock: 0
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &3800538467527491509
 GameObject:
   m_ObjectHideFlags: 0
@@ -242,6 +259,7 @@ GameObject:
   - component: {fileID: 4476107745335625574}
   - component: {fileID: 8662844708280006408}
   - component: {fileID: 114330035447986220}
+  - component: {fileID: 8661771322745217521}
   m_Layer: 5
   m_Name: MiniGameArrows
   m_TagString: Untagged
@@ -322,6 +340,22 @@ MonoBehaviour:
   leftColumn: {fileID: 64274002853238851}
   rightColumn: {fileID: 5325914176674741946}
   buttonPrefab: {fileID: 1374979827332164924, guid: 7c9654b762cf91c45bc8abb21437a7cb, type: 3}
+--- !u!114 &8661771322745217521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3800538467527491509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 8
+  modifyButtonColorBlock: 0
+  opacity: 0.7
+  backgroundDarken: 0.65
 --- !u!1 &8045156052704582418
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,6 +369,7 @@ GameObject:
   - component: {fileID: 5689754628241291578}
   - component: {fileID: 2783414258640125182}
   - component: {fileID: 499982233443999440}
+  - component: {fileID: 8364534520146933372}
   m_Layer: 5
   m_Name: RightColumn
   m_TagString: Untagged
@@ -441,13 +476,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
-  m_MinWidth: 0
+  m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: 0
+  m_PreferredWidth: -1
   m_PreferredHeight: -1
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &8364534520146933372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8045156052704582418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 4
+  modifyButtonColorBlock: 0
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1001 &566126916634910965
 PrefabInstance:
   m_ObjectHideFlags: 0

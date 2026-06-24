@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 952055202078481792}
   - component: {fileID: 6437840406167714460}
   - component: {fileID: 6276923735788120900}
+  - component: {fileID: 7880210704326783128}
   m_Layer: 5
   m_Name: MiniGameQuizz
   m_TagString: Untagged
@@ -134,6 +135,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &7880210704326783128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6300028576399220498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 0
+  modifyButtonColorBlock: 0
+  opacity: 0.7
+  backgroundDarken: 0.3
 --- !u!1001 &7032403640138208987
 PrefabInstance:
   m_ObjectHideFlags: 0

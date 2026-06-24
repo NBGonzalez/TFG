@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6310069619461141016}
   - component: {fileID: 8492022175620709457}
   - component: {fileID: 8955663109091854447}
+  - component: {fileID: 10226190850303436}
   m_Layer: 5
   m_Name: MiniGameFillBlanks
   m_TagString: Untagged
@@ -118,6 +119,22 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &10226190850303436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3213760579575141660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 8
+  modifyButtonColorBlock: 0
+  opacity: 0.7
+  backgroundDarken: 0.65
 --- !u!1 &7970945394619303804
 GameObject:
   m_ObjectHideFlags: 0
@@ -130,6 +147,7 @@ GameObject:
   - component: {fileID: 7421145073739068836}
   - component: {fileID: 253441002270446575}
   - component: {fileID: 2308708340031359472}
+  - component: {fileID: 7074417783304082320}
   m_Layer: 5
   m_Name: OptionsPanel
   m_TagString: Untagged
@@ -218,3 +236,19 @@ MonoBehaviour:
   m_Spacing: {x: 20, y: 20}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!114 &7074417783304082320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7970945394619303804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 4
+  modifyButtonColorBlock: 0
+  opacity: 1
+  backgroundDarken: 0.3
