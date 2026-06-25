@@ -55,9 +55,9 @@ Material:
     - _UIMaskSoftnessY: 1
     m_Colors:
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
-    - _ColorBase: {r: 0.101960786, g: 0.078431375, b: 0.2, a: 1}
+    - _ColorBase: {r: 0.16981131, g: 0.07450981, b: 0.14901961, a: 1}
     - _ColorDegradado: {r: 0.1129405, g: 0.8237181, b: 0.8867924, a: 1}
-    - _ColorEmision: {r: 0.25882354, g: 0.65882355, b: 0.6901961, a: 1}
+    - _ColorEmision: {r: 0.7, g: 0.39529413, b: 0, a: 1}
     - _ColorLight: {r: 1, g: 1, b: 1, a: 0}
     - _ColorSecundario: {r: 1, g: 0.5647059, b: 0, a: 1}
   m_BuildTextureStacks: []

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 public class MinigameCreatorPopup : MonoBehaviour
 {
@@ -23,10 +24,13 @@ public class MinigameCreatorPopup : MonoBehaviour
     public TMP_InputField[] arrowLeftInputs;    // Tama�o 3
     public TMP_InputField[] arrowRightInputs;   // Tama�o 3
 
-    [Header("Fill Blanks Inputs")]
-    public TMP_InputField blank1CorrectInput;
-    public TMP_InputField blank2CorrectInput;
-    public TMP_InputField[] fillBlankOptionsInputs; // Tama�o 4
+    [Header("Fill Blanks")]
+    [Tooltip("Frase con [corchetes] alrededor de las palabras-hueco. Maximo 2 huecos.")]
+    public TMP_InputField fillBlanksSentenceInput;
+    [Tooltip("Texto en rojo donde se muestran los errores de validacion de FillBlanks.")]
+    public TMP_Text fillBlanksErrorText;
+    [Tooltip("4 palabras incorrectas (distractores). Las correctas se anaden solas.")]
+    public TMP_InputField[] fillBlankOptionsInputs; // Tamano 4
 
     [Header("Controls")]
     public Button saveButton;
@@ -39,6 +43,10 @@ public class MinigameCreatorPopup : MonoBehaviour
         typeDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
         saveButton.onClick.AddListener(OnSaveClicked);
         cancelButton.onClick.AddListener(ClosePopup);
+
+        // Validacion en vivo de la frase de FillBlanks (muestra los errores en rojo segun escribe).
+        if (fillBlanksSentenceInput != null)
+            fillBlanksSentenceInput.onValueChanged.AddListener(_ => ValidateFillBlanksLive());
     }
 
     private void OnDropdownValueChanged(int index)
@@ -108,18 +116,34 @@ public class MinigameCreatorPopup : MonoBehaviour
         }
         else if (data.type == "FillBlanks")
         {
+            // Reconstruimos la frase con corchetes a partir de content + blanks:
+            // "Las ____1 ... ____2." -> "Las [rocas] ... [minerales]."
+            string sentence = data.content ?? "";
+            var correctSet = new HashSet<string>();
             if (data.blanks != null)
             {
-                if (data.blanks.Count > 0) blank1CorrectInput.text = data.blanks[0].correct;
-                if (data.blanks.Count > 1) blank2CorrectInput.text = data.blanks[1].correct;
-            }
-            if (data.options != null)
-            {
-                for (int i = 0; i < 4 && i < data.options.Count; i++)
+                foreach (var bl in data.blanks)
                 {
-                    fillBlankOptionsInputs[i].text = data.options[i];
+                    sentence = sentence.Replace($"____{bl.id}", $"[{bl.correct}]");
+                    correctSet.Add(bl.correct);
                 }
             }
+            if (fillBlanksSentenceInput != null) fillBlanksSentenceInput.text = sentence;
+
+            // Los distractores son las opciones que NO son respuestas correctas.
+            if (fillBlankOptionsInputs != null && data.options != null)
+            {
+                int di = 0;
+                foreach (var opt in data.options)
+                {
+                    if (di >= fillBlankOptionsInputs.Length) break;
+                    if (correctSet.Contains(opt)) continue;
+                    if (fillBlankOptionsInputs[di] != null) fillBlankOptionsInputs[di].text = opt;
+                    di++;
+                }
+            }
+
+            ValidateFillBlanksLive();
         }
 
         gameObject.SetActive(true);
@@ -156,17 +180,29 @@ public class MinigameCreatorPopup : MonoBehaviour
                 }
             }
         }
-        else if (nuevoData.type == "FillBlanks")
+        // FillBlanks: lo detectamos por el contenedor activo (asi funciona aunque el dropdown
+        // este en espanol) y forzamos el type canonico "FillBlanks" para que el motor lo reconozca.
+        else if (fillBlanksContainer != null && fillBlanksContainer.activeSelf)
         {
-            nuevoData.blanks = new List<FillBlankEntry>();
-            if (!string.IsNullOrEmpty(blank1CorrectInput.text)) nuevoData.blanks.Add(new FillBlankEntry { id = 1, correct = blank1CorrectInput.text });
-            if (!string.IsNullOrEmpty(blank2CorrectInput.text)) nuevoData.blanks.Add(new FillBlankEntry { id = 2, correct = blank2CorrectInput.text });
+            var distractores = new List<string>();
+            if (fillBlankOptionsInputs != null)
+                foreach (var input in fillBlankOptionsInputs)
+                    if (input != null) distractores.Add(input.text);
 
-            nuevoData.options = new List<string>();
-            foreach (var input in fillBlankOptionsInputs)
+            string sentence = fillBlanksSentenceInput != null ? fillBlanksSentenceInput.text : "";
+            if (!TryBuildFillBlanks(sentence, distractores,
+                                    out string fbContent, out var fbBlanks, out var fbOptions, out string fbError))
             {
-                if (!string.IsNullOrEmpty(input.text)) nuevoData.options.Add(input.text);
+                // Frase invalida: mostramos el error en rojo y abortamos.
+                // No creamos un minijuego roto ni cerramos el popup.
+                if (fillBlanksErrorText != null) fillBlanksErrorText.text = fbError;
+                return;
             }
+
+            nuevoData.type = "FillBlanks";
+            nuevoData.content = fbContent;
+            nuevoData.blanks = fbBlanks;
+            nuevoData.options = fbOptions;
         }
 
         // Enviamos el paquete completo al Manager
@@ -180,6 +216,94 @@ public class MinigameCreatorPopup : MonoBehaviour
         }
 
         ClosePopup();
+    }
+
+    // =========================================
+    //  FILL BLANKS: parser y validacion
+    // =========================================
+
+    /// <summary>
+    /// Convierte una frase con [corchetes] en content (con ____1/____2), blanks y options.
+    /// Las palabras dentro de [] son las correctas (se anaden solas a options); el resto de
+    /// options son los distractores. Devuelve false + mensaje de error si la frase no es valida
+    /// (corchetes mal cerrados, sin huecos, hueco vacio, o mas de 2 huecos).
+    /// </summary>
+    private bool TryBuildFillBlanks(string sentence, List<string> distractores,
+        out string content, out List<FillBlankEntry> blanks, out List<string> options, out string error)
+    {
+        content = sentence ?? "";
+        blanks = new List<FillBlankEntry>();
+        options = new List<string>();
+        error = null;
+
+        // 1. Corchetes balanceados.
+        int abiertos = 0;
+        foreach (char c in content)
+        {
+            if (c == '[') abiertos++;
+            else if (c == ']')
+            {
+                if (abiertos == 0) { error = "Hay un ] sin su [ correspondiente."; return false; }
+                abiertos--;
+            }
+        }
+        if (abiertos != 0) { error = "Falta cerrar un corchete ]."; return false; }
+
+        // 2. Detectar los huecos en orden de aparicion.
+        MatchCollection matches = Regex.Matches(content, @"\[(.*?)\]");
+        if (matches.Count == 0) { error = "Marca al menos una palabra con [corchetes]."; return false; }
+        if (matches.Count > 2) { error = "Solo puedes poner dos palabras entre corchetes como maximo."; return false; }
+
+        // 3. Construir content (sustituyendo [x] por ____id) y rellenar blanks/options.
+        var sb = new System.Text.StringBuilder();
+        int last = 0;
+        int id = 1;
+        foreach (Match m in matches)
+        {
+            sb.Append(content, last, m.Index - last);
+
+            string correct = m.Groups[1].Value.Trim();
+            if (string.IsNullOrEmpty(correct)) { error = "Hay un hueco vacio [ ]."; return false; }
+
+            sb.Append($"____{id}");
+            blanks.Add(new FillBlankEntry { id = id, correct = correct });
+            options.Add(correct);
+
+            last = m.Index + m.Length;
+            id++;
+        }
+        sb.Append(content, last, content.Length - last);
+        content = sb.ToString();
+
+        // 4. Anadir los distractores no vacios, sin duplicar las correctas ni entre si.
+        if (distractores != null)
+        {
+            foreach (var d in distractores)
+            {
+                string w = (d ?? "").Trim();
+                if (!string.IsNullOrEmpty(w) && !options.Contains(w)) options.Add(w);
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Valida la frase mientras el usuario escribe y muestra el error en rojo (o lo limpia si va bien).
+    /// </summary>
+    private void ValidateFillBlanksLive()
+    {
+        if (fillBlanksErrorText == null) return;
+
+        string sentence = fillBlanksSentenceInput != null ? fillBlanksSentenceInput.text : "";
+        if (string.IsNullOrEmpty(sentence))
+        {
+            fillBlanksErrorText.text = "";
+            return;
+        }
+
+        bool ok = TryBuildFillBlanks(sentence, null, out _, out _, out _, out string error);
+        fillBlanksErrorText.text = ok ? "" : error;
     }
 
     public void ClosePopup() { gameObject.SetActive(false); }
@@ -215,8 +339,8 @@ public class MinigameCreatorPopup : MonoBehaviour
             }
         }
 
-        if (blank1CorrectInput != null) blank1CorrectInput.text = "";
-        if (blank2CorrectInput != null) blank2CorrectInput.text = "";
+        if (fillBlanksSentenceInput != null) fillBlanksSentenceInput.text = "";
+        if (fillBlanksErrorText != null) fillBlanksErrorText.text = "";
 
         if (fillBlankOptionsInputs != null)
         {

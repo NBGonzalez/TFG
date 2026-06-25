@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9065dddc006939f4391515e21a804432, type: 3}
   m_Name: Avatar_Free00
   m_EditorClassIdentifier: Assembly-CSharp::ProfileAvatarSO
-  id: Avatar_Free00
+  id: avatar_default
   avatarImage: {fileID: -3123318174716057856, guid: f569201cc2f4f1f46ac5f3bb3ee912d5, type: 3}
   isFree: 1
   requiredAchievementId: 

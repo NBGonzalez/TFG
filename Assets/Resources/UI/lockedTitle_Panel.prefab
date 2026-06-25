@@ -381,6 +381,7 @@ GameObject:
   - component: {fileID: 4543771588327674505}
   - component: {fileID: 1807703597806994580}
   - component: {fileID: 8970692944312980584}
+  - component: {fileID: 2102921120621944252}
   m_Layer: 5
   m_Name: BackGround_Button
   m_TagString: Untagged
@@ -510,6 +511,22 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &2102921120621944252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3397825472188547147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 0
+  modifyButtonColorBlock: 0
+  opacity: 0.7
+  backgroundDarken: 0.3
 --- !u!1 &5624708813816723683
 GameObject:
   m_ObjectHideFlags: 0
@@ -982,6 +999,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 6
   modifyButtonColorBlock: 0
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &8753411021169718123
 GameObject:
   m_ObjectHideFlags: 0
@@ -1092,6 +1111,8 @@ GameObject:
   - component: {fileID: 2769690845867422773}
   - component: {fileID: 4916438777599156518}
   - component: {fileID: 5524785186020965150}
+  - component: {fileID: 9187143320500919022}
+  - component: {fileID: 4609656802585990942}
   m_Layer: 5
   m_Name: Elements_Panel
   m_TagString: Untagged
@@ -1186,3 +1207,34 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &9187143320500919022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8912355021892903701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 0
+  modifyButtonColorBlock: 0
+  opacity: 1
+  backgroundDarken: 0.3
+--- !u!114 &4609656802585990942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8912355021892903701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1

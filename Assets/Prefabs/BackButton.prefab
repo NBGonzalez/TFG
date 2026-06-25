@@ -293,3 +293,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 7
   modifyButtonColorBlock: 1
+  opacity: 1
+  backgroundDarken: 0.3

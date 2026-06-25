@@ -358,6 +358,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 3
   modifyButtonColorBlock: 1
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &4273909326552347818
 GameObject:
   m_ObjectHideFlags: 0
@@ -499,6 +501,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 1
   modifyButtonColorBlock: 1
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &4486674638040531556
 GameObject:
   m_ObjectHideFlags: 0
@@ -1222,6 +1226,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 1
   modifyButtonColorBlock: 1
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &7915089658839480937
 GameObject:
   m_ObjectHideFlags: 0
@@ -1506,7 +1512,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Create new Itinerary
+  m_text: Crear nuevo itinerario
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

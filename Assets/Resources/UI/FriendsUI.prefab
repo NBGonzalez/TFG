@@ -976,7 +976,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00009415191}
+  m_AnchoredPosition: {x: 0, y: 0.000024997615}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8938831961116729362
@@ -1155,6 +1155,7 @@ GameObject:
   - component: {fileID: 317808507986777211}
   - component: {fileID: 2743839220177641859}
   - component: {fileID: 4554676721529578409}
+  - component: {fileID: 5898859493862692455}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -1272,6 +1273,22 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: 1
   m_LayoutPriority: 1
+--- !u!114 &5898859493862692455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3552834683648864795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 8
+  modifyButtonColorBlock: 0
+  opacity: 0.5
+  backgroundDarken: 0.3
 --- !u!1 &3900493654243699152
 GameObject:
   m_ObjectHideFlags: 0

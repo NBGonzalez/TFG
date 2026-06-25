@@ -272,6 +272,7 @@ GameObject:
   - component: {fileID: 108675286}
   - component: {fileID: 108675285}
   - component: {fileID: 108675288}
+  - component: {fileID: 108675289}
   m_Layer: 5
   m_Name: Container_Panel
   m_TagString: Untagged
@@ -380,6 +381,21 @@ MonoBehaviour:
   modifyButtonColorBlock: 0
   opacity: 1
   backgroundDarken: 0.3
+--- !u!114 &108675289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 108675283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &192038569
 GameObject:
   m_ObjectHideFlags: 0
@@ -1841,6 +1857,7 @@ GameObject:
   - component: {fileID: 1547181420}
   - component: {fileID: 1547181419}
   - component: {fileID: 1547181421}
+  - component: {fileID: 1547181422}
   m_Layer: 5
   m_Name: TitleUnleckedNotify_Panel
   m_TagString: Untagged
@@ -2027,6 +2044,21 @@ MonoBehaviour:
   modifyButtonColorBlock: 0
   opacity: 0.7
   backgroundDarken: 0.65
+--- !u!114 &1547181422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547181413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1622614766
 GameObject:
   m_ObjectHideFlags: 0
@@ -2040,6 +2072,7 @@ GameObject:
   - component: {fileID: 1622614769}
   - component: {fileID: 1622614768}
   - component: {fileID: 1622614771}
+  - component: {fileID: 1622614772}
   m_Layer: 5
   m_Name: No_Button
   m_TagString: Untagged
@@ -2165,6 +2198,21 @@ MonoBehaviour:
   modifyButtonColorBlock: 1
   opacity: 1
   backgroundDarken: 0.3
+--- !u!114 &1622614772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1622614766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1730062989
 GameObject:
   m_ObjectHideFlags: 0
@@ -2675,6 +2723,7 @@ GameObject:
   - component: {fileID: 2075602932}
   - component: {fileID: 2075602931}
   - component: {fileID: 2075602934}
+  - component: {fileID: 2075602935}
   m_Layer: 5
   m_Name: Yes_Button
   m_TagString: Untagged
@@ -2800,6 +2849,21 @@ MonoBehaviour:
   modifyButtonColorBlock: 1
   opacity: 1
   backgroundDarken: 0.3
+--- !u!114 &2075602935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2075602929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &2106854355
 GameObject:
   m_ObjectHideFlags: 0

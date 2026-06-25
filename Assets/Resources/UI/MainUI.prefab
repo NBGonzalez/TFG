@@ -166,6 +166,7 @@ GameObject:
   - component: {fileID: 3316502915003128573}
   - component: {fileID: 4967642886224500372}
   - component: {fileID: 4493149835169083964}
+  - component: {fileID: 8639183486573973990}
   m_Layer: 5
   m_Name: Button_Options
   m_TagString: Untagged
@@ -275,6 +276,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8639183486573973990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982438076743791861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1858470648207179921
 GameObject:
   m_ObjectHideFlags: 0
@@ -646,6 +662,7 @@ GameObject:
   - component: {fileID: 959820865374562118}
   - component: {fileID: 7682883342159693578}
   - component: {fileID: 3340865456271139700}
+  - component: {fileID: 8123291288395590877}
   m_Layer: 5
   m_Name: Button_Friends
   m_TagString: Untagged
@@ -755,6 +772,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8123291288395590877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3341363644809012564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &3365901366500684613
 GameObject:
   m_ObjectHideFlags: 0
@@ -904,6 +936,7 @@ GameObject:
   - component: {fileID: 8657625618596483089}
   - component: {fileID: 3805454074297729386}
   - component: {fileID: 8919499500133771041}
+  - component: {fileID: 5362028520033417394}
   m_Layer: 5
   m_Name: Button_Itinerary
   m_TagString: Untagged
@@ -1033,6 +1066,21 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &5362028520033417394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4598755921039042990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &5476353649651808407
 GameObject:
   m_ObjectHideFlags: 0
@@ -1338,6 +1386,7 @@ GameObject:
   - component: {fileID: 5156732745013039428}
   - component: {fileID: 8482124203883697851}
   - component: {fileID: 3875124302605269064}
+  - component: {fileID: 7103033492653151357}
   m_Layer: 5
   m_Name: Button_Play
   m_TagString: Untagged
@@ -1447,6 +1496,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7103033492653151357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6579232548191428381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &6650200652979702206
 GameObject:
   m_ObjectHideFlags: 0
@@ -1867,6 +1931,7 @@ GameObject:
   - component: {fileID: 1463220911781633099}
   - component: {fileID: 1703567148842602225}
   - component: {fileID: 2512325611850123841}
+  - component: {fileID: 6232570465292374257}
   m_Layer: 5
   m_Name: Button_Profile
   m_TagString: Untagged
@@ -1976,3 +2041,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6232570465292374257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9213145996033155987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1

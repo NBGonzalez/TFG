@@ -32,6 +32,9 @@ public class UI_PlayScreen : MonoBehaviour
     private Dictionary<string, bool> localPathFlags = new Dictionary<string, bool>();
     private PathModel currentPath;
 
+    // Clave de PlayerPrefs para recordar el ultimo itinerario elegido (persistente entre sesiones y escenas).
+    private const string PREF_LAST_ITINERARY = "LastSelectedItineraryId";
+
     private void Start()
     {
         languageDropdown.ClearOptions();
@@ -126,7 +129,21 @@ public class UI_PlayScreen : MonoBehaviour
         languageDropdown.AddOptions(nombresParaDesplegable);
         if (nombresParaDesplegable.Count > 0)
         {
-            CambiarMapaActivo(nombresParaDesplegable[0]);
+            // Restauramos el ultimo itinerario que estaba jugando (si todavia existe en la lista);
+            // si no hay nada guardado o ya no existe, usamos el primero.
+            int indiceInicial = 0;
+            string idGuardado = PlayerPrefs.GetString(PREF_LAST_ITINERARY, "");
+            if (!string.IsNullOrEmpty(idGuardado))
+            {
+                int idx = nombresParaDesplegable.FindIndex(nombre =>
+                    pathsEnMemoria.TryGetValue(nombre, out PathModel pm) && pm != null && pm.language == idGuardado);
+                if (idx >= 0) indiceInicial = idx;
+            }
+
+            // SetValueWithoutNotify para no disparar AlCambiarDesplegable (evita re-guardar al restaurar).
+            languageDropdown.SetValueWithoutNotify(indiceInicial);
+            languageDropdown.RefreshShownValue();
+            CambiarMapaActivo(nombresParaDesplegable[indiceInicial]);
         }
         // 4. MAGIA UI: Ajustar el tamaño del desplegable dinámicamente
         if (languageDropdown.template != null)
@@ -150,7 +167,20 @@ public class UI_PlayScreen : MonoBehaviour
     {
         // Miramos qué texto ha elegido el jugador en el desplegable (ej: "SQL")
         string lenguajeElegido = languageDropdown.options[indice].text;
+        GuardarSeleccion(lenguajeElegido);
         CambiarMapaActivo(lenguajeElegido);
+    }
+
+    // Guarda en PlayerPrefs el ID real del itinerario elegido (currentPath.language),
+    // que es estable entre sesiones (a diferencia del nombre decorado del dropdown).
+    private void GuardarSeleccion(string nombreUI)
+    {
+        if (string.IsNullOrEmpty(nombreUI)) return;
+        if (pathsEnMemoria.TryGetValue(nombreUI, out PathModel pm) && pm != null)
+        {
+            PlayerPrefs.SetString(PREF_LAST_ITINERARY, pm.language);
+            PlayerPrefs.Save();
+        }
     }
 
     private void CambiarMapaActivo(string language)

@@ -412,6 +412,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 3
   modifyButtonColorBlock: 1
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!114 &3774393355965305182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -682,6 +684,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 6
   modifyButtonColorBlock: 1
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &4136249406022529318
 GameObject:
   m_ObjectHideFlags: 0
@@ -839,6 +843,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 7
   modifyButtonColorBlock: 1
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &5086158789989338933
 GameObject:
   m_ObjectHideFlags: 0
@@ -1111,6 +1117,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 4
   modifyButtonColorBlock: 1
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &5281860118261732117
 GameObject:
   m_ObjectHideFlags: 0

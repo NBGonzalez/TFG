@@ -420,6 +420,7 @@ GameObject:
   - component: {fileID: 7414769642826062128}
   - component: {fileID: 2425220309606684904}
   - component: {fileID: 7130016746660240323}
+  - component: {fileID: 8390986667917111746}
   m_Layer: 5
   m_Name: Anonymous
   m_TagString: Untagged
@@ -541,6 +542,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8390986667917111746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315804957187832964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1463461184775040608
 GameObject:
   m_ObjectHideFlags: 0
@@ -553,6 +569,7 @@ GameObject:
   - component: {fileID: 9163647666211919147}
   - component: {fileID: 3661980657241771012}
   - component: {fileID: 6394321962446207107}
+  - component: {fileID: 379823704262389499}
   m_Layer: 5
   m_Name: GooglePlay
   m_TagString: Untagged
@@ -674,6 +691,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &379823704262389499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463461184775040608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &2378329716942088392
 GameObject:
   m_ObjectHideFlags: 0
