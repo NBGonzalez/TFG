@@ -920,6 +920,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 3
   modifyButtonColorBlock: 0
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &2158888559049845182
 GameObject:
   m_ObjectHideFlags: 0
@@ -1443,6 +1445,7 @@ GameObject:
   - component: {fileID: 2078535121452653209}
   - component: {fileID: 5299256101984644224}
   - component: {fileID: 5776242307659321755}
+  - component: {fileID: 5972052183128181951}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -1557,6 +1560,22 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &5972052183128181951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4228830032064251218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 8
+  modifyButtonColorBlock: 0
+  opacity: 0.5
+  backgroundDarken: 0.75
 --- !u!1 &4410316703295420034
 GameObject:
   m_ObjectHideFlags: 0
@@ -1698,6 +1717,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 4
   modifyButtonColorBlock: 1
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &4513400795798923797
 GameObject:
   m_ObjectHideFlags: 0
@@ -1745,6 +1766,7 @@ GameObject:
   - component: {fileID: 3783601568111329648}
   - component: {fileID: 6924234311602472104}
   - component: {fileID: 3488412869676444409}
+  - component: {fileID: 8206598292012535793}
   m_Layer: 5
   m_Name: Star2_Image
   m_TagString: Untagged
@@ -1809,6 +1831,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8206598292012535793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4871131608693232331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &4950936026844573413
 GameObject:
   m_ObjectHideFlags: 0
@@ -1958,6 +1995,8 @@ GameObject:
   - component: {fileID: 4623754386651982007}
   - component: {fileID: 6621559019582572780}
   - component: {fileID: 5685523554601808618}
+  - component: {fileID: 9097069428011005130}
+  - component: {fileID: 8064233165616288771}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -2087,6 +2126,37 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &9097069428011005130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5958974755776856892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
+--- !u!114 &8064233165616288771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5958974755776856892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 3
+  modifyButtonColorBlock: 1
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &5986805716350126454
 GameObject:
   m_ObjectHideFlags: 0
@@ -2354,6 +2424,7 @@ GameObject:
   - component: {fileID: 6973451505321020255}
   - component: {fileID: 1326564087829362194}
   - component: {fileID: 4585061646384514462}
+  - component: {fileID: 5990058152679234404}
   m_Layer: 5
   m_Name: Star3_Image
   m_TagString: Untagged
@@ -2418,6 +2489,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5990058152679234404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7188055123519598725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &7218789061905784538
 GameObject:
   m_ObjectHideFlags: 0
@@ -2537,6 +2623,7 @@ GameObject:
   - component: {fileID: 6205355842593488652}
   - component: {fileID: 7758884225352746366}
   - component: {fileID: 143912633126067563}
+  - component: {fileID: 9001830751164146065}
   m_Layer: 5
   m_Name: Star1_Image
   m_TagString: Untagged
@@ -2601,6 +2688,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &9001830751164146065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7312736656158267300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &7412417805026204624
 GameObject:
   m_ObjectHideFlags: 0
@@ -2781,6 +2883,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
   role: 3
   modifyButtonColorBlock: 1
+  opacity: 1
+  backgroundDarken: 0.3
 --- !u!1 &7975208763407575404
 GameObject:
   m_ObjectHideFlags: 0
@@ -2976,8 +3080,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4837697765613599963}
   m_HandleRect: {fileID: 3949615660995916345}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 1
+  m_Value: 0.5
+  m_Size: 0.99896264
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

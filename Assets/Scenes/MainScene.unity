@@ -2040,9 +2040,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
-  role: 0
+  role: 1
   modifyButtonColorBlock: 0
-  opacity: 0.7
+  opacity: 0.203
   backgroundDarken: 0.65
 --- !u!114 &1547181422
 MonoBehaviour:

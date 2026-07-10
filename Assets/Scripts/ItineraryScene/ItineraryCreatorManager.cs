@@ -257,6 +257,8 @@ public class ItineraryCreatorManager : MonoBehaviour
         Debug.Log("<color=green><b>¡MEGA-JSON CREADO CON ÉXITO!</b></color>\n" + jsonFinal);
 
         // El siguiente paso lógico iría aquí (Subirlo a PlayFab o guardarlo en el PC)
+
+        OnBackButtonPressed();
     }
 }
 

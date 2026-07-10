@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Title_SQL_04
   m_EditorClassIdentifier: Assembly-CSharp::ProfileTitleSO
   id: Title_SQL_04
-  titleName: SQL-Wizzard
+  titleName: SQL-Wizard
   description: Completa el nivel 10 de SQL!
   icon: {fileID: -7567097080799792204, guid: cf2d9511af05b1e4e9361e903fd77a8c, type: 3}
   titleColor: {r: 0.3160377, g: 0.77339137, b: 1, a: 1}

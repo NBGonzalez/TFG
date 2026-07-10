@@ -717,6 +717,7 @@ GameObject:
   - component: {fileID: 7837519344168872861}
   - component: {fileID: 2337016104185631726}
   - component: {fileID: 820644462987542008}
+  - component: {fileID: 2289174011682973058}
   m_Layer: 5
   m_Name: BackGroundFade
   m_TagString: Untagged
@@ -781,6 +782,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2289174011682973058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2378329716942088392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f2a35e067c144469270a4ef890768c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIColorElement
+  role: 8
+  modifyButtonColorBlock: 0
+  opacity: 0.7
+  backgroundDarken: 0.3
 --- !u!1 &3809000203199720926
 GameObject:
   m_ObjectHideFlags: 0

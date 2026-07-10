@@ -4555,6 +4555,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4609656802585990942, guid: 9abb67681c6d66548a4fd7d2cfde47d1, type: 3}
+      propertyPath: m_EffectColor.a
+      value: 0.69803923
+      objectReference: {fileID: 0}
     - target: {fileID: 5043713894398003548, guid: 9abb67681c6d66548a4fd7d2cfde47d1, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -4657,9 +4661,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8912355021892903701, guid: 9abb67681c6d66548a4fd7d2cfde47d1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 819814907223858830}
-    - targetCorrespondingSourceObject: {fileID: 8912355021892903701, guid: 9abb67681c6d66548a4fd7d2cfde47d1, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 662152424903443244}
     - targetCorrespondingSourceObject: {fileID: 8551923536395574399, guid: 9abb67681c6d66548a4fd7d2cfde47d1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8862041575280585859}
@@ -4744,21 +4745,6 @@ MonoBehaviour:
   modifyButtonColorBlock: 0
   opacity: 1
   backgroundDarken: 0.3
---- !u!114 &662152424903443244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6107306173918172990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
-  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
-  m_EffectDistance: {x: 15, y: -15}
-  m_UseGraphicAlpha: 1
 --- !u!114 &6138969135382903595 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8817897232876211968, guid: 9abb67681c6d66548a4fd7d2cfde47d1, type: 3}

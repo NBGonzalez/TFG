@@ -49,22 +49,31 @@ public class MinigameCreatorPopup : MonoBehaviour
             fillBlanksSentenceInput.onValueChanged.AddListener(_ => ValidateFillBlanksLive());
     }
 
+    // Traduce la ETIQUETA visible del dropdown (en espanol o ingles) al codigo canonico
+    // que entiende el motor. Es la unica tabla de etiquetas: la usan el switch de containers,
+    // el guardado y la edicion, asi que nunca se desincronizan.
+    private string GetCanonicalType(string label) => label switch
+    {
+        "Explicación" or "Explicacion" or "Explain" => "Explain",
+        "Quizz" or "Quiz" => "Quizz",
+        "Arrows" or "Unir columnas" => "Arrows",
+        "FillBlanks" or "Rellenar huecos" => "FillBlanks",
+        _ => label
+    };
+
     private void OnDropdownValueChanged(int index)
     {
         quizzContainer.SetActive(false);
         arrowsContainer.SetActive(false);
         fillBlanksContainer.SetActive(false);
 
-        string selectedType = typeDropdown.options[index].text;
-        switch (selectedType)
+        string code = GetCanonicalType(typeDropdown.options[index].text);
+        switch (code)
         {
             case "Quizz": quizzContainer.SetActive(true); break;
-
             case "Arrows": arrowsContainer.SetActive(true); break;
-            case "Unir columnas" : arrowsContainer.SetActive(true); break;
-
             case "FillBlanks": fillBlanksContainer.SetActive(true); break;
-            case "Rellenar huecos" : fillBlanksContainer.SetActive(true); break;
+            // "Explain" no tiene contenedor propio (solo title + content).
         }
         Canvas.ForceUpdateCanvases();
     }
@@ -87,10 +96,11 @@ public class MinigameCreatorPopup : MonoBehaviour
         titleInput.text = data.title;
         contentInput.text = data.content;
 
-        // Buscar el dropdown correcto
+        // Buscar el dropdown correcto comparando por tipo canonico
+        // (la etiqueta puede estar en espanol, pero data.type es "Explain"/"Quizz"/...).
         for (int i = 0; i < typeDropdown.options.Count; i++)
         {
-            if (typeDropdown.options[i].text == data.type)
+            if (GetCanonicalType(typeDropdown.options[i].text) == data.type)
             {
                 typeDropdown.value = i;
                 break;
@@ -155,7 +165,7 @@ public class MinigameCreatorPopup : MonoBehaviour
 
         // �CREAMOS EL PAQUETE DE DATOS!
         MiniGameData nuevoData = new MiniGameData();
-        nuevoData.type = typeDropdown.options[typeDropdown.value].text;
+        nuevoData.type = GetCanonicalType(typeDropdown.options[typeDropdown.value].text);
         nuevoData.title = titleInput.text;
         nuevoData.content = contentInput.text;
 
@@ -180,9 +190,7 @@ public class MinigameCreatorPopup : MonoBehaviour
                 }
             }
         }
-        // FillBlanks: lo detectamos por el contenedor activo (asi funciona aunque el dropdown
-        // este en espanol) y forzamos el type canonico "FillBlanks" para que el motor lo reconozca.
-        else if (fillBlanksContainer != null && fillBlanksContainer.activeSelf)
+        else if (nuevoData.type == "FillBlanks")
         {
             var distractores = new List<string>();
             if (fillBlankOptionsInputs != null)
@@ -199,7 +207,6 @@ public class MinigameCreatorPopup : MonoBehaviour
                 return;
             }
 
-            nuevoData.type = "FillBlanks";
             nuevoData.content = fbContent;
             nuevoData.blanks = fbBlanks;
             nuevoData.options = fbOptions;
