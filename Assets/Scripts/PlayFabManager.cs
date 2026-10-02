@@ -114,13 +114,19 @@ public class PlayFabManager : MonoBehaviour
     // Esta es la función principal que llamará tu GameSceneManager
     public void PedirNivel(string language, string levelId, Action<string> alTerminar)
     {
+        // Mediciones de latencia:
+        var cronometro = System.Diagnostics.Stopwatch.StartNew();
+
         // Construimos el nombre exacto que tiene en PlayFab (ej: "sql_sql-1")
         string clavePlayFab = $"{language.ToLower()}_{levelId.ToLower()}";
-        Debug.Log($"[PlayFabManager] Pidiendo nivel: {clavePlayFab}");
+        //Debug.Log($"[PlayFabManager] Pidiendo nivel: {clavePlayFab}");
 
         // CASO A: ¡Ya lo tenemos en la mochila! (Cero tiempos de carga)
         if (nivelesEnCache.ContainsKey(clavePlayFab))
         {
+            cronometro.Stop();
+            Debug.Log($"[METRICA] cache;{clavePlayFab};{cronometro.ElapsedMilliseconds}");
+
             Debug.Log($"[PlayFabManager] ¡El nivel {clavePlayFab} ya estaba en RAM! Carga instantánea.");
             alTerminar?.Invoke(nivelesEnCache[clavePlayFab]);
 
@@ -130,7 +136,7 @@ public class PlayFabManager : MonoBehaviour
         }
 
         // CASO B: No lo tenemos. Hay que pedírselo a internet.
-        Debug.Log($"[PlayFabManager] El nivel {clavePlayFab} no está en RAM. Descargando de la nube...");
+        //Debug.Log($"[PlayFabManager] El nivel {clavePlayFab} no está en RAM. Descargando de la nube...");
         var request = new GetTitleDataRequest { Keys = new List<string> { clavePlayFab } };
 
         PlayFabClientAPI.GetTitleData(request, (result) =>
@@ -139,6 +145,10 @@ public class PlayFabManager : MonoBehaviour
             {
                 string jsonDescargado = result.Data[clavePlayFab];
                 GuardarEnMochila(clavePlayFab, jsonDescargado);
+
+                // Mediciones de latencia:
+                cronometro.Stop();
+                Debug.Log($"[METRICA] nube;{clavePlayFab};{cronometro.ElapsedMilliseconds};{jsonDescargado.Length}");
 
                 // Entregamos el nivel al juego
                 alTerminar?.Invoke(jsonDescargado);

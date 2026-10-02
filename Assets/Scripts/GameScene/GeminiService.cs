@@ -76,6 +76,9 @@ public class GeminiService : MonoBehaviour
         string jsonBody = JsonUtility.ToJson(requestData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
 
+        // Medición de latencia:
+        var cronometro = System.Diagnostics.Stopwatch.StartNew();
+
         using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
         {
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -83,6 +86,9 @@ public class GeminiService : MonoBehaviour
             request.SetRequestHeader("Content-Type", "application/json");
 
             yield return request.SendWebRequest();
+
+            cronometro.Stop();
+            Debug.Log($"[METRICA] gemini;{cronometro.ElapsedMilliseconds};{request.downloadHandler.text.Length}");
 
             if (request.result != UnityWebRequest.Result.Success)
             {
